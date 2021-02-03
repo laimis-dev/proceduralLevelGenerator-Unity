@@ -1,2 +1,2 @@
-# katinas15-proceduralLevelGenerator-Unity
+proceduralLevelGenerator-Unity
 agent based procedural game scene generation
