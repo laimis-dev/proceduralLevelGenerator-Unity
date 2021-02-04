@@ -13,8 +13,8 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] int roomPlacementChanceModifier = 5;
     [SerializeField] int corridorPlacementChanceModifier = 5;
 
-    [SerializeField] Vector2Int corridorSizeRange;
-    [SerializeField] Vector2Int roomSizeRange;
+    [SerializeField] Vector2Int corridorSizeRange = new Vector2Int(3,10);
+    [SerializeField] Vector2Int roomSizeRange = new Vector2Int(5, 20);
 
     Agent[] agents;
     Map map;
@@ -39,7 +39,7 @@ public class LevelGenerator : MonoBehaviour
     }
 
     private void GenerateLevel(){
-        map = new Map(sceneSize.x, sceneSize.y);
+        map = new Map(sceneSize.x, sceneSize.y, roomSizeRange, corridorSizeRange);
         if (useRandomSeed) {
             seed = Time.time.ToString();
         }
@@ -58,35 +58,26 @@ public class LevelGenerator : MonoBehaviour
             map);
 
 
-        for(int i = 0; i < 5; i++){
+        for(int i = 0; i < 50; i++){
             print(agent.getPosition());
             print(agent.getDirection());
 
             agent.Process();
         }
-
-
-        
-        
-        // for (int x = 0; x < width; x ++) {
-        //     for (int y = 0; y < height; y ++) {
-        //         if (x == 0 || x == width-1 || y == 0 || y == height -1) {
-        //             map[x,y] = 1;
-        //         } else {
-        //             map[x,y] = ( < randomFillPercent)? 1: 0;
-        //         }
-        //     }
-        // }
     }
 
     class Map {
         private int[,] map;
         private int width;
         private int height;
+        private Vector2Int roomRange;
+        private Vector2Int corridorRange;
 
-        public Map(int width, int height){
+        public Map(int width, int height, Vector2Int roomRange, Vector2Int corridorRange){
             this.width = width;
             this.height = height;
+            this.roomRange = roomRange;
+            this.corridorRange = corridorRange;
             this.map = new int[width, height];
         }
 
@@ -108,6 +99,14 @@ public class LevelGenerator : MonoBehaviour
 
         public int getMapNode(int x, int y){
             return this.map[x,y];
+        }
+
+        public Vector2Int getRoomRange(){
+            return roomRange;
+        }
+
+        public Vector2Int getCorridorRange(){
+            return corridorRange;
         }
     }
 
@@ -141,16 +140,58 @@ public class LevelGenerator : MonoBehaviour
         }
 
         public void Process(){
+            Move();
+            
+            map.setMapNode(this.position.x, this.position.y, 1);
+
+            if(pseudoRandom.Next(0,100) < roomPlacementChance){
+                roomPlacementChance = 0;
+                PlaceRoom();
+            } else {
+                roomPlacementChance += roomPlacementChanceModifier;
+            }
+
+            if(pseudoRandom.Next(0,100) < corridorPlacementChance){
+                corridorPlacementChance = 0;
+                RandomDirection();
+                // PlaceCorridor();
+            } else {
+                corridorPlacementChance += corridorPlacementChanceModifier;
+            }
+
+        }
+
+        private void PlaceRoom(){
+            Vector2Int roomSizeRange = map.getRoomRange();
+
+            int roomWidth = pseudoRandom.Next(roomSizeRange.x,roomSizeRange.y);
+            int roomHeight = pseudoRandom.Next(roomSizeRange.x,roomSizeRange.y);
+
+            int roomStartPosX = this.position.x - roomWidth/2;
+            int roomStartPosY = this.position.y - roomHeight/2;
+            int roomEndPosX = this.position.x + roomWidth/2;
+            int roomEndPosY = this.position.y + roomHeight/2;
+
+            for(int x = roomStartPosX; x < roomEndPosX; x++){
+                for(int y = roomStartPosY; y < roomEndPosY; y++){
+                    map.setMapNode(x,y,1);
+                }
+            }
+            print("ROOM PLACED");
+        }
+
+        private void PlaceCorridor(){
+            Vector2Int corridorSizeRange = map.getCorridorRange();
+            int corridorLength = pseudoRandom.Next(corridorSizeRange.x,corridorSizeRange.y);
+
+            for(int i = 0; i < corridorLength; i++){
+                Move();
+            }
+            print("CORRIDOR PLACED");
+        }
+
+        private void Move(){
             Vector2Int newPosition = this.position + this.movementDirection; 
-            // print("----- new position");
-            // print(newPosition);
-            // print(map.getHeight());
-            // print(map.getWidth());
-            // print("------");
-            // print(newPosition.x == 0);
-            // print(newPosition.x == map.getWidth()-1);
-            // print(newPosition.y == 0);
-            // print(newPosition.y == map.getHeight()-1);
 
             //TODO refactor this garbage
             if (newPosition.x == 0 || newPosition.x == map.getWidth()-1 
@@ -171,33 +212,6 @@ public class LevelGenerator : MonoBehaviour
                 print("passed 1");
                 this.position = newPosition;                
             }
-            
-            map.setMapNode(this.position.x, this.position.y, 1);
-            // map[this.position.x, this.position.y] = 1;
-
-            if(pseudoRandom.Next(0,100) < roomPlacementChance){
-                roomPlacementChance = 0;
-                PlaceRoom();
-            } else {
-                roomPlacementChance += roomPlacementChanceModifier;
-            }
-
-            if(pseudoRandom.Next(0,100) < corridorPlacementChance){
-                corridorPlacementChance = 0;
-                RandomDirection();
-                PlaceCorridor();
-            } else {
-                corridorPlacementChance += corridorPlacementChanceModifier;
-            }
-
-        }
-
-        private void PlaceRoom(){
-            print("ROOM PLACED");
-        }
-
-        private void PlaceCorridor(){
-            print("CORRIDOR PLACED");
         }
 
         public void RandomDirection(){

@@ -334,8 +334,8 @@ MonoBehaviour:
   seed: 
   roomPlacementChanceModifier: 5
   corridorPlacementChanceModifier: 5
-  corridorSizeRange: {x: 0, y: 0}
-  roomSizeRange: {x: 0, y: 0}
+  corridorSizeRange: {x: 3, y: 10}
+  roomSizeRange: {x: 5, y: 30}
 --- !u!4 &1954805820
 Transform:
   m_ObjectHideFlags: 0
