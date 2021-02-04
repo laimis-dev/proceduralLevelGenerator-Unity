@@ -82,7 +82,9 @@ namespace GeneratorClasses
 
     private void PlaceRoom()
     {
-      Vector2Int roomSizeRange = map.getRoomRange();
+      Room[] rooms = map.GetRooms();
+      Room room = rooms[LevelGenerator.pseudoRandom.Next(0, rooms.Length)];
+      Vector2Int roomSizeRange = room.getRoomRange();
 
       int roomWidth = LevelGenerator.pseudoRandom.Next(roomSizeRange.x, roomSizeRange.y);
       int roomHeight = LevelGenerator.pseudoRandom.Next(roomSizeRange.x, roomSizeRange.y);
