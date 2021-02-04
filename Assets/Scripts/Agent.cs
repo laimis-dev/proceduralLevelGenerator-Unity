@@ -57,18 +57,14 @@ namespace GeneratorClasses
 
       map.setMapNode(this.position.x, this.position.y, 1);
 
-      if (LevelGenerator.pseudoRandom.Next(0, 100) < roomPlacementChance)
-      {
+      if (LevelGenerator.pseudoRandom.Next(0, 100) < roomPlacementChance) {
         roomPlacementChance = 0;
         PlaceRoom();
-      }
-      else
-      {
+      } else {
         roomPlacementChance += roomPlacementChanceModifier;
       }
 
-      if (LevelGenerator.pseudoRandom.Next(0, 100) < corridorPlacementChance)
-      {
+      if (LevelGenerator.pseudoRandom.Next(0, 100) < corridorPlacementChance) {
         corridorPlacementChance = 0;
         RandomDirection();
         // PlaceCorridor();
