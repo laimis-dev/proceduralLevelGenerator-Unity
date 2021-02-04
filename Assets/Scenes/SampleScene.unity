@@ -335,7 +335,7 @@ MonoBehaviour:
   roomPlacementChanceModifier: 5
   corridorPlacementChanceModifier: 5
   corridorSizeRange: {x: 3, y: 10}
-  roomSizeRange: {x: 5, y: 30}
+  roomSizeRange: {x: 5, y: 10}
 --- !u!4 &1954805820
 Transform:
   m_ObjectHideFlags: 0
