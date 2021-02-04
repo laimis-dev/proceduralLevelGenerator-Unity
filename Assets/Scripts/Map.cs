@@ -11,9 +11,9 @@ namespace GeneratorClasses
     private int width;
     private int height;
     private Vector2Int corridorRange;
-    private Room[] rooms;
+    private List<Room> rooms = new List<Room>();
 
-    public Map(int width, int height, Vector2Int corridorRange, Room[] rooms)
+    public Map(int width, int height, Vector2Int corridorRange, List<Room> rooms)
     {
       this.width = width;
       this.height = height;
@@ -52,7 +52,7 @@ namespace GeneratorClasses
       return corridorRange;
     }
 
-    public Room[] GetRooms()
+    public List<Room> GetRooms()
     {
       return rooms;
     }

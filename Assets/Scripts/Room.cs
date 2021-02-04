@@ -1,20 +1,24 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-namespace GeneratorClasses
+public class Room : MonoBehaviour
 {
-  [CreateAssetMenu(fileName = "Room", menuName = "Room/ Create Room", order = 0)]
-  public class Room : ScriptableObject
+  [SerializeField] Vector2Int roomSizeRange = new Vector2Int(4, 10);
+  // Start is called before the first frame update
+  void Start()
   {
-    [SerializeField] Vector2Int roomRange;
 
-    public Room(Vector2Int range)
-    {
-      this.roomRange = range;
-    }
+  }
 
-    public Vector2Int getRoomRange()
-    {
-      return roomRange;
-    }
+  // Update is called once per frame
+  void Update()
+  {
+
+  }
+
+  public Vector2Int getRoomRange()
+  {
+    return roomSizeRange;
   }
 }

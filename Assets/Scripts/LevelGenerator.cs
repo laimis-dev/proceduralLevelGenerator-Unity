@@ -13,10 +13,8 @@ namespace GeneratorClasses
         [SerializeField] Vector2Int sceneSize = new Vector2Int(100,100);
         [SerializeField] bool useRandomSeed = true;
         [SerializeField] string seed;
-        [SerializeField] int roomPlacementChanceModifier = 5;
-        [SerializeField] int corridorPlacementChanceModifier = 5;
         [SerializeField] Vector2Int corridorSizeRange = new Vector2Int(3,10);
-        [SerializeField] Room[] rooms;
+        [SerializeField] List<Room> rooms;
 
         Map map;
         public static System.Random pseudoRandom;
@@ -26,14 +24,13 @@ namespace GeneratorClasses
         }
 
         // Update is called once per frame
-        void Update()
-        {
+        void Update() {
             if (Input.GetMouseButtonDown(0)) {
                 GenerateLevel();
             }   
         }
 
-        private void GenerateLevel(){
+        private void GenerateLevel() {
             map = new Map(sceneSize.x, sceneSize.y, corridorSizeRange, rooms);
             if (useRandomSeed) {
                 seed = Time.time.ToString();
@@ -41,13 +38,7 @@ namespace GeneratorClasses
 
             pseudoRandom = new System.Random(seed.GetHashCode());
             // Debug.Log(pseudoRandom.Next(0, (int) sceneSize.x));
-
-
-
-            Agent agent = new Agent(
-                roomPlacementChanceModifier, 
-                corridorPlacementChanceModifier,
-                map);
+            Agent agent = new Agent(map);
 
 
             for(int i = 0; i < 200; i++){
