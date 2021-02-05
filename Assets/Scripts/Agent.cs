@@ -154,8 +154,9 @@ namespace GeneratorClasses
         }
       }
 
-      room.setRoomSize(new Vector2Int(roomWidth, roomHeight));
-      room.generateRoom(new Vector2Int(roomStartPosX, roomStartPosY));
+      room.instantiateRoom(
+        new Vector2Int(roomStartPosX, roomStartPosY),
+        new Vector2Int(roomWidth, roomHeight));
       isRoomGenerated = true;
       Debug.Log("ROOM PLACED");
     }
@@ -191,8 +192,6 @@ namespace GeneratorClasses
           break;
         }
       }
-     
-      
     }
 
     private void Move() {
@@ -200,10 +199,10 @@ namespace GeneratorClasses
       this.position = newPosition;
 
       if(map.getMapNode(this.position.x,this.position.y) == 1 
-       || map.getMapNode(this.position.x,this.position.y) == 2){
+      || map.getMapNode(this.position.x,this.position.y) == 2){
          return;
-       }
-       
+      }
+
       GameObject createdFloor = Instantiate(corridorFloor);
       createdFloor.transform.SetParent(GameObject.Find("LevelGenerator").transform);
       createdFloor.transform.position = new Vector3(newPosition.x + offset,  0f, newPosition.y + offset);

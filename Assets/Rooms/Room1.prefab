@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4384903772292121717}
   - component: {fileID: 5909975487763590777}
+  - component: {fileID: 990249767537956802}
   m_Layer: 0
   m_Name: Room1
   m_TagString: Untagged
@@ -43,5 +44,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0258cdb57c9950197a142649800e2e4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomSizeRange: {x: 4, y: 10}
+  roomSizeRange: {x: 5, y: 5}
+--- !u!114 &990249767537956802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3681986286919371005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d739756cf195d5f286513df84316123, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   baseFloor: {fileID: 8726121616339437916, guid: ef9742f72dcbab3e885b3cb76356c71f, type: 3}
