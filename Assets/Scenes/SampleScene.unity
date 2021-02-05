@@ -328,7 +328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d016f297429bafd9ea177121210330e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drawGizmo: 1
+  drawGizmo: 0
   sceneSize: {x: 100, y: 100}
   useRandomSeed: 1
   seed: 0.02

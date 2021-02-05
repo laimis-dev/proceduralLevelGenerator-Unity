@@ -24,6 +24,7 @@ public class Room : MonoBehaviour
 
   public void generateRoom(Vector2Int startPosition){
     Room room = Instantiate(this);
+    room.transform.SetParent(GameObject.Find("LevelGenerator").transform);
     room.transform.position = new Vector3(startPosition.x, 0f, startPosition.y);
 
     for(int x = 0; x<roomSize.x; x++){

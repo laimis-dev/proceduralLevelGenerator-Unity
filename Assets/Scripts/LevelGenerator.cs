@@ -32,6 +32,8 @@ namespace GeneratorClasses
         }
 
         private void GenerateLevel() {
+            CleanUp();
+
             map = new Map(sceneSize.x, sceneSize.y, corridorSizeRange, rooms);
             if (useRandomSeed) {
                 seed = Time.time.ToString();
@@ -42,7 +44,7 @@ namespace GeneratorClasses
             Agent agent = new Agent(map, corridorFloor);
 
 
-            for(int i = 0; i < 2; i++){
+            for(int i = 0; i < 50; i++){
                 // print(agent.getPosition());
                 // print(agent.getDirection());
 
@@ -70,6 +72,12 @@ namespace GeneratorClasses
                         Gizmos.DrawCube(pos,Vector3.one);
                     }
                 }
+            }
+        }
+
+        void CleanUp(){
+            foreach (Transform child in this.transform) {
+                GameObject.Destroy(child.gameObject);
             }
         }
     }

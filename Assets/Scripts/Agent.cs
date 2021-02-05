@@ -17,6 +17,8 @@ namespace GeneratorClasses
     private bool isCorridorGenerated = false;
     private bool running = true;
 
+    float offset = 0.5f;
+
     static Vector2Int[] directions = new Vector2Int[] {
         Vector2Int.up,
         Vector2Int.down,
@@ -115,7 +117,7 @@ namespace GeneratorClasses
           for (int y = roomStartPosY; y < roomEndPosY; y++) {
             if (x < 0 || x > map.getWidth() - 1
              || y < 0 || y > map.getHeight() - 1
-             || map.getMapNode(x,y) == 1) {
+             || map.getMapNode(x,y) == 1 || map.getMapNode(x,y) == 2) {
               
               // Debug.Log(x + " " + y);
               // Debug.Log("room NOT placeable");
@@ -197,8 +199,14 @@ namespace GeneratorClasses
       Vector2Int newPosition = this.position + this.movementDirection;
       this.position = newPosition;
 
+      if(map.getMapNode(this.position.x,this.position.y) == 1 
+       || map.getMapNode(this.position.x,this.position.y) == 2){
+         return;
+       }
+       
       GameObject createdFloor = Instantiate(corridorFloor);
-      createdFloor.transform.position = new Vector3(newPosition.x,  0f, newPosition.y);
+      createdFloor.transform.SetParent(GameObject.Find("LevelGenerator").transform);
+      createdFloor.transform.position = new Vector3(newPosition.x + offset,  0f, newPosition.y + offset);
       // Debug.Log(this.position);
       map.setMapNode(this.position.x, this.position.y, 2);
       
