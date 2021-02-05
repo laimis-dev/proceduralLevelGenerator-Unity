@@ -25,8 +25,7 @@ namespace GeneratorClasses
 
     //Without start position
 
-    public Agent(Map map)
-    {
+    public Agent(Map map) {
       Vector2Int position = new Vector2Int(
         LevelGenerator.pseudoRandom.Next(0, map.getWidth()),
         LevelGenerator.pseudoRandom.Next(0, map.getHeight()));
@@ -35,37 +34,41 @@ namespace GeneratorClasses
     }
 
     //With start position
-    public Agent(Vector2Int startPosition, Map map)
-    {
+    public Agent(Vector2Int startPosition, Map map) {
       this.position = startPosition;
       this.map = map;
     }
 
-    public void Process()
-    {
+    public void Process() {
+      // Debug.Log("running " + running);
+      // Debug.Log("is room " + isRoomGenerated);
+      // Debug.Log("isCorridor " + isCorridorGenerated);
       if(!running) return;
 
       PreProcess();
       PlaceRoom();
       PlaceCorridor();
 
-      if(!isRoomGenerated && !isCorridorGenerated) running = false;
+      if(!isRoomGenerated || !isCorridorGenerated) running = false;
     }
 
-    private void PreProcess(){
+    private void PreProcess() {
       isRoomGenerated = false;
       isCorridorGenerated = false;
+      RandomDirection();
     }
 
-    private void PlaceRoom()
-    {
-      List<Room> rooms = map.GetRooms();
+    private void PlaceRoom() {
+      List<Room> rooms = new List<Room>(map.GetRooms());
       int roomStartPosX = 0;
       int roomStartPosY = 0;
       int roomEndPosX = 0;
       int roomEndPosY = 0;
+
+      Debug.Log("Room count " + rooms.Count);
       
       while(rooms.Count > 0){
+        Debug.Log("Trying to place ROOM");
         bool isRoomPlaceable = true;
         Room room = rooms[LevelGenerator.pseudoRandom.Next(0, rooms.Count)];
         Vector2Int roomSizeRange = room.getRoomRange();
@@ -73,87 +76,137 @@ namespace GeneratorClasses
         int roomWidth = LevelGenerator.pseudoRandom.Next(roomSizeRange.x, roomSizeRange.y);
         int roomHeight = LevelGenerator.pseudoRandom.Next(roomSizeRange.x, roomSizeRange.y);
 
-        roomStartPosX = this.position.x + roomWidth / 2;
-        roomStartPosY = this.position.y + roomHeight / 2;
-        roomEndPosX = this.position.x + roomWidth / 2;
-        roomEndPosY = this.position.y + roomHeight / 2;
+        if(this.movementDirection.Equals(Vector2Int.up)){
+          //UP is DOWN in an array
+          roomStartPosX = this.position.x - roomWidth / 2;
+          roomEndPosX = this.position.x + roomWidth / 2;
+
+          roomStartPosY = this.position.y + roomHeight;
+          roomEndPosY = this.position.y ;
+        } else if(this.movementDirection.Equals(Vector2Int.down)){
+          roomStartPosX = this.position.x - roomWidth / 2;
+          roomEndPosX = this.position.x + roomWidth / 2;
+
+          roomStartPosY = this.position.y - roomHeight;
+          roomEndPosY = this.position.y ;
+        } else if(this.movementDirection.Equals(Vector2Int.left)){
+          roomStartPosY = this.position.y - roomHeight/2;
+          roomEndPosY = this.position.y + roomHeight/2;
+
+          roomStartPosX = this.position.x - roomWidth;
+          roomEndPosX = this.position.x ;
+        } else if(this.movementDirection.Equals(Vector2Int.right)){
+          roomStartPosY = this.position.y - roomHeight/2;
+          roomEndPosY = this.position.y + roomHeight/2;
+
+          roomStartPosX = this.position.x + roomWidth;
+          roomEndPosX = this.position.x;  
+        }
+        
 
         //Check room placement
-        for (int x = roomStartPosX; x < roomEndPosX; x++)
-        {
-          for (int y = roomStartPosY; y < roomEndPosY; y++)
-          {
-            if (x == 0 || x == map.getWidth() - 1
-            || y == 0 || y == map.getHeight() - 1
-            || map.getMapNode(x,y) == 1)
-            {
-              Debug.Log("room NOT placeable");
+        for (int x = roomStartPosX; x < roomEndPosX; x++) {
+          for (int y = roomStartPosY; y < roomEndPosY; y++) {
+            if (x < 0 || x > map.getWidth() - 1
+             || y < 0 || y > map.getHeight() - 1
+             || map.getMapNode(x,y) == 1) {
+              
+              // Debug.Log(x + " " + y);
+              // Debug.Log("room NOT placeable");
               isRoomPlaceable = false;
+              break;
             }
           }
+
+          if(!isRoomPlaceable) {
+            break;
+          }
+
         }
 
-        if(!isRoomPlaceable){
+        if(!isRoomPlaceable) {
           rooms.Remove(room);
+          // Debug.Log("room removed");
+          // Debug.Log("rooms size " + rooms.Count);
         } else {
           break;
         }
       }
 
       if(rooms.Count <= 0) return;
-
-      for (int x = roomStartPosX; x < roomEndPosX; x++)
-      {
-        for (int y = roomStartPosY; y < roomEndPosY; y++)
-        {
+      // Debug.Log(roomStartPosX);
+      // Debug.Log(roomStartPosY);
+      // Debug.Log(roomEndPosX);
+      // Debug.Log(roomEndPosY);
+      for (int x = roomStartPosX; x < roomEndPosX; x++) {
+        for (int y = roomStartPosY; y < roomEndPosY; y++) {
           map.setMapNode(x, y, 1);
+          // Debug.Log(map.getMapNode(x,y));
+
         }
       }
       isRoomGenerated = true;
       Debug.Log("ROOM PLACED");
     }
 
-    private void PlaceCorridor()
-    {
-      RandomDirection();
-      Vector2Int corridorSizeRange = map.getCorridorRange();
-      int corridorLength = LevelGenerator.pseudoRandom.Next(corridorSizeRange.x, corridorSizeRange.y);
+    private void PlaceCorridor() {
+      // Debug.Log("Trying to place Corridor");
+      // RandomDirection();
+      List<Vector2Int> newDirections = new List<Vector2Int>(directions);
+      
+      for(int i = 0; i < newDirections.Count; i++){
+        // ChangeDirection(i);
+        this.movementDirection = newDirections[LevelGenerator.pseudoRandom.Next(0, newDirections.Count)];
 
-      Vector2Int newPosition = this.position + this.movementDirection * corridorLength;
-      if (newPosition.x == 0 || newPosition.x == map.getWidth() - 1
-        || newPosition.y == 0 || newPosition.y == map.getHeight() - 1)
-      {
-        for (int i = 0; i < corridorLength; i++)
-        {
-          Move();
+        Vector2Int corridorSizeRange = map.getCorridorRange();
+        int corridorLength = LevelGenerator.pseudoRandom.Next(corridorSizeRange.x, corridorSizeRange.y);
+
+        Vector2Int newPosition = this.position + this.movementDirection * corridorLength;
+        // Debug.Log("Checking Corridor");
+        // Debug.Log(newPosition);
+        if (newPosition.x < 0 || newPosition.x > map.getWidth() - 1
+        || newPosition.y < 0 || newPosition.y > map.getHeight() - 1){
+
+          Debug.Log("Corridor not placed");
+          newDirections.Remove(this.movementDirection);
+        } else {
+          // Debug.Log("Moving for Corridor");
+          for (int j = 0; j < corridorLength; j++){
+            Move();
+          }
+          
+          isCorridorGenerated = true;
+          Debug.Log("CORRIDOR PLACED");
+          break;
         }
-        isCorridorGenerated = true;
-        Debug.Log("CORRIDOR PLACED");
       }
+     
       
     }
 
-    private void Move()
-    {
+    private void Move() {
       Vector2Int newPosition = this.position + this.movementDirection;
       this.position = newPosition;
-      map.setMapNode(this.position.x, this.position.y, 1);
+      // Debug.Log(this.position);
+      map.setMapNode(this.position.x, this.position.y, 2);
       
     }
 
-    public void RandomDirection()
-    {
+    public void RandomDirection(){
       Debug.Log("direction changed");
       this.movementDirection = directions[LevelGenerator.pseudoRandom.Next(0, 3)];
     }
 
-    public Vector2 getPosition()
-    {
+    public void ChangeDirection(int index){
+      Debug.Log("direction changed " + index);
+      this.movementDirection = directions[index];
+    }
+
+    public Vector2 getPosition(){
       return this.position;
     }
 
-    public Vector2 getDirection()
-    {
+    public Vector2 getDirection(){
       return movementDirection;
     }
 

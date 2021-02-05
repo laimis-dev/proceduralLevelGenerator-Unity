@@ -41,7 +41,7 @@ namespace GeneratorClasses
             Agent agent = new Agent(map);
 
 
-            for(int i = 0; i < 200; i++){
+            for(int i = 0; i < 5; i++){
                 // print(agent.getPosition());
                 // print(agent.getDirection());
 
@@ -58,7 +58,13 @@ namespace GeneratorClasses
             if (map != null) {
                 for (int x = 0; x < width; x ++) {
                     for (int y = 0; y < height; y ++) {
-                        Gizmos.color = (map.getMapNode(x,y) == 1)?Color.black:Color.white;
+                        if(map.getMapNode(x,y) == 1){
+                           Gizmos.color = Color.black;
+                        } else if(map.getMapNode(x,y) == 2){
+                            Gizmos.color = Color.red;
+                        } else {
+                            Gizmos.color = Color.white;
+                        }
                         Vector3 pos = new Vector3(-width/2 + x + .5f,0, -height/2 + y+.5f);
                         Gizmos.DrawCube(pos,Vector3.one);
                     }
