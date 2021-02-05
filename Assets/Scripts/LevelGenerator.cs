@@ -15,6 +15,7 @@ namespace GeneratorClasses
         [SerializeField] string seed;
         [SerializeField] Vector2Int corridorSizeRange = new Vector2Int(3,10);
         [SerializeField] List<Room> rooms;
+        [SerializeField] GameObject corridorFloor;
 
         Map map;
         public static System.Random pseudoRandom;
@@ -38,10 +39,10 @@ namespace GeneratorClasses
 
             pseudoRandom = new System.Random(seed.GetHashCode());
             // Debug.Log(pseudoRandom.Next(0, (int) sceneSize.x));
-            Agent agent = new Agent(map);
+            Agent agent = new Agent(map, corridorFloor);
 
 
-            for(int i = 0; i < 5; i++){
+            for(int i = 0; i < 2; i++){
                 // print(agent.getPosition());
                 // print(agent.getDirection());
 
@@ -65,7 +66,7 @@ namespace GeneratorClasses
                         } else {
                             Gizmos.color = Color.white;
                         }
-                        Vector3 pos = new Vector3(-width/2 + x + .5f,0, -height/2 + y+.5f);
+                        Vector3 pos = new Vector3(x + .5f,0,y+.5f);
                         Gizmos.DrawCube(pos,Vector3.one);
                     }
                 }

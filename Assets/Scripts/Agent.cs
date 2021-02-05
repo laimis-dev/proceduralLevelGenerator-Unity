@@ -6,11 +6,12 @@ using GeneratorClasses;
 
 namespace GeneratorClasses
 {
-  public class Agent
+  public class Agent : MonoBehaviour 
   {
     private Vector2Int position;
     private Vector2Int movementDirection;
     private Map map;
+    private GameObject corridorFloor;
 
     private bool isRoomGenerated = false;
     private bool isCorridorGenerated = false;
@@ -25,18 +26,20 @@ namespace GeneratorClasses
 
     //Without start position
 
-    public Agent(Map map) {
+    public Agent(Map map, GameObject floor) {
       Vector2Int position = new Vector2Int(
         LevelGenerator.pseudoRandom.Next(0, map.getWidth()),
         LevelGenerator.pseudoRandom.Next(0, map.getHeight()));
       this.position = position;
       this.map = map;
+      this.corridorFloor = floor;
     }
 
     //With start position
-    public Agent(Vector2Int startPosition, Map map) {
+    public Agent(Vector2Int startPosition, Map map, GameObject floor) {
       this.position = startPosition;
       this.map = map;
+      this.corridorFloor = floor;
     }
 
     public void Process() {
@@ -64,17 +67,20 @@ namespace GeneratorClasses
       int roomStartPosY = 0;
       int roomEndPosX = 0;
       int roomEndPosY = 0;
+      int roomWidth = 0;
+      int roomHeight = 0;
+      Room room = null;
 
       Debug.Log("Room count " + rooms.Count);
       
       while(rooms.Count > 0){
         Debug.Log("Trying to place ROOM");
         bool isRoomPlaceable = true;
-        Room room = rooms[LevelGenerator.pseudoRandom.Next(0, rooms.Count)];
+        room = rooms[LevelGenerator.pseudoRandom.Next(0, rooms.Count)];
         Vector2Int roomSizeRange = room.getRoomRange();
 
-        int roomWidth = LevelGenerator.pseudoRandom.Next(roomSizeRange.x, roomSizeRange.y);
-        int roomHeight = LevelGenerator.pseudoRandom.Next(roomSizeRange.x, roomSizeRange.y);
+        roomWidth = LevelGenerator.pseudoRandom.Next(roomSizeRange.x, roomSizeRange.y);
+        roomHeight = LevelGenerator.pseudoRandom.Next(roomSizeRange.x, roomSizeRange.y);
 
         if(this.movementDirection.Equals(Vector2Int.up)){
           //UP is DOWN in an array
@@ -145,6 +151,9 @@ namespace GeneratorClasses
 
         }
       }
+
+      room.setRoomSize(new Vector2Int(roomWidth, roomHeight));
+      room.generateRoom(new Vector2Int(roomStartPosX, roomStartPosY));
       isRoomGenerated = true;
       Debug.Log("ROOM PLACED");
     }
@@ -187,6 +196,9 @@ namespace GeneratorClasses
     private void Move() {
       Vector2Int newPosition = this.position + this.movementDirection;
       this.position = newPosition;
+
+      GameObject createdFloor = Instantiate(corridorFloor);
+      createdFloor.transform.position = new Vector3(newPosition.x,  0f, newPosition.y);
       // Debug.Log(this.position);
       map.setMapNode(this.position.x, this.position.y, 2);
       

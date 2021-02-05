@@ -44,3 +44,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomSizeRange: {x: 4, y: 10}
+  baseFloor: {fileID: 8726121616339437916, guid: ef9742f72dcbab3e885b3cb76356c71f, type: 3}
