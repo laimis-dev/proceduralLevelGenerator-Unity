@@ -6,6 +6,7 @@ public class Room1 : MonoBehaviour
 {
   // Start is called before the first frame update
   [SerializeField] GameObject baseFloor;
+  [SerializeField] GameObject door;
 
   Vector2Int roomSize;
   Room room;
