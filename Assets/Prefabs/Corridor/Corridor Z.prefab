@@ -1087,6 +1087,10 @@ MonoBehaviour:
   connectors:
   - {fileID: 2429088617883574760}
   - {fileID: 7895765888199216203}
+  colliders:
+  - {fileID: 7340815831109930255}
+  - {fileID: 7798684373121788040}
+  - {fileID: 9081841044642413430}
 --- !u!1 &9137320323555268568
 GameObject:
   m_ObjectHideFlags: 0

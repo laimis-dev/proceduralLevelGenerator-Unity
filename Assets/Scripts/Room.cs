@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Room : MonoBehaviour
 {
-    [SerializeField] Connector[] connectors;
+    [SerializeField] List<Connector> connectors = new List<Connector>();
+    [SerializeField] List<BoxCollider> colliders = new List<BoxCollider>();
     // [SerializeField] MeshCollider meshCollider;
     // Start is called before the first frame update
     void Start()
@@ -21,4 +22,12 @@ public class Room : MonoBehaviour
     // public Bounds roomBounds(){
     //     return meshCollider.bounds;
     // }
+
+    public List<Connector> getConnectors(){
+        return connectors;
+    }
+
+    public List<BoxCollider> getColliders(){
+        return colliders;
+    }
 }

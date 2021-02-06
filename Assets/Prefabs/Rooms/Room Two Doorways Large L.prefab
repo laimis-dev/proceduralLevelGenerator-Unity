@@ -1137,6 +1137,9 @@ MonoBehaviour:
   connectors:
   - {fileID: 5866909000254636418}
   - {fileID: 1237581598853107690}
+  colliders:
+  - {fileID: 7340815831109930255}
+  - {fileID: 5087616874638346826}
 --- !u!1001 &3918261741102772474
 PrefabInstance:
   m_ObjectHideFlags: 0
