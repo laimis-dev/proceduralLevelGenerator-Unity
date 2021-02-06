@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Room : MonoBehaviour
+public class Corridor : MonoBehaviour
 {
     [SerializeField] Connector[] connectors;
     // [SerializeField] MeshCollider meshCollider;
