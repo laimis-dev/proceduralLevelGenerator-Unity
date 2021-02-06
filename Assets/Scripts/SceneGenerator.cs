@@ -18,7 +18,7 @@ public class SceneGenerator : MonoBehaviour
     LayerMask sceneLayerMask;
     
     void Start() {
-        sceneLayerMask = LayerMask.GetMask("Scene");
+        sceneLayerMask = LayerMask.GetMask("SceneColliders");
         StartCoroutine("GenerateScene");
     }
 
@@ -39,8 +39,10 @@ public class SceneGenerator : MonoBehaviour
 
         int numberOfIterations = Random.Range(roomNumberRange.x, roomNumberRange.y);
         for(int i = 0; i < numberOfIterations; i++){
+            yield return startup;
             PlaceRoom();
             yield return fixedUpdateInterval;
+            yield return startup;
 
             PlaceCorridor();
             yield return fixedUpdateInterval;
@@ -76,7 +78,6 @@ public class SceneGenerator : MonoBehaviour
                 PositionRoomAtConnector(currentRoom, currentRoomConnector, currentSceneConnector);
 
                 if(CheckRoomOverlap(currentRoom)){
-                    Destroy(currentRoom);
                     continue;
                 }
 
@@ -88,6 +89,7 @@ public class SceneGenerator : MonoBehaviour
                 return;
             }
         }
+        Destroy(currentRoom);
     }
 
     void PlaceCorridor(){
