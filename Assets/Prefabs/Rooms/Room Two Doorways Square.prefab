@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3603292673497707916}
   - component: {fileID: 4511045495482746665}
   - component: {fileID: 7397186851475980563}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 76205733962709638}
   - component: {fileID: 7258665961745728857}
   - component: {fileID: 1819787968516352192}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -204,7 +204,7 @@ GameObject:
   - component: {fileID: 6175390027427238613}
   - component: {fileID: 2702533244566476592}
   - component: {fileID: 433608908307935438}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -300,7 +300,7 @@ GameObject:
   - component: {fileID: 2013605424853766655}
   - component: {fileID: 529263282621589174}
   - component: {fileID: 5251967741797031359}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -393,7 +393,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 948508061615737949}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Connection Points
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -428,7 +428,7 @@ GameObject:
   - component: {fileID: 7329654837103194095}
   - component: {fileID: 3400858052417881591}
   - component: {fileID: 7594255832355601285}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Base Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -525,7 +525,7 @@ GameObject:
   - component: {fileID: 2011039806912549267}
   - component: {fileID: 2879262805206892507}
   - component: {fileID: 7895926974814840183}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall Long
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -618,7 +618,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5659100305369458922}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -696,7 +696,7 @@ GameObject:
   - component: {fileID: 8294440445700965270}
   - component: {fileID: 418108043039326551}
   - component: {fileID: 8520847392362485955}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall Long (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -789,7 +789,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7668187392711274958}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Colliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -820,7 +820,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3753681651220289323}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -857,7 +857,7 @@ GameObject:
   m_Component:
   - component: {fileID: 780537788655009110}
   - component: {fileID: 524210088910343108}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Room Two Doorways Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -912,7 +912,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5703560193039475543, guid: 84902718ed0a76c4a9edea9659161738, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6428223157811319681, guid: 84902718ed0a76c4a9edea9659161738, type: 3}
       propertyPath: m_RootOrder
@@ -989,7 +989,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5703560193039475543, guid: 84902718ed0a76c4a9edea9659161738, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6428223157811319681, guid: 84902718ed0a76c4a9edea9659161738, type: 3}
       propertyPath: m_RootOrder

@@ -47,14 +47,14 @@ public class SceneGenerator : MonoBehaviour
         }
 
 
-        Debug.Log("finished");
+        // Debug.Log("finished");
         StopCoroutine("GenerateScene");
 
 
     }
 
     void PlaceStartRoom(){
-        Debug.Log("placed start room");
+        // Debug.Log("placed start room");
         Room startRoom = Instantiate(startRoomPrefab);
         startRoom.transform.parent = this.transform;
         generatedRooms.Add(startRoom);
@@ -66,7 +66,7 @@ public class SceneGenerator : MonoBehaviour
     }
 
     void PlaceRoom(){
-        Debug.Log("place random room");
+        // Debug.Log("place random room");
         Room currentRoom = Instantiate(roomPrefabs[Random.Range(0, roomPrefabs.Count)]) as Room;
         currentRoom.transform.parent = this.transform;
         List<Connector> currentRoomConnectors = currentRoom.getConnectors();
@@ -76,6 +76,7 @@ public class SceneGenerator : MonoBehaviour
                 PositionRoomAtConnector(currentRoom, currentRoomConnector, currentSceneConnector);
 
                 if(CheckRoomOverlap(currentRoom)){
+                    Destroy(currentRoom);
                     continue;
                 }
 
@@ -90,7 +91,7 @@ public class SceneGenerator : MonoBehaviour
     }
 
     void PlaceCorridor(){
-        Debug.Log("place corridor");
+        // Debug.Log("place corridor");
     }
     
     void AddRoomConnectorsToList(Room room){
@@ -123,7 +124,7 @@ public class SceneGenerator : MonoBehaviour
             Collider[] colliders = Physics.OverlapBox(bounds.center, bounds.size / 2, room.transform.rotation, sceneLayerMask);
             if(colliders.Length > 0){
                 foreach(Collider c in colliders){
-                    if(c.transform.parent.gameObject.Equals(room.gameObject)){
+                    if(c.transform.parent.gameObject.transform.parent.gameObject.Equals(room.gameObject)){
                         continue;
                     } else {
                         return true;

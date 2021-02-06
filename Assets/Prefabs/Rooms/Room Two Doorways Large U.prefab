@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3603292673497707916}
   - component: {fileID: 4511045495482746665}
   - component: {fileID: 7397186851475980563}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 8650369604113817339}
   - component: {fileID: 3042048732127602025}
   - component: {fileID: 5312049219384787668}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -248,7 +248,7 @@ GameObject:
   - component: {fileID: 6175390027427238613}
   - component: {fileID: 2702533244566476592}
   - component: {fileID: 433608908307935438}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -344,7 +344,7 @@ GameObject:
   - component: {fileID: 4971069155066128468}
   - component: {fileID: 8392056189496983154}
   - component: {fileID: 901843690659228482}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -437,7 +437,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 948508061615737949}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Connection Points
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -472,7 +472,7 @@ GameObject:
   - component: {fileID: 7329654837103194095}
   - component: {fileID: 3400858052417881591}
   - component: {fileID: 7594255832355601285}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Base Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -613,7 +613,7 @@ GameObject:
   - component: {fileID: 2011039806912549267}
   - component: {fileID: 2879262805206892507}
   - component: {fileID: 7895926974814840183}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall Long
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -706,7 +706,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5659100305369458922}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -742,7 +742,7 @@ GameObject:
   - component: {fileID: 7420850037186862393}
   - component: {fileID: 705714254492414785}
   - component: {fileID: 2032959076220652904}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Base Floor (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -883,7 +883,7 @@ GameObject:
   - component: {fileID: 8294440445700965270}
   - component: {fileID: 418108043039326551}
   - component: {fileID: 8520847392362485955}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall Long (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -976,7 +976,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7668187392711274958}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Colliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1009,7 +1009,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3753681651220289323}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1050,7 +1050,7 @@ GameObject:
   - component: {fileID: 4028494728513217438}
   - component: {fileID: 7064937898698270011}
   - component: {fileID: 2571913633540230825}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Base Floor (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1145,7 +1145,7 @@ GameObject:
   m_Component:
   - component: {fileID: 780537788655009110}
   - component: {fileID: 8402461559166549054}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Room Two Doorways Large U
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1201,7 +1201,7 @@ GameObject:
   - component: {fileID: 499206642773818315}
   - component: {fileID: 4005018280683624167}
   - component: {fileID: 5322868418093471820}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1297,7 +1297,7 @@ GameObject:
   - component: {fileID: 1019673046229773642}
   - component: {fileID: 3522583298849403232}
   - component: {fileID: 8206073557931236775}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1394,7 +1394,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5703560193039475543, guid: 84902718ed0a76c4a9edea9659161738, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6428223157811319681, guid: 84902718ed0a76c4a9edea9659161738, type: 3}
       propertyPath: m_RootOrder
@@ -1471,7 +1471,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5703560193039475543, guid: 84902718ed0a76c4a9edea9659161738, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6428223157811319681, guid: 84902718ed0a76c4a9edea9659161738, type: 3}
       propertyPath: m_RootOrder

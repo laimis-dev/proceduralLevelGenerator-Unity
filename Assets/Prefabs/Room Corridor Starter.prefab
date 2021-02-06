@@ -650,7 +650,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5961257943149061499}
   - component: {fileID: 7340815831109930255}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 391339172091060949}
   - component: {fileID: 1808336690997960799}
   - component: {fileID: 4765854554132565420}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall Long (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 948508061615737949}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Connection Points
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +140,7 @@ GameObject:
   - component: {fileID: 7329654837103194095}
   - component: {fileID: 3400858052417881591}
   - component: {fileID: 7594255832355601285}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Base Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -237,7 +237,7 @@ GameObject:
   - component: {fileID: 7345373070618703667}
   - component: {fileID: 2811952915123995971}
   - component: {fileID: 4795743557316741910}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall Long (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -333,7 +333,7 @@ GameObject:
   - component: {fileID: 2011039806912549267}
   - component: {fileID: 2879262805206892507}
   - component: {fileID: 7895926974814840183}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall Long
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -429,7 +429,7 @@ GameObject:
   - component: {fileID: 3339174409837971690}
   - component: {fileID: 3956151193086863038}
   - component: {fileID: 4243857859948104019}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Base Floor (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -523,7 +523,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5659100305369458922}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -603,7 +603,7 @@ GameObject:
   - component: {fileID: 1018925186767029498}
   - component: {fileID: 1475394152506594597}
   - component: {fileID: 4211464725426513466}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall Long (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -699,7 +699,7 @@ GameObject:
   - component: {fileID: 8294440445700965270}
   - component: {fileID: 418108043039326551}
   - component: {fileID: 8520847392362485955}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall Long (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -792,7 +792,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7668187392711274958}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Colliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -913,7 +913,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3753681651220289323}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -952,7 +952,7 @@ GameObject:
   - component: {fileID: 5331330068759924869}
   - component: {fileID: 7261617643651541280}
   - component: {fileID: 6655300359713020956}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Base Floor (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1047,7 +1047,7 @@ GameObject:
   m_Component:
   - component: {fileID: 780537788655009110}
   - component: {fileID: 5760689715454811961}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Corridor Z
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1103,7 +1103,7 @@ GameObject:
   - component: {fileID: 7525476643081404704}
   - component: {fileID: 8518990216464655335}
   - component: {fileID: 8644417746896011067}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall Long (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1200,7 +1200,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5703560193039475543, guid: 84902718ed0a76c4a9edea9659161738, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6428223157811319681, guid: 84902718ed0a76c4a9edea9659161738, type: 3}
       propertyPath: m_RootOrder
@@ -1277,7 +1277,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5703560193039475543, guid: 84902718ed0a76c4a9edea9659161738, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6428223157811319681, guid: 84902718ed0a76c4a9edea9659161738, type: 3}
       propertyPath: m_RootOrder

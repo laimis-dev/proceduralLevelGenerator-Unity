@@ -339,7 +339,7 @@ MonoBehaviour:
   - {fileID: 2104838298641763185, guid: 0d159d4cdc573ae468604202eb02d2a4, type: 3}
   - {fileID: 2455156592747941819, guid: 77bacc2724dde064b934ad98250c02f7, type: 3}
   - {fileID: 6352129608209332735, guid: a2cf93c4b14db1c4a9f307331518c3af, type: 3}
-  roomNumberRange: {x: 1, y: 5}
+  roomNumberRange: {x: 3, y: 10}
 --- !u!4 &1075891962
 Transform:
   m_ObjectHideFlags: 0
