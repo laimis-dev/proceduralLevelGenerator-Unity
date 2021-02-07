@@ -31,7 +31,7 @@ public class SceneGenerator : MonoBehaviour
     }
 
     IEnumerator GenerateScene(){
-        WaitForSeconds startup =  new WaitForSeconds(2);
+        WaitForSeconds startup =  new WaitForSeconds(1);
         WaitForFixedUpdate fixedUpdateInterval = new WaitForFixedUpdate();
     
         yield return startup;
@@ -39,10 +39,9 @@ public class SceneGenerator : MonoBehaviour
 
         int numberOfIterations = Random.Range(roomNumberRange.x, roomNumberRange.y);
         for(int i = 0; i < numberOfIterations; i++){
-            yield return startup;
             PlaceRoom();
             yield return fixedUpdateInterval;
-            yield return startup;
+            // yield return startup;
 
             PlaceCorridor();
             yield return fixedUpdateInterval;
@@ -70,14 +69,17 @@ public class SceneGenerator : MonoBehaviour
     void PlaceRoom(){
         // Debug.Log("place random room");
         Room currentRoom = Instantiate(roomPrefabs[Random.Range(0, roomPrefabs.Count)]) as Room;
+        
         currentRoom.transform.parent = this.transform;
         List<Connector> currentRoomConnectors = currentRoom.getConnectors();
 
         foreach(Connector currentSceneConnector in availableConnectors){
             foreach(Connector currentRoomConnector in currentRoomConnectors){
                 PositionRoomAtConnector(currentRoom, currentRoomConnector, currentSceneConnector);
-
+                // Debug.Break();
                 if(CheckRoomOverlap(currentRoom)){
+                    Debug.Log("OVERLAP");
+                    // Debug.Break();
                     continue;
                 }
 
@@ -89,7 +91,7 @@ public class SceneGenerator : MonoBehaviour
                 return;
             }
         }
-        Destroy(currentRoom);
+        Destroy(currentRoom.gameObject);
     }
 
     void PlaceCorridor(){
@@ -123,7 +125,7 @@ public class SceneGenerator : MonoBehaviour
             Bounds bounds = roomCollider.bounds;
             bounds.Expand(-0.1f);
 
-            Collider[] colliders = Physics.OverlapBox(bounds.center, bounds.size / 2, room.transform.rotation, sceneLayerMask);
+            Collider[] colliders = Physics.OverlapBox(roomCollider.transform.position, bounds.size / 2, roomCollider.transform.rotation, sceneLayerMask);
             if(colliders.Length > 0){
                 foreach(Collider c in colliders){
                     if(c.transform.parent.gameObject.transform.parent.gameObject.Equals(room.gameObject)){

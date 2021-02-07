@@ -899,6 +899,7 @@ MonoBehaviour:
   - {fileID: 8585609317635619103}
   colliders:
   - {fileID: 7340815831109930255}
+  testCollision: 0
 --- !u!1001 &1165643689295546471
 PrefabInstance:
   m_ObjectHideFlags: 0
