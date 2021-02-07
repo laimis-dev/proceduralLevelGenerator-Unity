@@ -10,7 +10,8 @@ public class SceneGenerator : MonoBehaviour
 
     [SerializeField] Vector2Int roomNumberRange = new Vector2Int(1, 5);
 
-    List<Connector> availableConnectors = new List<Connector>();
+    List<Connector> availableRoomConnectors = new List<Connector>();
+    List<Connector> availableCorridorConnectors = new List<Connector>();
 
     List<Room> generatedRooms = new List<Room>();
     List<Corridor> generatedCorridors = new List<Corridor>();
@@ -43,15 +44,13 @@ public class SceneGenerator : MonoBehaviour
             yield return fixedUpdateInterval;
             // yield return startup;
 
-            PlaceCorridor();
+            // PlaceCorridor();
             yield return fixedUpdateInterval;
         }
 
 
         // Debug.Log("finished");
         StopCoroutine("GenerateScene");
-
-
     }
 
     void PlaceStartRoom(){
@@ -73,9 +72,9 @@ public class SceneGenerator : MonoBehaviour
         currentRoom.transform.parent = this.transform;
         List<Connector> currentRoomConnectors = currentRoom.getConnectors();
 
-        foreach(Connector currentSceneConnector in availableConnectors){
+        foreach(Connector currentSceneRoomConnector in availableRoomConnectors){
             foreach(Connector currentRoomConnector in currentRoomConnectors){
-                PositionRoomAtConnector(currentRoom, currentRoomConnector, currentSceneConnector);
+                PositionRoomAtConnector(currentRoom, currentRoomConnector, currentSceneRoomConnector);
                 // Debug.Break();
                 if(CheckRoomOverlap(currentRoom)){
                     Debug.Log("OVERLAP");
@@ -86,22 +85,18 @@ public class SceneGenerator : MonoBehaviour
                 AddRoomConnectorsToList(currentRoom);
                 generatedRooms.Add(currentRoom);
 
-                availableConnectors.Remove(currentSceneConnector);
-                availableConnectors.Remove(currentRoomConnector);
+                availableRoomConnectors.Remove(currentSceneRoomConnector);
+                availableRoomConnectors.Remove(currentRoomConnector);
                 return;
             }
         }
         Destroy(currentRoom.gameObject);
     }
-
-    void PlaceCorridor(){
-        // Debug.Log("place corridor");
-    }
-    
+  
     void AddRoomConnectorsToList(Room room){
         foreach(Connector connector in room.getConnectors()){
-            int randomExitPoint = Random.Range(0, availableConnectors.Count);
-            availableConnectors.Insert(randomExitPoint, connector);
+            int randomExitPoint = Random.Range(0, availableRoomConnectors.Count);
+            availableRoomConnectors.Insert(randomExitPoint, connector);
         }
     }
 
@@ -140,10 +135,94 @@ public class SceneGenerator : MonoBehaviour
         return false;
     }
 
+
+
+
+
+
+
+
+
+
+    void PlaceCorridor(){
+        // Debug.Log("place corridor");
+        Corridor currentCorridor = Instantiate(corridorPrefabs[Random.Range(0, corridorPrefabs.Count)]) as Corridor;
+        
+        currentCorridor.transform.parent = this.transform;
+        List<Connector> currentCorridorConnectors = currentCorridor.getConnectors();
+
+        foreach(Connector currentSceneRoomConnector in availableRoomConnectors){
+            foreach(Connector currentCorridorConnector in currentCorridorConnectors){
+                PositionCorridorAtConnector(currentCorridor, currentSceneRoomConnector, currentCorridorConnector);
+                // Debug.Break();
+                if(CheckCorridorOverlap(currentCorridor)){
+                    Debug.Log("OVERLAP");
+                    // Debug.Break();
+                    continue;
+                }
+
+                AddCorridorConnectorsToList(currentCorridor);
+                generatedCorridors.Add(currentCorridor);
+
+                availableRoomConnectors.Remove(currentSceneRoomConnector);
+                availableCorridorConnectors.Remove(currentCorridorConnector);
+                return;
+            }
+        }
+        Destroy(currentCorridor.gameObject);
+    }
+
+
+    void AddCorridorConnectorsToList(Corridor corridor){
+        foreach(Connector connector in corridor.getConnectors()){
+            int randomExitPoint = Random.Range(0, availableCorridorConnectors.Count);
+            availableCorridorConnectors.Insert(randomExitPoint, connector);
+        }
+    }
+
+
+    void PositionCorridorAtConnector(Corridor corridor, Connector currentCorridorConnector, Connector targetConnector){
+        corridor.transform.position = Vector3.zero;
+        corridor.transform.rotation = Quaternion.identity;
+
+        Vector3 targetConnectorEuler = targetConnector.transform.eulerAngles;
+        Vector3 currentCorridorConnectorEuler = currentCorridorConnector.transform.eulerAngles;
+        float deltaAngle = Mathf.DeltaAngle(currentCorridorConnectorEuler.y, targetConnectorEuler.y);
+        Quaternion currentCorridorTargetRotation = Quaternion.AngleAxis(deltaAngle, Vector3.up);
+        corridor.transform.rotation = currentCorridorTargetRotation * Quaternion.Euler(0, 180f, 0);
+
+        Vector3 corridorPositionOffset = currentCorridorConnector.transform.position - corridor.transform.position;
+        corridor.transform.position = targetConnector.transform.position - corridorPositionOffset;
+    }
+
+
+
+    bool CheckCorridorOverlap(Corridor corridor){
+        List<BoxCollider> corridorColliders = corridor.getColliders();
+        foreach(BoxCollider corridorCollider in corridorColliders){
+            Bounds bounds = corridorCollider.bounds;
+            bounds.Expand(-0.1f);
+
+            Collider[] colliders = Physics.OverlapBox(corridorCollider.transform.position, bounds.size / 2, corridorCollider.transform.rotation, sceneLayerMask);
+            if(colliders.Length > 0){
+                foreach(Collider c in colliders){
+                    if(c.transform.parent.gameObject.transform.parent.gameObject.Equals(corridor.gameObject)){
+                        continue;
+                    } else {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
     void CleanUp(){
         generatedCorridors.Clear();
         generatedRooms.Clear();
-        availableConnectors.Clear();
+        availableRoomConnectors.Clear();
+        availableCorridorConnectors.Clear();
         foreach (Transform child in this.transform) {
             GameObject.Destroy(child.gameObject);
         }
