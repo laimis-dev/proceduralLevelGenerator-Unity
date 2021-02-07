@@ -340,6 +340,7 @@ MonoBehaviour:
   - {fileID: 5760689715454811961, guid: 6413e8fc08aa99b4b800d20e3c565f1a, type: 3}
   - {fileID: 2104838298641763185, guid: 0d159d4cdc573ae468604202eb02d2a4, type: 3}
   - {fileID: 2455156592747941819, guid: 77bacc2724dde064b934ad98250c02f7, type: 3}
+  - {fileID: 4075321898475735892, guid: 6f066f6f5f779d849977c8af499e623d, type: 3}
   - {fileID: 6352129608209332735, guid: a2cf93c4b14db1c4a9f307331518c3af, type: 3}
   roomNumberRange: {x: 30, y: 50}
 --- !u!4 &1850828772
@@ -350,7 +351,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1850828770}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.617408, y: -9.807045, z: -1.0990295}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

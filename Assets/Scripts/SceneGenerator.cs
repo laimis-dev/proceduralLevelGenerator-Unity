@@ -44,7 +44,7 @@ public class SceneGenerator : MonoBehaviour
             yield return fixedUpdateInterval;
             // yield return startup;
 
-            // PlaceCorridor();
+            PlaceCorridor();
             yield return fixedUpdateInterval;
         }
 
@@ -72,9 +72,9 @@ public class SceneGenerator : MonoBehaviour
         currentRoom.transform.parent = this.transform;
         List<Connector> currentRoomConnectors = currentRoom.getConnectors();
 
-        foreach(Connector currentSceneRoomConnector in availableRoomConnectors){
+        foreach(Connector currentSceneCorridorConnector in availableCorridorConnectors){
             foreach(Connector currentRoomConnector in currentRoomConnectors){
-                PositionRoomAtConnector(currentRoom, currentRoomConnector, currentSceneRoomConnector);
+                PositionRoomAtConnector(currentRoom, currentRoomConnector, currentSceneCorridorConnector);
                 // Debug.Break();
                 if(CheckRoomOverlap(currentRoom)){
                     Debug.Log("OVERLAP");
@@ -85,7 +85,7 @@ public class SceneGenerator : MonoBehaviour
                 AddRoomConnectorsToList(currentRoom);
                 generatedRooms.Add(currentRoom);
 
-                availableRoomConnectors.Remove(currentSceneRoomConnector);
+                availableCorridorConnectors.Remove(currentSceneCorridorConnector);
                 availableRoomConnectors.Remove(currentRoomConnector);
                 return;
             }
@@ -153,10 +153,10 @@ public class SceneGenerator : MonoBehaviour
 
         foreach(Connector currentSceneRoomConnector in availableRoomConnectors){
             foreach(Connector currentCorridorConnector in currentCorridorConnectors){
-                PositionCorridorAtConnector(currentCorridor, currentSceneRoomConnector, currentCorridorConnector);
+                PositionCorridorAtConnector(currentCorridor, currentCorridorConnector, currentSceneRoomConnector);
                 // Debug.Break();
                 if(CheckCorridorOverlap(currentCorridor)){
-                    Debug.Log("OVERLAP");
+                    // Debug.Log("OVERLAP");
                     // Debug.Break();
                     continue;
                 }
