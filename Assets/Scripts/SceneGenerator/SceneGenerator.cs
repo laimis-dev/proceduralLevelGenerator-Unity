@@ -10,6 +10,9 @@ public class SceneGenerator : MonoBehaviour
 
     [SerializeField] Vector2Int roomNumberRange = new Vector2Int(1, 5);
 
+    [SerializeField] GameObject cyclicConnectionPrefab;
+    [SerializeField] float cyclicConnectionRange = 15f;
+
     List<Connector> availableRoomConnectors = new List<Connector>();
     List<Connector> availableCorridorConnectors = new List<Connector>();
 
@@ -17,6 +20,15 @@ public class SceneGenerator : MonoBehaviour
     List<Corridor> generatedCorridors = new List<Corridor>();
     // Start is called before the first frame update
     LayerMask sceneLayerMask;
+
+    Vector2Int[] directions = new Vector2Int[] {
+        Vector2Int.up,
+        Vector2Int.down,
+        Vector2Int.left,
+        Vector2Int.right
+    };
+        
+    
     
     void Start() {
         sceneLayerMask = LayerMask.GetMask("SceneColliders");
@@ -48,7 +60,7 @@ public class SceneGenerator : MonoBehaviour
             yield return fixedUpdateInterval;
         }
 
-
+        ConnectEmptyConnectors();
         // Debug.Log("finished");
         StopCoroutine("GenerateScene");
     }
@@ -77,7 +89,7 @@ public class SceneGenerator : MonoBehaviour
                 PositionRoomAtConnector(currentRoom, currentRoomConnector, currentSceneCorridorConnector);
                 // Debug.Break();
                 if(CheckRoomOverlap(currentRoom)){
-                    Debug.Log("OVERLAP");
+                    // Debug.Log("OVERLAP");
                     // Debug.Break();
                     continue;
                 }
@@ -195,8 +207,6 @@ public class SceneGenerator : MonoBehaviour
         corridor.transform.position = targetConnector.transform.position - corridorPositionOffset;
     }
 
-
-
     bool CheckCorridorOverlap(Corridor corridor){
         List<BoxCollider> corridorColliders = corridor.getColliders();
         foreach(BoxCollider corridorCollider in corridorColliders){
@@ -217,6 +227,59 @@ public class SceneGenerator : MonoBehaviour
 
         return false;
     }
+
+
+
+
+
+
+    void ConnectEmptyConnectors(){
+        foreach(Connector corridorConnector in availableCorridorConnectors){
+            foreach(Connector roomConnector in availableRoomConnectors){
+                float distanceBetweenConnectors = Vector3.Distance(
+                    corridorConnector.transform.position, 
+                    roomConnector.transform.position);
+
+                if(distanceBetweenConnectors <= cyclicConnectionRange){
+                    PathFinder(corridorConnector, roomConnector);
+                }
+            }
+        }
+    }
+
+    void PathFinder(Connector corridorConnector, Connector roomConnector){
+        Queue<GameObject> queue = new Queue<GameObject>();
+        GameObject pathBlock = Instantiate(cyclicConnectionPrefab);
+        pathBlock.transform.position = corridorConnector.transform.position;
+        queue.Enqueue(pathBlock);
+
+        while(queue.Count > 0){
+            var searchCenter = queue.Dequeue();
+            StopIfEndFound(searchCenter.transform, roomConnector.transform);
+        }
+    }
+
+    void ExploreNeighbours(Transform from){
+        foreach(Vector2Int direction in directions){
+            
+        }
+
+    }
+
+    void StopIfEndFound(Transform current, Transform end){
+        float distance = Vector3.Distance(
+                    current.position, 
+                    end.position);
+        if(distance <= 1f){
+            print("stop");
+        }
+    }
+
+
+
+
+
+
 
     void CleanUp(){
         generatedCorridors.Clear();
