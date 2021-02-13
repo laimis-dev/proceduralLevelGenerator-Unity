@@ -18,7 +18,6 @@ public class SceneGenerator : MonoBehaviour
 
     List<Room> generatedRooms = new List<Room>();
     List<Corridor> generatedCorridors = new List<Corridor>();
-    // Start is called before the first frame update
     LayerMask sceneLayerMask;
 
     Vector2Int[] directions = new Vector2Int[] {
@@ -263,7 +262,6 @@ public class SceneGenerator : MonoBehaviour
         foreach(Vector2Int direction in directions){
             
         }
-
     }
 
     void StopIfEndFound(Transform current, Transform end){
