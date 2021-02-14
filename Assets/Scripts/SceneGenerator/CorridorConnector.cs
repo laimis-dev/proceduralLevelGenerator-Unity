@@ -19,6 +19,7 @@ public class CorridorConnector : MonoBehaviour
         Vector2Int.right
     };
         
+    List<SceneObject> nodes = new List<SceneObject>();
     Queue<SceneObject> queue = new Queue<SceneObject>();
         WaitForSeconds startup =  new WaitForSeconds(1);
         WaitForFixedUpdate fixedUpdateInterval = new WaitForFixedUpdate();
@@ -58,34 +59,60 @@ public class CorridorConnector : MonoBehaviour
         Connector roomConnector = end;
         SceneObject pathBlock = Instantiate(cyclicConnectionPrefab);
         pathBlock.transform.position = corridorConnector.transform.position;
-        queue.Enqueue(pathBlock);
-
+        // queue.Enqueue(pathBlock);
+        pathBlock.fScore = DistanceToEnd(pathBlock.transform);
+        nodes.Add(pathBlock);
         // while(queue.Count > 0){
-        for(int i = 0; i < 50; i++){
-            var searchCenter = queue.Dequeue();
-            yield return StartCoroutine("ExploreNeighbours", searchCenter.transform);
-            StopIfEndFound(searchCenter.transform, roomConnector.transform);
+        for(int i = 0; i < 200; i++){
+            // var searchCenter = queue.Dequeue();
+            var current = FindLowestFScoreNode();
+            nodes.Remove(current);
+            yield return StartCoroutine("ExploreNeighbours", current);
+            // StopIfEndFound(searchCenter.transform, roomConnector.transform);
         }
 
         StopCoroutine("PathFinder");
     }
 
-    IEnumerator ExploreNeighbours(Transform from){
-        foreach(Vector2Int direction in directions){
+    SceneObject FindLowestFScoreNode(){
+        
+        SceneObject minPathObject = nodes[0];
+        float minFScore = minPathObject.fScore;
+        foreach(SceneObject path in nodes){
+            if(path.fScore < minFScore){
+                minPathObject = path;
+                minFScore = minPathObject.fScore;
+            }
+        }
+        return minPathObject;
+    }
+
+    IEnumerator ExploreNeighbours(SceneObject from){
+        int connectionWeight = 1;
+        foreach(Vector2Int direction in directions){        
             SceneObject pathBlock = Instantiate(cyclicConnectionPrefab);
             pathBlock.transform.position = new Vector3(
-                from.position.x + direction.x * from.localScale.x,
+                from.transform.position.x + direction.x * from.transform.localScale.x,
                 from.transform.position.y,
-                from.transform.position.z + direction.y * from.localScale.z);
+                from.transform.position.z + direction.y * from.transform.localScale.z);
+            
 
             yield return fixedUpdateInterval;
             if(CheckOverlap(pathBlock)){
                 Destroy(pathBlock.gameObject);
             } else {
-                queue.Enqueue(pathBlock);
+                pathBlock.gScore = from.gScore + connectionWeight;
+                pathBlock.fScore = DistanceToEnd(pathBlock.transform);
+                nodes.Add(pathBlock);
             }
         }
         StopCoroutine("ExploreNeighbours");
+    }
+
+    float DistanceToEnd(Transform from){
+         return Vector3.Distance(
+            from.position, 
+            end.transform.position);
     }
 
    
