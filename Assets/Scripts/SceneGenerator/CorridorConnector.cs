@@ -63,19 +63,24 @@ public class CorridorConnector : MonoBehaviour
         pathBlock.fScore = DistanceToEnd(pathBlock.transform);
         nodes.Add(pathBlock);
         // while(queue.Count > 0){
-        for(int i = 0; i < 200; i++){
+        while(nodes.Count > 0){
             // var searchCenter = queue.Dequeue();
             var current = FindLowestFScoreNode();
+
+            if(IfEndFound(current.transform)){
+                PlaceEndPath();
+                break;
+            }
             nodes.Remove(current);
             yield return StartCoroutine("ExploreNeighbours", current);
-            // StopIfEndFound(searchCenter.transform, roomConnector.transform);
+            
         }
 
         StopCoroutine("PathFinder");
     }
 
     SceneObject FindLowestFScoreNode(){
-        
+
         SceneObject minPathObject = nodes[0];
         float minFScore = minPathObject.fScore;
         foreach(SceneObject path in nodes){
@@ -109,21 +114,24 @@ public class CorridorConnector : MonoBehaviour
         StopCoroutine("ExploreNeighbours");
     }
 
+    void PlaceEndPath() {
+
+    }
+
     float DistanceToEnd(Transform from){
          return Vector3.Distance(
             from.position, 
             end.transform.position);
     }
 
-   
-
-
-    void StopIfEndFound(Transform current, Transform end){
-        float distance = Vector3.Distance(
-                    current.position, 
-                    end.position);
-        if(distance <= 1f){
+    bool IfEndFound(Transform current){
+        print(DistanceToEnd(current));
+        if(DistanceToEnd(current) <= 3f){
             print("stop");
+            return true;
+            
+        } else {
+            return false;
         }
     }
 
