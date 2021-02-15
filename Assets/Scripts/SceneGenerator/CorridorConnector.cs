@@ -18,6 +18,7 @@ public class CorridorConnector : MonoBehaviour
     };
         
     List<SceneObject> nodes = new List<SceneObject>();
+    List<SceneObject> allNodes = new List<SceneObject>();
     List<SceneObject> connectorPath = new List<SceneObject>();
     Queue<SceneObject> queue = new Queue<SceneObject>();
         WaitForSeconds startup =  new WaitForSeconds(1);
@@ -114,6 +115,7 @@ public class CorridorConnector : MonoBehaviour
     IEnumerator ExploreNeighbours(SceneObject from){
         int connectionWeight = 1;
         foreach(Vector2Int direction in directions){        
+            float currentScore = from.gScore + connectionWeight;
             SceneObject pathBlock = Instantiate(cyclicConnectionPrefab);
             pathBlock.transform.parent = this.transform;
             pathBlock.transform.position = new Vector3(
@@ -121,19 +123,36 @@ public class CorridorConnector : MonoBehaviour
                 from.transform.position.y,
                 from.transform.position.z + direction.y * from.transform.localScale.z);
             
-            if(nodes.Contains(pathBlock)){
-                Destroy(pathBlock.gameObject);
-                continue;
+            
+            foreach(SceneObject node in allNodes){
+                if(pathBlock.transform.position == node.transform.position){
+                    if(currentScore < node.gScore){
+                        Destroy(pathBlock.gameObject);
+                        pathBlock = null;
+
+                        node.instantiatedFrom = from;
+                        node.gScore = currentScore;
+                        node.fScore = currentScore + DistanceToEnd(node.transform);
+                        if(nodes.Contains(node)){
+                            nodes.Add(node);
+                        }
+                        break;
+                    }
+                    
+                }
             }
+
+            if(pathBlock == null) continue;
 
             yield return fixedUpdateInterval;
             if(CheckOverlap(pathBlock)){
                 Destroy(pathBlock.gameObject);
             } else {
                 pathBlock.instantiatedFrom = from;
-                pathBlock.gScore = from.gScore + connectionWeight;
-                pathBlock.fScore = DistanceToEnd(pathBlock.transform);
+                pathBlock.gScore = currentScore;
+                pathBlock.fScore = currentScore + DistanceToEnd(pathBlock.transform);
                 nodes.Add(pathBlock);
+                allNodes.Add(pathBlock);
             }
         }
         StopCoroutine("ExploreNeighbours");
@@ -155,7 +174,7 @@ public class CorridorConnector : MonoBehaviour
     }
 
     bool IfEndFound(Transform current){
-        print(DistanceToEnd(current));
+        // print(DistanceToEnd(current));
         if(DistanceToEnd(current) <= 3f){
             print("stop");
             return true;
@@ -183,7 +202,7 @@ public class CorridorConnector : MonoBehaviour
 
 
 
-     bool CheckOverlap(SceneObject sceneObject){
+     Collider CheckOverlap(SceneObject sceneObject){
         List<BoxCollider> objectColliders = sceneObject.getColliders();
         foreach(BoxCollider boxCollider in objectColliders){
             Bounds bounds = boxCollider.bounds;
@@ -195,13 +214,13 @@ public class CorridorConnector : MonoBehaviour
                     if(c.transform.parent.gameObject.transform.parent.gameObject.Equals(sceneObject.gameObject)){
                         continue;
                     } else {
-                        return true;
+                        return c;
                     }
                 }
             }
         }
 
-        return false;
+        return null;
     }
 
 }
