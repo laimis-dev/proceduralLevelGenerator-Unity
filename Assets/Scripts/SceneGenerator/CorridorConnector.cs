@@ -7,6 +7,7 @@ public class CorridorConnector : MonoBehaviour
     [SerializeField] Connector start;
     [SerializeField] Connector end;
     [SerializeField] SceneObject cyclicConnectionPrefab;
+    [SerializeField] GameObject wallPrefab;
 
     LayerMask sceneLayerMask;
 
@@ -63,6 +64,7 @@ public class CorridorConnector : MonoBehaviour
         // queue.Enqueue(pathBlock);
         startBlock.fScore = DistanceToEnd(startBlock.transform);
         nodes.Add(startBlock);
+        allNodes.Add(startBlock);
         // while(queue.Count > 0){
         while(nodes.Count > 0){
             // var searchCenter = queue.Dequeue();
@@ -71,24 +73,10 @@ public class CorridorConnector : MonoBehaviour
             if(IfEndFound(current.transform)){
                 PlaceEndPath();
                 nodes.Add(current);
-                
-                SceneObject currentPath = current;
-                connectorPath.Add(currentPath);
-                while(currentPath != startBlock){
-                    currentPath = currentPath.instantiatedFrom;
-                    connectorPath.Add(currentPath);
-                }
-
-                foreach (Transform child in this.transform) {
-                    bool isPath = false;
-                    foreach (SceneObject path in connectorPath) {
-                        if(child.position == path.transform.position){
-                            isPath = true;
-                        }
-                        
-                    }
-                    if(!isPath) GameObject.Destroy(child.gameObject);
-                }
+                allNodes.Add(current);
+                GetFinalPath(current, startBlock);
+                DeleteUnneededPaths();
+                AddWallsToPath();
                 break;
             }
             nodes.Remove(current);
@@ -97,6 +85,73 @@ public class CorridorConnector : MonoBehaviour
         }
 
         StopCoroutine("PathFinder");
+    }
+
+    void GetFinalPath(SceneObject current, SceneObject startBlock){
+        SceneObject currentPath = current;
+        connectorPath.Add(currentPath);
+        while(currentPath != startBlock){
+            currentPath = currentPath.instantiatedFrom;
+            connectorPath.Add(currentPath);
+        }
+    }
+
+    void DeleteUnneededPaths(){
+        foreach (Transform child in this.transform) {
+            bool isPath = false;
+            foreach (SceneObject path in connectorPath) {
+                if(child.position == path.transform.position){
+                    isPath = true;
+                }
+                
+            }
+            if(!isPath) GameObject.Destroy(child.gameObject);
+        }
+    }
+
+    void AddWallsToPath(){
+        for(int i = 0; i < connectorPath.Count - 1; i++){
+            Vector3 current = connectorPath[i].transform.position;
+            Vector3 next = connectorPath[i+1].transform.position;
+            Vector2 movingDirection = new Vector2(current.x - next.x, current.z - next.z);
+
+            if(movingDirection.x > -1 && movingDirection.x != 0) movingDirection.x = -1;
+            if(movingDirection.x > 1 && movingDirection.x != 0) movingDirection.x = 1;
+            if(movingDirection.y > - 1 && movingDirection.y != 0) movingDirection.y = -1;
+            if(movingDirection.y > 1 && movingDirection.y != 0) movingDirection.y = 1;
+            print(movingDirection);
+            print(movingDirection == Vector2.up);
+
+            if(movingDirection == Vector2.up || movingDirection == Vector2.down){
+                GameObject wall = Instantiate(wallPrefab);
+                wall.transform.parent = this.transform;
+                wall.transform.position = new Vector3(
+                    current.x + Vector2.right.x,
+                    current.y,
+                    current.z + Vector2.right.y);
+
+                wall = Instantiate(wallPrefab);
+                wall.transform.parent = this.transform;
+                wall.transform.position = new Vector3(
+                    current.x + Vector2Int.left.x,
+                    current.y,
+                    current.z + Vector2Int.left.y);
+            } else if(movingDirection == Vector2.left || movingDirection == Vector2.right){
+                GameObject wall = Instantiate(wallPrefab);
+                wall.transform.parent = this.transform;
+                wall.transform.position = new Vector3(
+                    current.x + Vector2.up.x,
+                    current.y,
+                    current.z + Vector2.up.y);
+
+                wall = Instantiate(wallPrefab);
+                wall.transform.parent = this.transform;
+                wall.transform.position = new Vector3(
+                    current.x + Vector2.down.x,
+                    current.y,
+                    current.z + Vector2.down.y);
+            }
+        }
     }
 
     SceneObject FindLowestFScoreNode(){
@@ -161,6 +216,7 @@ public class CorridorConnector : MonoBehaviour
     void PlaceEndPath() {
         SceneObject pathBlock = Instantiate(cyclicConnectionPrefab);
         pathBlock.transform.position = end.transform.position;
+
 
         pathBlock = Instantiate(cyclicConnectionPrefab);
         pathBlock.transform.position = end.transform.position + end.transform.rotation * Vector3.forward * 2f;
