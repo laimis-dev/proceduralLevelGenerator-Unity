@@ -59,7 +59,8 @@ public class CorridorConnector : MonoBehaviour
         Connector corridorConnector = start;
         Connector roomConnector = end;
         SceneObject startBlock = Instantiate(cyclicConnectionPrefab);
-        startBlock.transform.position = corridorConnector.transform.position;
+        startBlock.transform.position = 
+            corridorConnector.transform.position + start.transform.rotation * Vector3.forward;
         startBlock.transform.parent = this.transform;
         // queue.Enqueue(pathBlock);
         startBlock.fScore = DistanceToEnd(startBlock.transform);
@@ -72,9 +73,11 @@ public class CorridorConnector : MonoBehaviour
 
             if(IfEndFound(current.transform)){
                 PlaceEndPath();
+                nodes.Add(startBlock);
                 nodes.Add(current);
                 allNodes.Add(current);
                 GetFinalPath(current, startBlock);
+                
                 DeleteUnneededPaths();
                 AddWallsToPath();
                 break;
@@ -94,6 +97,7 @@ public class CorridorConnector : MonoBehaviour
             currentPath = currentPath.instantiatedFrom;
             connectorPath.Add(currentPath);
         }
+        connectorPath.Add(startBlock);
     }
 
     void DeleteUnneededPaths(){
@@ -110,46 +114,54 @@ public class CorridorConnector : MonoBehaviour
     }
 
     void AddWallsToPath(){
-        for(int i = 0; i < connectorPath.Count - 1; i++){
+        for(int i = 0; i < connectorPath.Count; i++){
             Vector3 current = connectorPath[i].transform.position;
-            Vector3 next = connectorPath[i+1].transform.position;
-            Vector2 movingDirection = new Vector2(current.x - next.x, current.z - next.z);
 
-            if(movingDirection.x > -1 && movingDirection.x != 0) movingDirection.x = -1;
-            if(movingDirection.x > 1 && movingDirection.x != 0) movingDirection.x = 1;
-            if(movingDirection.y > - 1 && movingDirection.y != 0) movingDirection.y = -1;
-            if(movingDirection.y > 1 && movingDirection.y != 0) movingDirection.y = 1;
-            print(movingDirection);
-            print(movingDirection == Vector2.up);
+            foreach(Vector2Int direction in directions){   
+                Vector3 checkPos = new Vector3(
+                    current.x + direction.x * 2f,
+                    current.y,
+                    current.z + direction.y * 2f);
+                
+                if(i == 0){
+                    Vector3 b = end.transform.position + end.transform.rotation * Vector3.forward 
+                                + end.transform.rotation * Vector3.back * 2f;
+                    if(checkPos == b){
+                        continue;
+                    }
+                } 
 
-            if(movingDirection == Vector2.up || movingDirection == Vector2.down){
+                if(i == connectorPath.Count - 1){
+                    Vector3 b = start.transform.position + start.transform.rotation * Vector3.forward 
+                                + start.transform.rotation * Vector3.back * 2f;
+                    if(checkPos == b){
+                        continue;
+                    }
+                } 
+
+                bool isWallPlaceable = true;
+                foreach(SceneObject path in connectorPath){
+                    if(checkPos == path.transform.position){
+                        isWallPlaceable = false;
+                    }
+                }
+
+                if(!isWallPlaceable) continue;
+
                 GameObject wall = Instantiate(wallPrefab);
                 wall.transform.parent = this.transform;
-                wall.transform.position = new Vector3(
-                    current.x + Vector2.right.x,
-                    current.y,
-                    current.z + Vector2.right.y);
 
-                wall = Instantiate(wallPrefab);
-                wall.transform.parent = this.transform;
-                wall.transform.position = new Vector3(
-                    current.x + Vector2Int.left.x,
+                checkPos = new Vector3(
+                    current.x + direction.x * 1.5f ,
                     current.y,
-                    current.z + Vector2Int.left.y);
-            } else if(movingDirection == Vector2.left || movingDirection == Vector2.right){
-                GameObject wall = Instantiate(wallPrefab);
-                wall.transform.parent = this.transform;
-                wall.transform.position = new Vector3(
-                    current.x + Vector2.up.x,
-                    current.y,
-                    current.z + Vector2.up.y);
+                    current.z + direction.y * 1.5f);
 
-                wall = Instantiate(wallPrefab);
-                wall.transform.parent = this.transform;
-                wall.transform.position = new Vector3(
-                    current.x + Vector2.down.x,
-                    current.y,
-                    current.z + Vector2.down.y);
+                
+                if(direction == Vector2Int.up || direction == Vector2Int.down){
+                    wall.transform.rotation = Quaternion.Euler(0, 90f, 0);
+                }
+
+                wall.transform.position = checkPos;
             }
         }
     }
@@ -215,12 +227,9 @@ public class CorridorConnector : MonoBehaviour
 
     void PlaceEndPath() {
         SceneObject pathBlock = Instantiate(cyclicConnectionPrefab);
-        pathBlock.transform.position = end.transform.position;
+        pathBlock.transform.position = end.transform.position + end.transform.rotation * Vector3.forward;
 
-
-        pathBlock = Instantiate(cyclicConnectionPrefab);
-        pathBlock.transform.position = end.transform.position + end.transform.rotation * Vector3.forward * 2f;
-        
+        connectorPath.Add(pathBlock);
     }
 
     float DistanceToEnd(Transform from){
