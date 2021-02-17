@@ -27,6 +27,9 @@ public class CorridorConnector : MonoBehaviour
 
     
     void Start() {
+
+        print(start.transform.position);
+        print(end.transform.position);
         sceneLayerMask = LayerMask.GetMask("SceneColliders");
         StartCoroutine("PathFinder");
     }
@@ -106,7 +109,7 @@ public class CorridorConnector : MonoBehaviour
             foreach (SceneObject path in connectorPath) {
                 if(child.position == path.transform.position){
                     isPath = true;
-                }
+                }  
                 
             }
             if(!isPath) GameObject.Destroy(child.gameObject);
@@ -114,6 +117,9 @@ public class CorridorConnector : MonoBehaviour
     }
 
     IEnumerator AddWallsToPath(){
+        bool xSign = Mathf.Abs(start.transform.position.x - end.transform.position.x) % 2 == 1;
+        bool zSign = Mathf.Abs(start.transform.position.z - end.transform.position.z) % 2 == 1;
+
         for(int i = 0; i < connectorPath.Count; i++){
             Vector3 current = connectorPath[i].transform.position;
 
@@ -124,13 +130,32 @@ public class CorridorConnector : MonoBehaviour
                     current.z + direction.y * 2f);
                 
                 if(i == 0){
-                    Vector3 b = end.transform.position + end.transform.rotation * Vector3.forward 
+                    
+
+                    if(!xSign && zSign){
+                        Vector3 b = end.transform.position
                                 + end.transform.rotation * Vector3.forward * -2f;
-                    if(checkPos == b){
-                        continue;
+                        if(checkPos == b){
+                            continue;
+                        }
+                    } else {
+                        Vector3 b = end.transform.position + end.transform.rotation * Vector3.forward 
+                                    + end.transform.rotation * Vector3.forward * -2f;
+                        if(checkPos == b){
+                            continue;
+                        }
                     }
+                    
+
+                    // b = end.transform.position + end.transform.rotation * Vector3.forward 
+                    //             + end.transform.rotation * Vector3.forward * 2f;
+                    // if(checkPos == b){
+                    //     continue;
+                    // }
                 } 
 
+                
+                 
                 if(i == connectorPath.Count - 2 ){
 
                     Vector3 b = start.transform.position + start.transform.rotation * Vector3.forward 
@@ -290,10 +315,41 @@ public class CorridorConnector : MonoBehaviour
     }
 
     void PlaceEndPath() {
-        SceneObject pathBlock = Instantiate(cyclicConnectionPrefab);
-        pathBlock.transform.position = end.transform.position + end.transform.rotation * Vector3.forward;
+        bool xSign = Mathf.Abs(start.transform.position.x - end.transform.position.x) % 2 == 1;
+        bool zSign = Mathf.Abs(start.transform.position.z - end.transform.position.z) % 2 == 1;
+        print(xSign);
+        print(zSign);
+        
+        if(!xSign && zSign){
+            SceneObject pathBlock1 = Instantiate(cyclicConnectionPrefab);
+            pathBlock1.transform.position = end.transform.position;
+            pathBlock1.transform.parent = this.transform;
+            connectorPath.Add(pathBlock1);
 
-        connectorPath.Add(pathBlock);
+            // SceneObject pathBlock2 = Instantiate(cyclicConnectionPrefab);
+            // pathBlock2.transform.position = pathBlock1.transform.position + end.transform.rotation * Vector3.forward * 2f;
+            // pathBlock2.transform.parent = this.transform;
+            // connectorPath.Add(pathBlock2);
+        }
+
+
+        if(!xSign && !zSign){
+            
+            SceneObject pathBlock1 = Instantiate(cyclicConnectionPrefab);
+            pathBlock1.transform.position = end.transform.position + end.transform.rotation * Vector3.forward;
+            pathBlock1.transform.parent = this.transform;
+            connectorPath.Add(pathBlock1);
+
+            // SceneObject pathBlock2 = Instantiate(cyclicConnectionPrefab);
+            // pathBlock2.transform.position = pathBlock1.transform.position + end.transform.rotation * Vector3.forward;
+            // pathBlock2.transform.parent = this.transform;
+            // connectorPath.Add(pathBlock2);
+
+
+        }
+        
+        
+        
     }
 
     float DistanceToEnd(Transform from){
