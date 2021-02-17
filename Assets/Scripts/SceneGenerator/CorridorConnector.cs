@@ -79,7 +79,7 @@ public class CorridorConnector : MonoBehaviour
                 GetFinalPath(current, startBlock);
                 
                 DeleteUnneededPaths();
-                AddWallsToPath();
+                yield return AddWallsToPath();
                 break;
             }
             nodes.Remove(current);
@@ -113,7 +113,7 @@ public class CorridorConnector : MonoBehaviour
         }
     }
 
-    void AddWallsToPath(){
+    IEnumerator AddWallsToPath(){
         for(int i = 0; i < connectorPath.Count; i++){
             Vector3 current = connectorPath[i].transform.position;
 
@@ -125,15 +125,25 @@ public class CorridorConnector : MonoBehaviour
                 
                 if(i == 0){
                     Vector3 b = end.transform.position + end.transform.rotation * Vector3.forward 
-                                + end.transform.rotation * Vector3.back * 2f;
+                                + end.transform.rotation * Vector3.forward * -2f;
                     if(checkPos == b){
                         continue;
                     }
                 } 
 
-                if(i == connectorPath.Count - 1){
+                if(i == connectorPath.Count - 2 ){
+
                     Vector3 b = start.transform.position + start.transform.rotation * Vector3.forward 
-                                + start.transform.rotation * Vector3.back * 2f;
+                                + start.transform.rotation * Vector3.forward * -2f;
+                    if(checkPos == b){
+                        continue;
+                    }
+
+                } 
+
+                if(i == connectorPath.Count - 1 ){
+                    Vector3 b = start.transform.position + start.transform.rotation * Vector3.forward 
+                                + start.transform.rotation * Vector3.forward * -2f;
                     if(checkPos == b){
                         continue;
                     }
@@ -150,7 +160,7 @@ public class CorridorConnector : MonoBehaviour
 
                 GameObject wall = Instantiate(wallPrefab);
                 wall.transform.parent = this.transform;
-
+                yield return fixedUpdateInterval;
                 checkPos = new Vector3(
                     current.x + direction.x * 1.5f ,
                     current.y,
@@ -164,7 +174,61 @@ public class CorridorConnector : MonoBehaviour
                 wall.transform.position = checkPos;
             }
         }
+        StopCoroutine("AddWallsToPath");
     }
+
+    // void AddWallsToPath(){
+    //     for(int i = 0; i < connectorPath.Count; i++){
+    //         Vector3 current = connectorPath[i].transform.position;
+
+    //         foreach(Vector2Int direction in directions){   
+    //             Vector3 checkPos = new Vector3(
+    //                 current.x + direction.x * 2f,
+    //                 current.y,
+    //                 current.z + direction.y * 2f);
+                
+    //             if(i == 0){
+    //                 Vector3 b = end.transform.position + end.transform.rotation * Vector3.forward 
+    //                             + end.transform.rotation * Vector3.back * 2f;
+    //                 if(checkPos == b){
+    //                     continue;
+    //                 }
+    //             } 
+
+    //             if(i == connectorPath.Count - 1){
+    //                 Vector3 b = start.transform.position + start.transform.rotation * Vector3.forward 
+    //                             + start.transform.rotation * Vector3.back * 2f;
+    //                 if(checkPos == b){
+    //                     continue;
+    //                 }
+    //             } 
+
+    //             bool isWallPlaceable = true;
+    //             foreach(SceneObject path in connectorPath){
+    //                 if(checkPos == path.transform.position){
+    //                     isWallPlaceable = false;
+    //                 }
+    //             }
+
+    //             if(!isWallPlaceable) continue;
+
+    //             GameObject wall = Instantiate(wallPrefab);
+    //             wall.transform.parent = this.transform;
+
+    //             checkPos = new Vector3(
+    //                 current.x + direction.x * 1.5f ,
+    //                 current.y,
+    //                 current.z + direction.y * 1.5f);
+
+                
+    //             if(direction == Vector2Int.up || direction == Vector2Int.down){
+    //                 wall.transform.rotation = Quaternion.Euler(0, 90f, 0);
+    //             }
+
+    //             wall.transform.position = checkPos;
+    //         }
+    //     }
+    // }
 
     SceneObject FindLowestFScoreNode(){
 
