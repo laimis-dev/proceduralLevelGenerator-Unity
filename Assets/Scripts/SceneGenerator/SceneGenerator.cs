@@ -72,7 +72,7 @@ public class SceneGenerator : MonoBehaviour
             yield return fixedUpdateInterval;
         }
 
-        ConnectEmptyConnectors();
+        StartCoroutine(ConnectEmptyConnectors());
         // Debug.Log("finished");
         StopCoroutine("GenerateScene");
     }
@@ -231,7 +231,7 @@ public class SceneGenerator : MonoBehaviour
     }
 
 
-    void ConnectEmptyConnectors(){
+    IEnumerator ConnectEmptyConnectors(){
         foreach(Connector corridorConnector in availableCorridorConnectors){
             foreach(Connector roomConnector in availableRoomConnectors){
                 float distanceBetweenConnectors = Vector3.Distance(
@@ -240,10 +240,10 @@ public class SceneGenerator : MonoBehaviour
 
                 if(distanceBetweenConnectors <= cyclicConnectionRange){
                     CorridorConnector newBuilder = Instantiate(corridorConnectorBuilder);
-
+                    newBuilder.transform.parent = this.transform;
                     newBuilder.SetMaxGScore(maxGScore);
                     newBuilder.SetConnectionPoints(corridorConnector, roomConnector);
-                    newBuilder.StartConnecting();
+                    yield return StartCoroutine(newBuilder.StartConnecting());
                     // bool isConnected = corridorConnectorBuilder.
                 }
             }
