@@ -109,7 +109,9 @@ public class SceneGenerator : MonoBehaviour
                 AddRoomConnectorsToList(currentRoom);
                 generatedRooms.Add(currentRoom);
 
+                currentSceneCorridorConnector.isConnected = true;
                 availableCorridorConnectors.Remove(currentSceneCorridorConnector);
+                currentRoomConnector.isConnected = true;
                 availableRoomConnectors.Remove(currentRoomConnector);
                 return;
             }
@@ -179,7 +181,9 @@ public class SceneGenerator : MonoBehaviour
                 AddCorridorConnectorsToList(currentCorridor);
                 generatedCorridors.Add(currentCorridor);
 
+                currentSceneRoomConnector.isConnected = true;
                 availableRoomConnectors.Remove(currentSceneRoomConnector);
+                currentCorridorConnector.isConnected = true;
                 availableCorridorConnectors.Remove(currentCorridorConnector);
                 return;
             }

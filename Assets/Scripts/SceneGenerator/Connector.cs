@@ -5,6 +5,7 @@ using UnityEngine;
 public class Connector : MonoBehaviour
 {
     [SerializeField] bool drawGizmo = true;
+    public bool isConnected = false;
     // Start is called before the first frame update
     void Start()
     {

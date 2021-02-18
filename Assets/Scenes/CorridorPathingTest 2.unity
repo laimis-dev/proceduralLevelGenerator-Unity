@@ -227,7 +227,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 780537788655009110, guid: 073ec4557731e6a42acee5e5deca6ea0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -63
+      value: -64
       objectReference: {fileID: 0}
     - target: {fileID: 780537788655009110, guid: 073ec4557731e6a42acee5e5deca6ea0, type: 3}
       propertyPath: m_LocalRotation.w
@@ -295,7 +295,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 780537788655009110, guid: 6f066f6f5f779d849977c8af499e623d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -81
+      value: -100
       objectReference: {fileID: 0}
     - target: {fileID: 780537788655009110, guid: 6f066f6f5f779d849977c8af499e623d, type: 3}
       propertyPath: m_LocalRotation.w
@@ -468,6 +468,9 @@ MonoBehaviour:
   end: {fileID: 280373893}
   cyclicConnectionPrefab: {fileID: 6725314206217103578, guid: 1c83ca103cb01f948957bb1faea7f0c0, type: 3}
   wallPrefab: {fileID: 388562146214842704, guid: 9d9075bebb16aef429c980653fd3f687, type: 3}
+  startOnAwake: 1
+  maxGScore: 15
+  isEndFound: 0
 --- !u!4 &2024421854
 Transform:
   m_ObjectHideFlags: 0

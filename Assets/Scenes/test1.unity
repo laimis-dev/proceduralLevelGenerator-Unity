@@ -342,12 +342,12 @@ MonoBehaviour:
   - {fileID: 2455156592747941819, guid: 77bacc2724dde064b934ad98250c02f7, type: 3}
   - {fileID: 4075321898475735892, guid: 6f066f6f5f779d849977c8af499e623d, type: 3}
   - {fileID: 6352129608209332735, guid: a2cf93c4b14db1c4a9f307331518c3af, type: 3}
-  roomNumberRange: {x: 30, y: 50}
+  roomNumberRange: {x: 10, y: 20}
   cyclicConnectionPrefab: {fileID: 8630709098779315784, guid: 1c83ca103cb01f948957bb1faea7f0c0, type: 3}
   cyclicConnectionRange: 30
   maxGScore: 15
   corridorConnectorBuilder: {fileID: 7998801560231636573, guid: 2a36d497d679e41498fdb3a3a513ab1f, type: 3}
-  useRandomSeed: 0
+  useRandomSeed: 1
   seed: 5.399505
 --- !u!4 &1850828772
 Transform:
