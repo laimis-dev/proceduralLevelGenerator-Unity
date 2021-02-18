@@ -102,7 +102,20 @@ public class CorridorConnector : MonoBehaviour
             Vector3 current = connectorPath[i].transform.position;
 
             foreach(Vector2Int direction in directions){   
-                
+                //optimisation check some placement without colliders
+                Vector3 checkPos = new Vector3(
+                        current.x + direction.x * 2f,
+                        current.y,
+                        current.z + direction.y * 2f);
+                bool isWallPlaceable = true;
+                foreach(SceneObject path in connectorPath){
+                    if(checkPos == path.transform.position){
+                        isWallPlaceable = false;
+                    }
+                }
+
+                if(!isWallPlaceable) continue;
+
                 for(int j = 1; j < 3; j++){
                     SceneObject wall = Instantiate(wallPrefab);
                     if(direction == Vector2Int.up || direction == Vector2Int.down){
@@ -124,90 +137,10 @@ public class CorridorConnector : MonoBehaviour
                         Destroy(wall.gameObject);
                     }
                 }
-
-
-                //kad neblokuotu pradzio, o kodel -2 reikia.... nezinau 
-                // if(i == connectorPath.Count - 1 || i == connectorPath.Count - 2 ){
-                //     Vector3 b = start.transform.position + start.transform.rotation * Vector3.forward 
-                //                 + start.transform.rotation * Vector3.forward * -2f;
-                //     if(checkPos == b){
-                //         continue;
-                //     }
-                // } 
-
-                
-                // wall.transform.parent = this.transform;
-                // yield return fixedUpdateInterval;
-                // checkPos = new Vector3(
-                //     current.x + direction.x * 1.5f ,
-                //     current.y,
-                //     current.z + direction.y * 1.5f);
-
-                
-                // if(direction == Vector2Int.up || direction == Vector2Int.down){
-                //     wall.transform.rotation = Quaternion.Euler(0, 90f, 0);
-                // }
-
-                // wall.transform.position = checkPos;
-
-                
             }
         }
         StopCoroutine("AddWallsToPath");
     }
-
-    // void AddWallsToPath(){
-    //     for(int i = 0; i < connectorPath.Count; i++){
-    //         Vector3 current = connectorPath[i].transform.position;
-
-    //         foreach(Vector2Int direction in directions){   
-    //             Vector3 checkPos = new Vector3(
-    //                 current.x + direction.x * 2f,
-    //                 current.y,
-    //                 current.z + direction.y * 2f);
-                
-    //             if(i == 0){
-    //                 Vector3 b = end.transform.position + end.transform.rotation * Vector3.forward 
-    //                             + end.transform.rotation * Vector3.back * 2f;
-    //                 if(checkPos == b){
-    //                     continue;
-    //                 }
-    //             } 
-
-    //             if(i == connectorPath.Count - 1){
-    //                 Vector3 b = start.transform.position + start.transform.rotation * Vector3.forward 
-    //                             + start.transform.rotation * Vector3.back * 2f;
-    //                 if(checkPos == b){
-    //                     continue;
-    //                 }
-    //             } 
-
-    //             bool isWallPlaceable = true;
-    //             foreach(SceneObject path in connectorPath){
-    //                 if(checkPos == path.transform.position){
-    //                     isWallPlaceable = false;
-    //                 }
-    //             }
-
-    //             if(!isWallPlaceable) continue;
-
-    //             GameObject wall = Instantiate(wallPrefab);
-    //             wall.transform.parent = this.transform;
-
-    //             checkPos = new Vector3(
-    //                 current.x + direction.x * 1.5f ,
-    //                 current.y,
-    //                 current.z + direction.y * 1.5f);
-
-                
-    //             if(direction == Vector2Int.up || direction == Vector2Int.down){
-    //                 wall.transform.rotation = Quaternion.Euler(0, 90f, 0);
-    //             }
-
-    //             wall.transform.position = checkPos;
-    //         }
-    //     }
-    // }
 
     SceneObject FindLowestFScoreNode(){
 
