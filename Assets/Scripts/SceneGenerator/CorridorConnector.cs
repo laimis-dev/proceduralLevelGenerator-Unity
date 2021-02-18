@@ -8,6 +8,7 @@ public class CorridorConnector : MonoBehaviour
     [SerializeField] Connector end;
     [SerializeField] SceneObject cyclicConnectionPrefab;
     [SerializeField] SceneObject wallPrefab;
+    
 
     LayerMask sceneLayerMask;
 
@@ -18,47 +19,72 @@ public class CorridorConnector : MonoBehaviour
         Vector2Int.right
     };
         
-    List<SceneObject> nodes = new List<SceneObject>();
+    List<SceneObject> openNodes = new List<SceneObject>();
     List<SceneObject> allNodes = new List<SceneObject>();
     List<SceneObject> connectorPath = new List<SceneObject>();
-    Queue<SceneObject> queue = new Queue<SceneObject>();
-        WaitForSeconds startup =  new WaitForSeconds(1);
-        WaitForFixedUpdate fixedUpdateInterval = new WaitForFixedUpdate();
 
+    WaitForSeconds startup =  new WaitForSeconds(1);
+    WaitForFixedUpdate fixedUpdateInterval = new WaitForFixedUpdate();
+    public bool isEndFound = false;
+    float maxGScore = 15f;
     
     void Start() {
         sceneLayerMask = LayerMask.GetMask("SceneColliders");
-        StartCoroutine("PathFinder");
+        // StartCoroutine("PathFinder");
     }
 
-    // Update is called once per frame
     void Update() {
-        if (Input.GetMouseButtonDown(0)) {
+        // if (Input.GetMouseButtonDown(0)) {
 
-            StartCoroutine("PathFinder");
-        }   
+        //     StartCoroutine("PathFinder");
+        // }   
+    }
+
+    public void SetConnectionPoints(Connector start, Connector end){
+        this.start = start;
+        this.end = end;
+    }
+
+    public void SetMaxGScore(float score){
+        maxGScore = score;
+    }
+
+    public IEnumerator StartConnecting(){
+        isEndFound = false;
+        openNodes = new List<SceneObject>();
+        allNodes = new List<SceneObject>();
+        connectorPath = new List<SceneObject>();
+        yield return StartCoroutine("PathFinder");
+        if(!isEndFound){
+            DeleteAll();
+        }
+        
+       
     }
 
     IEnumerator PathFinder(){
         Connector corridorConnector = start;
         Connector roomConnector = end;
         SceneObject startBlock = Instantiate(cyclicConnectionPrefab);
+        startBlock.transform.parent = start.transform.parent;
         startBlock.transform.position = 
-            corridorConnector.transform.position + start.transform.rotation * Vector3.forward;
-        startBlock.transform.parent = this.transform;
-        // queue.Enqueue(pathBlock);
+            corridorConnector.transform.position + 
+            start.transform.rotation * Vector3.forward;
+
+        
         startBlock.fScore = DistanceToEnd(startBlock.transform);
-        nodes.Add(startBlock);
+        openNodes.Add(startBlock);
         allNodes.Add(startBlock);
-        // while(queue.Count > 0){
-        while(nodes.Count > 0){
-            // var searchCenter = queue.Dequeue();
+        // Debug.Break();
+        while(openNodes.Count > 0){
             var current = FindLowestFScoreNode();
+            if(current.gScore > maxGScore) break;
 
             if(IfEndFound(current.transform)){
+                isEndFound = true;
                 PlaceEndPath();
-                nodes.Add(startBlock);
-                nodes.Add(current);
+                openNodes.Add(startBlock);
+                openNodes.Add(current);
                 allNodes.Add(current);
                 GetFinalPath(current, startBlock);
                 
@@ -66,9 +92,8 @@ public class CorridorConnector : MonoBehaviour
                 yield return AddWallsToPath();
                 break;
             }
-            nodes.Remove(current);
+            openNodes.Remove(current);
             yield return StartCoroutine("ExploreNeighbours", current);
-            
         }
 
         StopCoroutine("PathFinder");
@@ -85,7 +110,7 @@ public class CorridorConnector : MonoBehaviour
     }
 
     void DeleteUnneededPaths(){
-        foreach (Transform child in this.transform) {
+        foreach (Transform child in start.transform.parent) {
             bool isPath = false;
             foreach (SceneObject path in connectorPath) {
                 if(child.position == path.transform.position){
@@ -118,6 +143,7 @@ public class CorridorConnector : MonoBehaviour
 
                 for(int j = 1; j < 3; j++){
                     SceneObject wall = Instantiate(wallPrefab);
+                    wall.transform.parent = start.transform.parent;
                     if(direction == Vector2Int.up || direction == Vector2Int.down){
                         wall.transform.position = 
                             new Vector3(
@@ -144,9 +170,9 @@ public class CorridorConnector : MonoBehaviour
 
     SceneObject FindLowestFScoreNode(){
 
-        SceneObject minPathObject = nodes[0];
+        SceneObject minPathObject = openNodes[0];
         float minFScore = minPathObject.fScore;
-        foreach(SceneObject path in nodes){
+        foreach(SceneObject path in openNodes){
             if(path.fScore < minFScore){
                 minPathObject = path;
                 minFScore = minPathObject.fScore;
@@ -160,7 +186,7 @@ public class CorridorConnector : MonoBehaviour
         foreach(Vector2Int direction in directions){        
             float currentScore = from.gScore + connectionWeight;
             SceneObject pathBlock = Instantiate(cyclicConnectionPrefab);
-            pathBlock.transform.parent = this.transform;
+            pathBlock.transform.parent = start.transform.parent;
             pathBlock.transform.position = new Vector3(
                 from.transform.position.x + direction.x * from.transform.localScale.x,
                 from.transform.position.y,
@@ -176,8 +202,8 @@ public class CorridorConnector : MonoBehaviour
                         node.instantiatedFrom = from;
                         node.gScore = currentScore;
                         node.fScore = currentScore + DistanceToEnd(node.transform);
-                        if(nodes.Contains(node)){
-                            nodes.Add(node);
+                        if(openNodes.Contains(node)){
+                            openNodes.Add(node);
                         }
                         break;
                     }
@@ -194,7 +220,7 @@ public class CorridorConnector : MonoBehaviour
                 pathBlock.instantiatedFrom = from;
                 pathBlock.gScore = currentScore;
                 pathBlock.fScore = currentScore + DistanceToEnd(pathBlock.transform);
-                nodes.Add(pathBlock);
+                openNodes.Add(pathBlock);
                 allNodes.Add(pathBlock);
             }
         }
@@ -203,6 +229,7 @@ public class CorridorConnector : MonoBehaviour
 
     void PlaceEndPath() {
         SceneObject pathBlock = Instantiate(cyclicConnectionPrefab);
+        pathBlock.transform.parent = start.transform.parent;
         pathBlock.transform.position = end.transform.position + end.transform.rotation * Vector3.forward;
 
         connectorPath.Add(pathBlock);
@@ -231,15 +258,11 @@ public class CorridorConnector : MonoBehaviour
 
 
 
-    // void CleanUp(){
-    //     generatedCorridors.Clear();
-    //     generatedRooms.Clear();
-    //     availableRoomConnectors.Clear();
-    //     availableCorridorConnectors.Clear();
-    //     foreach (Transform child in this.transform) {
-    //         GameObject.Destroy(child.gameObject);
-    //     }
-    // }
+    void DeleteAll(){
+        foreach (Transform child in start.transform.parent) {
+            GameObject.Destroy(child.gameObject);
+        }
+    }
 
 
 

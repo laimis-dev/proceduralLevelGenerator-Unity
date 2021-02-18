@@ -309,6 +309,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1850828772}
   - component: {fileID: 1850828771}
+  - component: {fileID: 1850828773}
   m_Layer: 0
   m_Name: SceneGenerator
   m_TagString: Untagged
@@ -344,7 +345,7 @@ MonoBehaviour:
   - {fileID: 6352129608209332735, guid: a2cf93c4b14db1c4a9f307331518c3af, type: 3}
   roomNumberRange: {x: 30, y: 50}
   cyclicConnectionPrefab: {fileID: 8630709098779315784, guid: 1c83ca103cb01f948957bb1faea7f0c0, type: 3}
-  cyclicConnectionRange: 15
+  cyclicConnectionRange: 30
 --- !u!4 &1850828772
 Transform:
   m_ObjectHideFlags: 0
@@ -359,3 +360,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1850828773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850828770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b304be5701abef846a54d2bc06a2cfda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  start: {fileID: 0}
+  end: {fileID: 0}
+  cyclicConnectionPrefab: {fileID: 6725314206217103578, guid: 1c83ca103cb01f948957bb1faea7f0c0, type: 3}
+  wallPrefab: {fileID: 388562146214842704, guid: 9d9075bebb16aef429c980653fd3f687, type: 3}

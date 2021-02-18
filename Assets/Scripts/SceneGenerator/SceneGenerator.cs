@@ -12,6 +12,7 @@ public class SceneGenerator : MonoBehaviour
 
     [SerializeField] GameObject cyclicConnectionPrefab;
     [SerializeField] float cyclicConnectionRange = 15f;
+    [SerializeField] float maxGScore = 15f;
 
     List<Connector> availableRoomConnectors = new List<Connector>();
     List<Connector> availableCorridorConnectors = new List<Connector>();
@@ -27,9 +28,10 @@ public class SceneGenerator : MonoBehaviour
         Vector2Int.right
     };
         
-    
+    CorridorConnector corridorConnectorBuilder;
     
     void Start() {
+        corridorConnectorBuilder = GetComponent<CorridorConnector>();
         sceneLayerMask = LayerMask.GetMask("SceneColliders");
         StartCoroutine("GenerateScene");
     }
@@ -59,7 +61,7 @@ public class SceneGenerator : MonoBehaviour
             yield return fixedUpdateInterval;
         }
 
-        ConnectEmptyConnectors();
+        StartCoroutine("ConnectEmptyConnectors");
         // Debug.Log("finished");
         StopCoroutine("GenerateScene");
     }
@@ -146,15 +148,6 @@ public class SceneGenerator : MonoBehaviour
         return false;
     }
 
-
-
-
-
-
-
-
-
-
     void PlaceCorridor(){
         // Debug.Log("place corridor");
         Corridor currentCorridor = Instantiate(corridorPrefabs[Random.Range(0, corridorPrefabs.Count)]) as Corridor;
@@ -223,16 +216,11 @@ public class SceneGenerator : MonoBehaviour
                 }
             }
         }
-
         return false;
     }
 
 
-
-
-
-
-    void ConnectEmptyConnectors(){
+    IEnumerator ConnectEmptyConnectors(){
         foreach(Connector corridorConnector in availableCorridorConnectors){
             foreach(Connector roomConnector in availableRoomConnectors){
                 float distanceBetweenConnectors = Vector3.Distance(
@@ -240,29 +228,15 @@ public class SceneGenerator : MonoBehaviour
                     roomConnector.transform.position);
 
                 if(distanceBetweenConnectors <= cyclicConnectionRange){
-                    PathFinder(corridorConnector, roomConnector);
+                    corridorConnectorBuilder.SetMaxGScore(maxGScore);
+                    corridorConnectorBuilder.SetConnectionPoints(corridorConnector, roomConnector);
+                    yield return StartCoroutine(corridorConnectorBuilder.StartConnecting());
+                    // bool isConnected = corridorConnectorBuilder.
                 }
             }
         }
     }
 
-    void PathFinder(Connector corridorConnector, Connector roomConnector){
-        Queue<GameObject> queue = new Queue<GameObject>();
-        GameObject pathBlock = Instantiate(cyclicConnectionPrefab);
-        pathBlock.transform.position = corridorConnector.transform.position;
-        queue.Enqueue(pathBlock);
-
-        while(queue.Count > 0){
-            var searchCenter = queue.Dequeue();
-            StopIfEndFound(searchCenter.transform, roomConnector.transform);
-        }
-    }
-
-    void ExploreNeighbours(Transform from){
-        foreach(Vector2Int direction in directions){
-            
-        }
-    }
 
     void StopIfEndFound(Transform current, Transform end){
         float distance = Vector3.Distance(
