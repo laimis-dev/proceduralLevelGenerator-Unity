@@ -238,31 +238,77 @@ public class SceneGenerator : MonoBehaviour
     IEnumerator ConnectEmptyConnectors(){
         foreach(Connector corridorConnector in availableCorridorConnectors){
             if(corridorConnector.isConnected) continue;
-            foreach(Connector roomConnector in availableRoomConnectors){
-                if(roomConnector.isConnected) continue;
-                float distanceBetweenConnectors = Vector3.Distance(
-                    corridorConnector.transform.position, 
-                    roomConnector.transform.position);
+            List<Connector> foundConnectors = FindClosestConnectors(corridorConnector);
+            foreach(Connector foundConnector in foundConnectors){
+                CorridorConnector newBuilder = Instantiate(corridorConnectorBuilder);
+                newBuilder.transform.parent = this.transform;
+                newBuilder.SetMaxGScore(maxGScore);
+                newBuilder.SetConnectionPoints(corridorConnector, foundConnector);
+                yield return StartCoroutine(newBuilder.StartConnecting());
 
-                if(distanceBetweenConnectors <= cyclicConnectionRange){
-                    CorridorConnector newBuilder = Instantiate(corridorConnectorBuilder);
-                    newBuilder.transform.parent = this.transform;
-                    newBuilder.SetMaxGScore(maxGScore);
-                    newBuilder.SetConnectionPoints(corridorConnector, roomConnector);
-                    yield return StartCoroutine(newBuilder.StartConnecting());
-
-                    if(newBuilder.isEndFound){
-                        corridorConnector.isConnected = true;
-                        roomConnector.isConnected = true;
-                        break;                   
-                    } else {
-                        Destroy(newBuilder.gameObject);
-                    }
-
-                    
+                if(newBuilder.isEndFound){
+                    corridorConnector.isConnected = true;
+                    foundConnector.isConnected = true;
+                    break;                   
+                } else {
+                    Destroy(newBuilder.gameObject);
                 }
             }
         }
+    }
+
+    List<Connector> FindClosestConnectors(Connector corridorConnector){
+        List<Connector> foundConnectors = new List<Connector>();
+        foreach(Connector roomConnector in availableRoomConnectors){
+            if(roomConnector.isConnected) continue;
+
+            float distanceBetweenConnectors = Vector3.Distance(
+                corridorConnector.transform.position, 
+                roomConnector.transform.position);
+
+            if(distanceBetweenConnectors <= cyclicConnectionRange){
+                print(distanceBetweenConnectors);
+                foundConnectors.Add(roomConnector);
+            }
+        }
+
+        //insertion sort
+        for(int i = 1; i < foundConnectors.Count; i++){
+            Connector current = foundConnectors[i];
+            float currentDist = Vector3.Distance(
+                corridorConnector.transform.position, 
+                current.transform.position);
+
+            int j = i - 1;
+
+            Connector next = foundConnectors[j];
+            float nextDist = Vector3.Distance(
+                corridorConnector.transform.position, 
+                next.transform.position);
+
+            while(j >= 0 && nextDist > currentDist){
+                next = foundConnectors[j];
+                foundConnectors[j+1] = next;
+                nextDist = Vector3.Distance(
+                    corridorConnector.transform.position, 
+                    next.transform.position);
+
+                j--;
+            }
+
+            foundConnectors[j+1] = current;
+        }
+
+        print("----------");
+        for(int i = 0; i < foundConnectors.Count; i++){
+            Connector current = foundConnectors[i];
+            float currentDist = Vector3.Distance(
+                corridorConnector.transform.position, 
+                current.transform.position);
+            print(currentDist);
+        }
+
+        return foundConnectors;
     }
 
 
