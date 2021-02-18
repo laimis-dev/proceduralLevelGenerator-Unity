@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class SceneGenerator : MonoBehaviour
 {
@@ -13,6 +14,10 @@ public class SceneGenerator : MonoBehaviour
     [SerializeField] GameObject cyclicConnectionPrefab;
     [SerializeField] float cyclicConnectionRange = 15f;
     [SerializeField] float maxGScore = 15f;
+    [SerializeField] CorridorConnector corridorConnectorBuilder;
+
+    [SerializeField] bool useRandomSeed = true;
+    [SerializeField] string seed;
 
     List<Connector> availableRoomConnectors = new List<Connector>();
     List<Connector> availableCorridorConnectors = new List<Connector>();
@@ -28,10 +33,9 @@ public class SceneGenerator : MonoBehaviour
         Vector2Int.right
     };
         
-    CorridorConnector corridorConnectorBuilder;
+    System.Random pseudoRandom;
     
     void Start() {
-        corridorConnectorBuilder = GetComponent<CorridorConnector>();
         sceneLayerMask = LayerMask.GetMask("SceneColliders");
         StartCoroutine("GenerateScene");
     }
@@ -45,13 +49,20 @@ public class SceneGenerator : MonoBehaviour
     }
 
     IEnumerator GenerateScene(){
+        if (useRandomSeed) {
+            seed = Time.time.ToString();
+        }
+
+        pseudoRandom = new System.Random(seed.GetHashCode());
+
+
         WaitForSeconds startup =  new WaitForSeconds(1);
         WaitForFixedUpdate fixedUpdateInterval = new WaitForFixedUpdate();
     
         yield return startup;
         PlaceStartRoom();
 
-        int numberOfIterations = Random.Range(roomNumberRange.x, roomNumberRange.y);
+        int numberOfIterations = pseudoRandom.Next(roomNumberRange.x, roomNumberRange.y);
         for(int i = 0; i < numberOfIterations; i++){
             PlaceRoom();
             yield return fixedUpdateInterval;
@@ -61,7 +72,7 @@ public class SceneGenerator : MonoBehaviour
             yield return fixedUpdateInterval;
         }
 
-        StartCoroutine("ConnectEmptyConnectors");
+        ConnectEmptyConnectors();
         // Debug.Log("finished");
         StopCoroutine("GenerateScene");
     }
@@ -80,7 +91,7 @@ public class SceneGenerator : MonoBehaviour
 
     void PlaceRoom(){
         // Debug.Log("place random room");
-        Room currentRoom = Instantiate(roomPrefabs[Random.Range(0, roomPrefabs.Count)]) as Room;
+        Room currentRoom = Instantiate(roomPrefabs[pseudoRandom.Next(0, roomPrefabs.Count)]) as Room;
         
         currentRoom.transform.parent = this.transform;
         List<Connector> currentRoomConnectors = currentRoom.getConnectors();
@@ -108,7 +119,7 @@ public class SceneGenerator : MonoBehaviour
   
     void AddRoomConnectorsToList(Room room){
         foreach(Connector connector in room.getConnectors()){
-            int randomExitPoint = Random.Range(0, availableRoomConnectors.Count);
+            int randomExitPoint = pseudoRandom.Next(0, availableRoomConnectors.Count);
             availableRoomConnectors.Insert(randomExitPoint, connector);
         }
     }
@@ -150,7 +161,7 @@ public class SceneGenerator : MonoBehaviour
 
     void PlaceCorridor(){
         // Debug.Log("place corridor");
-        Corridor currentCorridor = Instantiate(corridorPrefabs[Random.Range(0, corridorPrefabs.Count)]) as Corridor;
+        Corridor currentCorridor = Instantiate(corridorPrefabs[pseudoRandom.Next(0, corridorPrefabs.Count)]) as Corridor;
         
         currentCorridor.transform.parent = this.transform;
         List<Connector> currentCorridorConnectors = currentCorridor.getConnectors();
@@ -179,7 +190,7 @@ public class SceneGenerator : MonoBehaviour
 
     void AddCorridorConnectorsToList(Corridor corridor){
         foreach(Connector connector in corridor.getConnectors()){
-            int randomExitPoint = Random.Range(0, availableCorridorConnectors.Count);
+            int randomExitPoint = pseudoRandom.Next(0, availableCorridorConnectors.Count);
             availableCorridorConnectors.Insert(randomExitPoint, connector);
         }
     }
@@ -220,7 +231,7 @@ public class SceneGenerator : MonoBehaviour
     }
 
 
-    IEnumerator ConnectEmptyConnectors(){
+    void ConnectEmptyConnectors(){
         foreach(Connector corridorConnector in availableCorridorConnectors){
             foreach(Connector roomConnector in availableRoomConnectors){
                 float distanceBetweenConnectors = Vector3.Distance(
@@ -228,9 +239,11 @@ public class SceneGenerator : MonoBehaviour
                     roomConnector.transform.position);
 
                 if(distanceBetweenConnectors <= cyclicConnectionRange){
-                    corridorConnectorBuilder.SetMaxGScore(maxGScore);
-                    corridorConnectorBuilder.SetConnectionPoints(corridorConnector, roomConnector);
-                    yield return StartCoroutine(corridorConnectorBuilder.StartConnecting());
+                    CorridorConnector newBuilder = Instantiate(corridorConnectorBuilder);
+
+                    newBuilder.SetMaxGScore(maxGScore);
+                    newBuilder.SetConnectionPoints(corridorConnector, roomConnector);
+                    newBuilder.StartConnecting();
                     // bool isConnected = corridorConnectorBuilder.
                 }
             }

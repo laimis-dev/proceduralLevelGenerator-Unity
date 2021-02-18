@@ -8,6 +8,9 @@ public class CorridorConnector : MonoBehaviour
     [SerializeField] Connector end;
     [SerializeField] SceneObject cyclicConnectionPrefab;
     [SerializeField] SceneObject wallPrefab;
+
+    [SerializeField] bool startOnAwake = false;
+    [SerializeField]float maxGScore = 15f;
     
 
     LayerMask sceneLayerMask;
@@ -26,18 +29,21 @@ public class CorridorConnector : MonoBehaviour
     WaitForSeconds startup =  new WaitForSeconds(1);
     WaitForFixedUpdate fixedUpdateInterval = new WaitForFixedUpdate();
     public bool isEndFound = false;
-    float maxGScore = 15f;
+    
     
     void Start() {
         sceneLayerMask = LayerMask.GetMask("SceneColliders");
-        // StartCoroutine("PathFinder");
+        if(startOnAwake){
+            StartCoroutine(StartConnecting());
+        }
+        
     }
 
     void Update() {
-        // if (Input.GetMouseButtonDown(0)) {
+        if (Input.GetMouseButtonDown(0) && startOnAwake) {
 
-        //     StartCoroutine("PathFinder");
-        // }   
+            StartCoroutine(StartConnecting());
+        }   
     }
 
     public void SetConnectionPoints(Connector start, Connector end){
@@ -66,7 +72,7 @@ public class CorridorConnector : MonoBehaviour
         Connector corridorConnector = start;
         Connector roomConnector = end;
         SceneObject startBlock = Instantiate(cyclicConnectionPrefab);
-        startBlock.transform.parent = start.transform.parent;
+        startBlock.transform.parent = this.transform;
         startBlock.transform.position = 
             corridorConnector.transform.position + 
             start.transform.rotation * Vector3.forward;
@@ -110,7 +116,7 @@ public class CorridorConnector : MonoBehaviour
     }
 
     void DeleteUnneededPaths(){
-        foreach (Transform child in start.transform.parent) {
+        foreach (Transform child in this.transform) {
             bool isPath = false;
             foreach (SceneObject path in connectorPath) {
                 if(child.position == path.transform.position){
@@ -143,7 +149,7 @@ public class CorridorConnector : MonoBehaviour
 
                 for(int j = 1; j < 3; j++){
                     SceneObject wall = Instantiate(wallPrefab);
-                    wall.transform.parent = start.transform.parent;
+                    wall.transform.parent = this.transform;
                     if(direction == Vector2Int.up || direction == Vector2Int.down){
                         wall.transform.position = 
                             new Vector3(
@@ -186,7 +192,7 @@ public class CorridorConnector : MonoBehaviour
         foreach(Vector2Int direction in directions){        
             float currentScore = from.gScore + connectionWeight;
             SceneObject pathBlock = Instantiate(cyclicConnectionPrefab);
-            pathBlock.transform.parent = start.transform.parent;
+            pathBlock.transform.parent = this.transform;
             pathBlock.transform.position = new Vector3(
                 from.transform.position.x + direction.x * from.transform.localScale.x,
                 from.transform.position.y,
@@ -229,7 +235,7 @@ public class CorridorConnector : MonoBehaviour
 
     void PlaceEndPath() {
         SceneObject pathBlock = Instantiate(cyclicConnectionPrefab);
-        pathBlock.transform.parent = start.transform.parent;
+        pathBlock.transform.parent = this.transform;
         pathBlock.transform.position = end.transform.position + end.transform.rotation * Vector3.forward;
 
         connectorPath.Add(pathBlock);
@@ -259,7 +265,7 @@ public class CorridorConnector : MonoBehaviour
 
 
     void DeleteAll(){
-        foreach (Transform child in start.transform.parent) {
+        foreach (Transform child in this.transform) {
             GameObject.Destroy(child.gameObject);
         }
     }
@@ -269,6 +275,7 @@ public class CorridorConnector : MonoBehaviour
      Collider CheckOverlap(SceneObject sceneObject){
         List<BoxCollider> objectColliders = sceneObject.getColliders();
         foreach(BoxCollider boxCollider in objectColliders){
+            // print(boxCollider);
             Bounds bounds = boxCollider.bounds;
             bounds.Expand(-0.1f);
 
