@@ -10,7 +10,7 @@ public class CorridorConnector : MonoBehaviour
     [SerializeField] SceneObject wallPrefab;
 
     [SerializeField] bool startOnAwake = false;
-    [SerializeField]float maxGScore = 15f;
+    [SerializeField] float maxGScore = 15f;
     
 
     LayerMask sceneLayerMask;

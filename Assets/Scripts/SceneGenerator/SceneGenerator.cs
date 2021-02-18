@@ -237,7 +237,9 @@ public class SceneGenerator : MonoBehaviour
 
     IEnumerator ConnectEmptyConnectors(){
         foreach(Connector corridorConnector in availableCorridorConnectors){
+            if(corridorConnector.isConnected) continue;
             foreach(Connector roomConnector in availableRoomConnectors){
+                if(roomConnector.isConnected) continue;
                 float distanceBetweenConnectors = Vector3.Distance(
                     corridorConnector.transform.position, 
                     roomConnector.transform.position);
@@ -248,7 +250,16 @@ public class SceneGenerator : MonoBehaviour
                     newBuilder.SetMaxGScore(maxGScore);
                     newBuilder.SetConnectionPoints(corridorConnector, roomConnector);
                     yield return StartCoroutine(newBuilder.StartConnecting());
-                    // bool isConnected = corridorConnectorBuilder.
+
+                    if(newBuilder.isEndFound){
+                        corridorConnector.isConnected = true;
+                        roomConnector.isConnected = true;
+                        break;                   
+                    } else {
+                        Destroy(newBuilder.gameObject);
+                    }
+
+                    
                 }
             }
         }
