@@ -75,6 +75,7 @@ public class SceneGenerator : MonoBehaviour
         yield return StartCoroutine(ConnectEmptyConnectors());
 
         DeleteUnconnectedCorridors();
+        ProcessDoors();
         // Debug.Log("finished");
         StopCoroutine("GenerateScene");
     }
@@ -305,6 +306,22 @@ public class SceneGenerator : MonoBehaviour
             }
 
             if(connections < 2) Destroy(corridor.gameObject);
+        }
+    }
+
+    void ProcessDoors(){
+        foreach(Corridor corridor in generatedCorridors){
+            List<Connector> connectors = corridor.getConnectors();
+            foreach(Connector connector in connectors){
+                connector.ProcessDoor();
+            }
+        }
+
+        foreach(Room room in generatedRooms){
+            List<Connector> connectors = room.getConnectors();
+            foreach(Connector connector in connectors){
+                connector.ProcessDoor();
+            }
         }
     }
 
