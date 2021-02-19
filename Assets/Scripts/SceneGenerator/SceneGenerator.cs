@@ -102,10 +102,8 @@ public class SceneGenerator : MonoBehaviour
         foreach(Connector currentSceneCorridorConnector in availableCorridorConnectors){
             foreach(Connector currentRoomConnector in currentRoomConnectors){
                 PositionRoomAtConnector(currentRoom, currentRoomConnector, currentSceneCorridorConnector);
-                // Debug.Break();
+
                 if(CheckRoomOverlap(currentRoom)){
-                    // Debug.Log("OVERLAP");
-                    // Debug.Break();
                     continue;
                 }
 
@@ -116,6 +114,8 @@ public class SceneGenerator : MonoBehaviour
                 availableCorridorConnectors.Remove(currentSceneCorridorConnector);
                 currentRoomConnector.isConnected = true;
                 availableRoomConnectors.Remove(currentRoomConnector);
+
+                currentRoomConnector.connectedFrom = currentSceneCorridorConnector;
                 return;
             }
         }
@@ -188,6 +188,8 @@ public class SceneGenerator : MonoBehaviour
                 availableRoomConnectors.Remove(currentSceneRoomConnector);
                 currentCorridorConnector.isConnected = true;
                 availableCorridorConnectors.Remove(currentCorridorConnector);
+
+                currentCorridorConnector.connectedFrom = currentSceneRoomConnector;
                 return;
             }
         }
@@ -305,7 +307,14 @@ public class SceneGenerator : MonoBehaviour
                 if(connector.isConnected) connections++;
             }
 
-            if(connections < 2) Destroy(corridor.gameObject);
+            if(connections < 2) {
+                foreach(Connector connector in connectors){
+                    if(connector.connectedFrom != null) {
+                        connector.connectedFrom.isConnected = false;
+                    }
+                }
+                Destroy(corridor.gameObject);
+            }
         }
     }
 
