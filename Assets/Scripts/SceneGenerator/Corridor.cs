@@ -45,11 +45,11 @@ public class Corridor : MonoBehaviour
     //     return meshCollider.bounds;
     // }
 
-    public List<Connector> getConnectors(){
+    public List<Connector> GetConnectors(){
         return connectors;
     }
 
-    public List<BoxCollider> getColliders(){
+    public List<BoxCollider> GetColliders(){
         return colliders;
     }
 }

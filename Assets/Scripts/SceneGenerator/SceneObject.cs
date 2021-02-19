@@ -18,7 +18,7 @@ public class SceneObject : MonoBehaviour
     }
 
 
-    public List<BoxCollider> getColliders(){
+    public List<BoxCollider> GetColliders(){
         return colliders;
     }
 

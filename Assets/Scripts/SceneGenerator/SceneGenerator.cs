@@ -97,7 +97,7 @@ public class SceneGenerator : MonoBehaviour
         Room currentRoom = Instantiate(roomPrefabs[pseudoRandom.Next(0, roomPrefabs.Count)]) as Room;
         
         currentRoom.transform.parent = this.transform;
-        List<Connector> currentRoomConnectors = currentRoom.getConnectors();
+        List<Connector> currentRoomConnectors = currentRoom.GetConnectors();
 
         foreach(Connector currentSceneCorridorConnector in availableCorridorConnectors){
             foreach(Connector currentRoomConnector in currentRoomConnectors){
@@ -123,7 +123,7 @@ public class SceneGenerator : MonoBehaviour
     }
   
     void AddRoomConnectorsToList(Room room){
-        foreach(Connector connector in room.getConnectors()){
+        foreach(Connector connector in room.GetConnectors()){
             int randomExitPoint = pseudoRandom.Next(0, availableRoomConnectors.Count);
             availableRoomConnectors.Insert(randomExitPoint, connector);
         }
@@ -144,7 +144,7 @@ public class SceneGenerator : MonoBehaviour
     }
 
     bool CheckRoomOverlap(Room room){
-        List<BoxCollider> roomColliders = room.getColliders();
+        List<BoxCollider> roomColliders = room.GetColliders();
         foreach(BoxCollider roomCollider in roomColliders){
             Bounds bounds = roomCollider.bounds;
             bounds.Expand(-0.1f);
@@ -152,7 +152,7 @@ public class SceneGenerator : MonoBehaviour
             Collider[] colliders = Physics.OverlapBox(roomCollider.transform.position, bounds.size / 2, roomCollider.transform.rotation, sceneLayerMask);
             if(colliders.Length > 0){
                 foreach(Collider c in colliders){
-                    if(c.transform.parent.gameObject.transform.parent.gameObject.Equals(room.gameObject)){
+                    if(GetRootGameObject(c.transform).Equals(room.gameObject)){
                         continue;
                     } else {
                         return true;
@@ -165,19 +165,16 @@ public class SceneGenerator : MonoBehaviour
     }
 
     void PlaceCorridor(){
-        // Debug.Log("place corridor");
         Corridor currentCorridor = Instantiate(corridorPrefabs[pseudoRandom.Next(0, corridorPrefabs.Count)]) as Corridor;
         
         currentCorridor.transform.parent = this.transform;
-        List<Connector> currentCorridorConnectors = currentCorridor.getConnectors();
+        List<Connector> currentCorridorConnectors = currentCorridor.GetConnectors();
 
         foreach(Connector currentSceneRoomConnector in availableRoomConnectors){
             foreach(Connector currentCorridorConnector in currentCorridorConnectors){
                 PositionCorridorAtConnector(currentCorridor, currentCorridorConnector, currentSceneRoomConnector);
-                // Debug.Break();
+
                 if(CheckCorridorOverlap(currentCorridor)){
-                    // Debug.Log("OVERLAP");
-                    // Debug.Break();
                     continue;
                 }
 
@@ -198,7 +195,7 @@ public class SceneGenerator : MonoBehaviour
 
 
     void AddCorridorConnectorsToList(Corridor corridor){
-        foreach(Connector connector in corridor.getConnectors()){
+        foreach(Connector connector in corridor.GetConnectors()){
             int randomExitPoint = pseudoRandom.Next(0, availableCorridorConnectors.Count);
             availableCorridorConnectors.Insert(randomExitPoint, connector);
         }
@@ -220,7 +217,7 @@ public class SceneGenerator : MonoBehaviour
     }
 
     bool CheckCorridorOverlap(Corridor corridor){
-        List<BoxCollider> corridorColliders = corridor.getColliders();
+        List<BoxCollider> corridorColliders = corridor.GetColliders();
         foreach(BoxCollider corridorCollider in corridorColliders){
             Bounds bounds = corridorCollider.bounds;
             bounds.Expand(-0.1f);
@@ -228,7 +225,7 @@ public class SceneGenerator : MonoBehaviour
             Collider[] colliders = Physics.OverlapBox(corridorCollider.transform.position, bounds.size / 2, corridorCollider.transform.rotation, sceneLayerMask);
             if(colliders.Length > 0){
                 foreach(Collider c in colliders){
-                    if(c.transform.parent.gameObject.transform.parent.gameObject.Equals(corridor.gameObject)){
+                    if(GetRootGameObject(c.transform).Equals(corridor.gameObject)){
                         continue;
                     } else {
                         return true;
@@ -238,6 +235,10 @@ public class SceneGenerator : MonoBehaviour
         }
         return false;
     }
+
+
+
+
 
 
     IEnumerator ConnectEmptyConnectors(){
@@ -272,7 +273,10 @@ public class SceneGenerator : MonoBehaviour
                 roomConnector.transform.position);
 
             if(distanceBetweenConnectors <= cyclicConnectionRange){
-                foundConnectors.Add(roomConnector);
+                if(!CheckIfSameRoom(corridorConnector, roomConnector)){
+                    foundConnectors.Add(roomConnector);
+                }
+                
             }
         }
 
@@ -298,10 +302,34 @@ public class SceneGenerator : MonoBehaviour
         return foundConnectors;
     }
 
+    bool CheckIfSameRoom(Connector startCorridorConnector, Connector endRoomConnector){
+        GameObject corridorGameObject = GetRootGameObject(startCorridorConnector.transform);
+        print("-----------");
+        print(corridorGameObject);
+        Corridor currentCorridor = corridorGameObject.GetComponent<Corridor>();
+        print(currentCorridor);
+        List<Connector> corridorConnectors = currentCorridor.GetConnectors();
+
+        foreach(Connector corridorConnector in corridorConnectors){
+            if(corridorConnector == startCorridorConnector) continue;
+            if(corridorConnector.connectedFrom == null) continue;
+            GameObject roomGameObject = GetRootGameObject(corridorConnector.connectedFrom.transform);
+            Room currentRoom = roomGameObject.GetComponent<Room>();
+            print(currentRoom);
+            List<Connector> roomConnectors = currentRoom.GetConnectors();
+            foreach(Connector roomConnector in roomConnectors){
+                if(roomConnector == endRoomConnector){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     void DeleteUnconnectedCorridors(){
         foreach(Corridor corridor in generatedCorridors){
-            List<Connector> connectors = corridor.getConnectors();
+            List<Connector> connectors = corridor.GetConnectors();
             int connections = 0;
             foreach(Connector connector in connectors){
                 if(connector.isConnected) connections++;
@@ -320,18 +348,22 @@ public class SceneGenerator : MonoBehaviour
 
     void ProcessDoors(){
         foreach(Corridor corridor in generatedCorridors){
-            List<Connector> connectors = corridor.getConnectors();
+            List<Connector> connectors = corridor.GetConnectors();
             foreach(Connector connector in connectors){
                 connector.ProcessDoor();
             }
         }
 
         foreach(Room room in generatedRooms){
-            List<Connector> connectors = room.getConnectors();
+            List<Connector> connectors = room.GetConnectors();
             foreach(Connector connector in connectors){
                 connector.ProcessDoor();
             }
         }
+    }
+
+    GameObject GetRootGameObject(Transform transform){
+        return transform.parent.gameObject.transform.parent.gameObject;
     }
 
 

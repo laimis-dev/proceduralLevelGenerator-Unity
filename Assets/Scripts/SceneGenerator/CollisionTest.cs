@@ -17,7 +17,7 @@ public class CollisionTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        List<BoxCollider> roomColliders = room.getColliders();
+        List<BoxCollider> roomColliders = room.GetColliders();
         foreach(BoxCollider roomCollider in roomColliders){
             Bounds bounds = roomCollider.bounds;
             bounds.Expand(-0.1f);

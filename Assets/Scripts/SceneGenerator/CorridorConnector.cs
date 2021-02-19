@@ -271,7 +271,7 @@ public class CorridorConnector : MonoBehaviour
 
 
      Collider CheckOverlap(SceneObject sceneObject){
-        List<BoxCollider> objectColliders = sceneObject.getColliders();
+        List<BoxCollider> objectColliders = sceneObject.GetColliders();
         foreach(BoxCollider boxCollider in objectColliders){
             // print(boxCollider);
             Bounds bounds = boxCollider.bounds;
