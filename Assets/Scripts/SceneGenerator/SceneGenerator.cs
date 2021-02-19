@@ -267,7 +267,6 @@ public class SceneGenerator : MonoBehaviour
                 roomConnector.transform.position);
 
             if(distanceBetweenConnectors <= cyclicConnectionRange){
-                print(distanceBetweenConnectors);
                 foundConnectors.Add(roomConnector);
             }
         }
@@ -293,18 +292,6 @@ public class SceneGenerator : MonoBehaviour
 
         return foundConnectors;
     }
-
-
-    void StopIfEndFound(Transform current, Transform end){
-        float distance = Vector3.Distance(
-                    current.position, 
-                    end.position);
-        if(distance <= 1f){
-            print("stop");
-        }
-    }
-
-
 
 
 

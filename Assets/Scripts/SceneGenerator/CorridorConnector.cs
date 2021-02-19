@@ -248,9 +248,7 @@ public class CorridorConnector : MonoBehaviour
     }
 
     bool IfEndFound(Transform current){
-        // print(DistanceToEnd(current));
         if(DistanceToEnd(current) <= 3f){
-            print("stop");
             return true;
             
         } else {
