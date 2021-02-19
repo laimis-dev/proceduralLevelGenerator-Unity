@@ -278,34 +278,17 @@ public class SceneGenerator : MonoBehaviour
             float currentDist = Vector3.Distance(
                 corridorConnector.transform.position, 
                 current.transform.position);
-
             int j = i - 1;
 
-            Connector next = foundConnectors[j];
-            float nextDist = Vector3.Distance(
-                corridorConnector.transform.position, 
-                next.transform.position);
+            while(j >= 0 && 
+                Vector3.Distance(corridorConnector.transform.position, 
+                foundConnectors[j].transform.position) > currentDist){
 
-            while(j >= 0 && nextDist > currentDist){
-                next = foundConnectors[j];
-                foundConnectors[j+1] = next;
-                nextDist = Vector3.Distance(
-                    corridorConnector.transform.position, 
-                    next.transform.position);
-
-                j--;
+                    foundConnectors[j+1] = foundConnectors[j];
+                    j--;
             }
 
             foundConnectors[j+1] = current;
-        }
-
-        print("----------");
-        for(int i = 0; i < foundConnectors.Count; i++){
-            Connector current = foundConnectors[i];
-            float currentDist = Vector3.Distance(
-                corridorConnector.transform.position, 
-                current.transform.position);
-            print(currentDist);
         }
 
         return foundConnectors;
