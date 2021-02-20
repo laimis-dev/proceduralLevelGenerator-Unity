@@ -302,10 +302,7 @@ public class SceneGenerator : MonoBehaviour
 
     bool CheckIfSameRoom(Connector startCorridorConnector, Connector endRoomConnector){
         GameObject corridorGameObject = GetRootGameObject(startCorridorConnector.transform);
-        print("------------------------------------");
         Corridor currentCorridor = corridorGameObject.GetComponent<Corridor>();
-        print(currentCorridor);
-        print(endRoomConnector.transform.position);
         List<Connector> corridorConnectors = currentCorridor.GetConnectors();
 
         foreach(Connector corridorConnector in corridorConnectors){
@@ -314,16 +311,11 @@ public class SceneGenerator : MonoBehaviour
             if(corridorConnector.connectedTo == null) continue;
             GameObject roomGameObject = GetRootGameObject(corridorConnector.connectedTo.transform);
             Room currentRoom = roomGameObject.GetComponent<Room>();
-            print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-            print(currentRoom);
             List<Connector> roomConnectors = currentRoom.GetConnectors();
             
             
             foreach(Connector roomConnector in roomConnectors){
                 if(roomConnector.connectedTo != null) continue;
-                print("****************");
-                print(roomConnector.transform.position);
-                print(roomConnector.transform.position == endRoomConnector.transform.position);
                 if(roomConnector.transform.position == endRoomConnector.transform.position){
                     return true;
                 }
