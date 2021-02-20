@@ -330,18 +330,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startRoomPrefab: {fileID: 524210088910343108, guid: e4e13f791a40adb49b80a6c13c4db9da, type: 3}
   roomPrefabs:
-  - {fileID: 6206494515479683427, guid: 40cadb47e0e4e9f4babf0edc61340fd3, type: 3}
+  - {fileID: 524210088910343108, guid: 497ac137fdd9bb3469426ae5ac652f3d, type: 3}
   - {fileID: 9139227440564974227, guid: 8e94bd7a0caf98c49ba3ad96e7dc192c, type: 3}
+  - {fileID: 8402461559166549054, guid: 073ec4557731e6a42acee5e5deca6ea0, type: 3}
+  - {fileID: 1254547377535720086, guid: 1c5ab28cfeb7fb14d8d91e31d937c6b5, type: 3}
+  - {fileID: 8402461559166549054, guid: 8db7793b69ee1924a8e118ee9e173101, type: 3}
+  - {fileID: 6206494515479683427, guid: 40cadb47e0e4e9f4babf0edc61340fd3, type: 3}
   corridorPrefabs:
-  - {fileID: 4075321898475735892, guid: 6f066f6f5f779d849977c8af499e623d, type: 3}
+  - {fileID: 5760689715454811961, guid: 6413e8fc08aa99b4b800d20e3c565f1a, type: 3}
+  - {fileID: 2104838298641763185, guid: 0d159d4cdc573ae468604202eb02d2a4, type: 3}
   - {fileID: 2455156592747941819, guid: 77bacc2724dde064b934ad98250c02f7, type: 3}
+  - {fileID: 4075321898475735892, guid: 6f066f6f5f779d849977c8af499e623d, type: 3}
+  - {fileID: 6352129608209332735, guid: a2cf93c4b14db1c4a9f307331518c3af, type: 3}
   roomNumberRange: {x: 10, y: 20}
   cyclicConnectionPrefab: {fileID: 8630709098779315784, guid: 1c83ca103cb01f948957bb1faea7f0c0, type: 3}
   cyclicConnectionRange: 30
   maxGScore: 15
   corridorConnectorBuilder: {fileID: 7998801560231636573, guid: 2a36d497d679e41498fdb3a3a513ab1f, type: 3}
-  useRandomSeed: 0
-  seed: 124.2973
+  useRandomSeed: 1
+  seed: 5.399505
 --- !u!4 &1850828772
 Transform:
   m_ObjectHideFlags: 0
