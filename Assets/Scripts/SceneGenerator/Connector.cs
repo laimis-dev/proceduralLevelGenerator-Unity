@@ -6,9 +6,8 @@ public class Connector : MonoBehaviour
 {
     [SerializeField] bool drawGizmo = true;
     [SerializeField] GameObject door;
-    public Connector connectedFrom;
+    public Connector connectedTo;
 
-    public bool isConnected = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,7 +29,7 @@ public class Connector : MonoBehaviour
     }
 
     public void ProcessDoor(){
-        if(!isConnected){
+        if(connectedTo == null){
             door.SetActive(true);
         } else {
             door.SetActive(false);

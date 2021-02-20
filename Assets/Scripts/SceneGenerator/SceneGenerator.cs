@@ -110,12 +110,11 @@ public class SceneGenerator : MonoBehaviour
                 AddRoomConnectorsToList(currentRoom);
                 generatedRooms.Add(currentRoom);
 
-                currentSceneCorridorConnector.isConnected = true;
                 availableCorridorConnectors.Remove(currentSceneCorridorConnector);
-                currentRoomConnector.isConnected = true;
                 availableRoomConnectors.Remove(currentRoomConnector);
 
-                currentRoomConnector.connectedFrom = currentSceneCorridorConnector;
+                currentSceneCorridorConnector.connectedTo = currentRoomConnector;
+                currentRoomConnector.connectedTo = currentSceneCorridorConnector;
                 return;
             }
         }
@@ -181,12 +180,11 @@ public class SceneGenerator : MonoBehaviour
                 AddCorridorConnectorsToList(currentCorridor);
                 generatedCorridors.Add(currentCorridor);
 
-                currentSceneRoomConnector.isConnected = true;
                 availableRoomConnectors.Remove(currentSceneRoomConnector);
-                currentCorridorConnector.isConnected = true;
                 availableCorridorConnectors.Remove(currentCorridorConnector);
 
-                currentCorridorConnector.connectedFrom = currentSceneRoomConnector;
+                currentSceneRoomConnector.connectedTo = currentCorridorConnector;
+                currentCorridorConnector.connectedTo = currentSceneRoomConnector;
                 return;
             }
         }
@@ -243,7 +241,7 @@ public class SceneGenerator : MonoBehaviour
 
     IEnumerator ConnectEmptyConnectors(){
         foreach(Connector corridorConnector in availableCorridorConnectors){
-            if(corridorConnector.isConnected) continue;
+            if(corridorConnector.connectedTo != null) continue;
             List<Connector> foundConnectors = FindClosestConnectors(corridorConnector);
             foreach(Connector foundConnector in foundConnectors){
                 CorridorConnector newBuilder = Instantiate(corridorConnectorBuilder);
@@ -253,8 +251,8 @@ public class SceneGenerator : MonoBehaviour
                 yield return StartCoroutine(newBuilder.StartConnecting());
 
                 if(newBuilder.isEndFound){
-                    corridorConnector.isConnected = true;
-                    foundConnector.isConnected = true;
+                    corridorConnector.connectedTo = foundConnector;
+                    foundConnector.connectedTo = corridorConnector;
                     break;                   
                 } else {
                     Destroy(newBuilder.gameObject);
@@ -266,7 +264,7 @@ public class SceneGenerator : MonoBehaviour
     List<Connector> FindClosestConnectors(Connector corridorConnector){
         List<Connector> foundConnectors = new List<Connector>();
         foreach(Connector roomConnector in availableRoomConnectors){
-            if(roomConnector.isConnected) continue;
+            if(roomConnector.connectedTo != null) continue;
 
             float distanceBetweenConnectors = Vector3.Distance(
                 corridorConnector.transform.position, 
@@ -304,21 +302,29 @@ public class SceneGenerator : MonoBehaviour
 
     bool CheckIfSameRoom(Connector startCorridorConnector, Connector endRoomConnector){
         GameObject corridorGameObject = GetRootGameObject(startCorridorConnector.transform);
-        print("-----------");
-        print(corridorGameObject);
+        print("------------------------------------");
         Corridor currentCorridor = corridorGameObject.GetComponent<Corridor>();
         print(currentCorridor);
+        print(endRoomConnector.transform.position);
         List<Connector> corridorConnectors = currentCorridor.GetConnectors();
 
         foreach(Connector corridorConnector in corridorConnectors){
+            
             if(corridorConnector == startCorridorConnector) continue;
-            if(corridorConnector.connectedFrom == null) continue;
-            GameObject roomGameObject = GetRootGameObject(corridorConnector.connectedFrom.transform);
+            if(corridorConnector.connectedTo == null) continue;
+            GameObject roomGameObject = GetRootGameObject(corridorConnector.connectedTo.transform);
             Room currentRoom = roomGameObject.GetComponent<Room>();
+            print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
             print(currentRoom);
             List<Connector> roomConnectors = currentRoom.GetConnectors();
+            
+            
             foreach(Connector roomConnector in roomConnectors){
-                if(roomConnector == endRoomConnector){
+                if(roomConnector.connectedTo != null) continue;
+                print("****************");
+                print(roomConnector.transform.position);
+                print(roomConnector.transform.position == endRoomConnector.transform.position);
+                if(roomConnector.transform.position == endRoomConnector.transform.position){
                     return true;
                 }
             }
@@ -332,13 +338,13 @@ public class SceneGenerator : MonoBehaviour
             List<Connector> connectors = corridor.GetConnectors();
             int connections = 0;
             foreach(Connector connector in connectors){
-                if(connector.isConnected) connections++;
+                if(connector.connectedTo != null) connections++;
             }
 
             if(connections < 2) {
                 foreach(Connector connector in connectors){
-                    if(connector.connectedFrom != null) {
-                        connector.connectedFrom.isConnected = false;
+                    if(connector.connectedTo != null) {
+                        connector.connectedTo.connectedTo = null;
                     }
                 }
                 Destroy(corridor.gameObject);
