@@ -31,6 +31,7 @@ public class SceneGenerator : MonoBehaviour
     LayerMask sceneLayerMask;
 
     bool wasRoomPlaced = false;
+    bool wasCorridorPlaced = false;
 
     Vector2Int[] directions = new Vector2Int[] {
         Vector2Int.up,
@@ -70,6 +71,10 @@ public class SceneGenerator : MonoBehaviour
         int numberOfIterations = pseudoRandom.Next(roomNumberRange.x, roomNumberRange.y);
         for(int i = 0; i < numberOfIterations - 1; i++){
             wasRoomPlaced = false;
+            wasCorridorPlaced = false;
+            List<Room> possibleRooms = new List<Room>(roomPrefabs);
+            List<Corridor> possibleCorridors = new List<Corridor>(corridorPrefabs);
+
             for(int j = 0; j < specialRoomPrefabs.Count; j++){
                 SpecialRoom specRoomPrefab = specialRoomPrefabs[j];
 
@@ -81,17 +86,22 @@ public class SceneGenerator : MonoBehaviour
                 break;
             }
 
-            if(!wasRoomPlaced){
-                Room currentRoom = Instantiate(roomPrefabs[pseudoRandom.Next(0, roomPrefabs.Count)]) as Room;
-                PlaceRoom(currentRoom);
+            while(!wasRoomPlaced && possibleRooms.Count > 0){
+                Room currentRoom = possibleRooms[pseudoRandom.Next(0, possibleRooms.Count)];
+                possibleRooms.Remove(currentRoom);
+                PlaceRoom(Instantiate(currentRoom));
+                yield return fixedUpdateInterval;
             }
             
-            yield return fixedUpdateInterval;
+            
             // yield return startup;
-
-            Corridor currentCorridor = Instantiate(corridorPrefabs[pseudoRandom.Next(0, corridorPrefabs.Count)]) as Corridor;
-            PlaceCorridor(currentCorridor);
-            yield return fixedUpdateInterval;
+            
+            while(!wasCorridorPlaced && possibleCorridors.Count > 0){
+                Corridor currentCorridor = corridorPrefabs[pseudoRandom.Next(0, corridorPrefabs.Count)];
+                possibleCorridors.Remove(currentCorridor);
+                PlaceCorridor(Instantiate(currentCorridor));
+                yield return fixedUpdateInterval;
+            }
         }
 
         PlaceEndRoom();
