@@ -9,6 +9,7 @@ public class SceneGenerator : MonoBehaviour
     [SerializeField] Room endRoomPrefab;
     [SerializeField] List<Room> roomPrefabs = new List<Room>();
     [SerializeField] List<Corridor> corridorPrefabs = new List<Corridor>();
+    [SerializeField] List<SpecialRoom> specialRoomPrefabs = new List<SpecialRoom>();
 
     [SerializeField] Vector2Int roomNumberRange = new Vector2Int(1, 5);
 
@@ -25,6 +26,8 @@ public class SceneGenerator : MonoBehaviour
 
     List<Room> generatedRooms = new List<Room>();
     List<Corridor> generatedCorridors = new List<Corridor>();
+    List<SpecialRoom> generatedSpecialRooms = new List<SpecialRoom>();
+
     LayerMask sceneLayerMask;
 
     Vector2Int[] directions = new Vector2Int[] {
@@ -56,7 +59,6 @@ public class SceneGenerator : MonoBehaviour
 
         pseudoRandom = new System.Random(seed.GetHashCode());
 
-
         WaitForSeconds startup =  new WaitForSeconds(1);
         WaitForFixedUpdate fixedUpdateInterval = new WaitForFixedUpdate();
     
@@ -65,8 +67,23 @@ public class SceneGenerator : MonoBehaviour
 
         int numberOfIterations = pseudoRandom.Next(roomNumberRange.x, roomNumberRange.y);
         for(int i = 0; i < numberOfIterations - 1; i++){
-            Room currentRoom = Instantiate(roomPrefabs[pseudoRandom.Next(0, roomPrefabs.Count)]) as Room;
-            PlaceRoom(currentRoom);
+            Room currentRoom = null;
+            for(int j = 0; j < specialRoomPrefabs.Count; j++){
+                SpecialRoom specRoomPrefab = specialRoomPrefabs[j];
+                if(specRoomPrefab.GetSpawnChance() < pseudoRandom.Next(0, 100)) continue;
+                if(specRoomPrefab.GetMaxAmountPerScene() <= CountGeneratedSpecialRooms(specRoomPrefab)) continue;
+                    
+                SpecialRoom specRoom = Instantiate(specRoomPrefab);
+                currentRoom = specRoom;
+                PlaceSpecialRoom(specRoom);
+                break;
+            }
+
+            if(currentRoom == null){
+                currentRoom = Instantiate(roomPrefabs[pseudoRandom.Next(0, roomPrefabs.Count)]) as Room;
+                PlaceRoom(currentRoom);
+            }
+            
             yield return fixedUpdateInterval;
             // yield return startup;
 
@@ -83,6 +100,16 @@ public class SceneGenerator : MonoBehaviour
         ProcessDoors();
         // Debug.Log("finished");
         StopCoroutine("GenerateScene");
+    }
+
+    int CountGeneratedSpecialRooms(SpecialRoom specRoom){
+        int count = 0;
+        for(int i = 0; i < generatedSpecialRooms.Count; i++){
+            SpecialRoom room = generatedSpecialRooms[i];
+            if(room.GetName() == specRoom.GetName()) count++;
+        }
+        print(count);
+        return count;
     }
 
     void PlaceStartRoom(){
@@ -157,6 +184,35 @@ public class SceneGenerator : MonoBehaviour
 
                 AddRoomConnectorsToList(currentRoom);
                 generatedRooms.Add(currentRoom);
+
+                availableCorridorConnectors.Remove(currentSceneCorridorConnector);
+                availableRoomConnectors.Remove(currentRoomConnector);
+
+                currentSceneCorridorConnector.connectedTo = currentRoomConnector;
+                currentRoomConnector.connectedTo = currentSceneCorridorConnector;
+
+                SetRoomConnectorDistance(currentRoom, currentSceneCorridorConnector.distanceFromStart + 1);
+                return;
+            }
+        }
+        Destroy(currentRoom.gameObject);
+    }
+
+    void PlaceSpecialRoom(SpecialRoom currentRoom){
+        // Debug.Log("place random room");
+        currentRoom.transform.parent = this.transform;
+        List<Connector> currentRoomConnectors = currentRoom.GetConnectors();
+
+        foreach(Connector currentSceneCorridorConnector in availableCorridorConnectors){
+            foreach(Connector currentRoomConnector in currentRoomConnectors){
+                PositionRoomAtConnector(currentRoom, currentRoomConnector, currentSceneCorridorConnector);
+
+                if(CheckRoomOverlap(currentRoom)){
+                    continue;
+                }
+
+                AddRoomConnectorsToList(currentRoom);
+                generatedSpecialRooms.Add(currentRoom);
 
                 availableCorridorConnectors.Remove(currentSceneCorridorConnector);
                 availableRoomConnectors.Remove(currentRoomConnector);
@@ -432,6 +488,7 @@ public class SceneGenerator : MonoBehaviour
     void CleanUp(){
         generatedCorridors.Clear();
         generatedRooms.Clear();
+        generatedSpecialRooms.Clear();
         availableRoomConnectors.Clear();
         availableCorridorConnectors.Clear();
         foreach (Transform child in this.transform) {
