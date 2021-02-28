@@ -5,9 +5,8 @@ using UnityEngine;
 public class SpecialRoom : Room
 {
     [SerializeField] string roomName;
-    [Tooltip("Multiplier of how far away should the room spawn based on number of max rooms")]
-    [Range(0,1)]
-    [SerializeField] float minSpawnDistanceMultiplier = 1;
+
+    [SerializeField] int minSpawnDistance = 1;
 
     [Range(0,100)]
     [SerializeField] int spawnChance = 10;
@@ -24,8 +23,8 @@ public class SpecialRoom : Room
         
     }
 
-    public float GetMinSpawnDistanceMultiplier(){
-        return minSpawnDistanceMultiplier;
+    public float GetMinSpawnDistance(){
+        return minSpawnDistance;
     }
 
     public int GetSpawnChance(){

@@ -30,6 +30,8 @@ public class SceneGenerator : MonoBehaviour
 
     LayerMask sceneLayerMask;
 
+    bool wasRoomPlaced = false;
+
     Vector2Int[] directions = new Vector2Int[] {
         Vector2Int.up,
         Vector2Int.down,
@@ -67,20 +69,20 @@ public class SceneGenerator : MonoBehaviour
 
         int numberOfIterations = pseudoRandom.Next(roomNumberRange.x, roomNumberRange.y);
         for(int i = 0; i < numberOfIterations - 1; i++){
-            Room currentRoom = null;
+            wasRoomPlaced = false;
             for(int j = 0; j < specialRoomPrefabs.Count; j++){
                 SpecialRoom specRoomPrefab = specialRoomPrefabs[j];
+
                 if(specRoomPrefab.GetSpawnChance() < pseudoRandom.Next(0, 100)) continue;
                 if(specRoomPrefab.GetMaxAmountPerScene() <= CountGeneratedSpecialRooms(specRoomPrefab)) continue;
                     
                 SpecialRoom specRoom = Instantiate(specRoomPrefab);
-                currentRoom = specRoom;
                 PlaceSpecialRoom(specRoom);
                 break;
             }
 
-            if(currentRoom == null){
-                currentRoom = Instantiate(roomPrefabs[pseudoRandom.Next(0, roomPrefabs.Count)]) as Room;
+            if(!wasRoomPlaced){
+                Room currentRoom = Instantiate(roomPrefabs[pseudoRandom.Next(0, roomPrefabs.Count)]) as Room;
                 PlaceRoom(currentRoom);
             }
             
@@ -108,7 +110,7 @@ public class SceneGenerator : MonoBehaviour
             SpecialRoom room = generatedSpecialRooms[i];
             if(room.GetName() == specRoom.GetName()) count++;
         }
-        print(count);
+        // print(count);
         return count;
     }
 
@@ -163,6 +165,7 @@ public class SceneGenerator : MonoBehaviour
                 currentRoomConnector.connectedTo = currentSceneCorridorConnector;
 
                 SetRoomConnectorDistance(endRoom, currentSceneCorridorConnector.distanceFromStart + 1);
+
                 return;
             }
         }
@@ -192,6 +195,7 @@ public class SceneGenerator : MonoBehaviour
                 currentRoomConnector.connectedTo = currentSceneCorridorConnector;
 
                 SetRoomConnectorDistance(currentRoom, currentSceneCorridorConnector.distanceFromStart + 1);
+                wasRoomPlaced = true;
                 return;
             }
         }
@@ -204,6 +208,7 @@ public class SceneGenerator : MonoBehaviour
         List<Connector> currentRoomConnectors = currentRoom.GetConnectors();
 
         foreach(Connector currentSceneCorridorConnector in availableCorridorConnectors){
+            if(currentSceneCorridorConnector.distanceFromStart <= currentRoom.GetMinSpawnDistance()) continue;
             foreach(Connector currentRoomConnector in currentRoomConnectors){
                 PositionRoomAtConnector(currentRoom, currentRoomConnector, currentSceneCorridorConnector);
 
@@ -212,6 +217,7 @@ public class SceneGenerator : MonoBehaviour
                 }
 
                 AddRoomConnectorsToList(currentRoom);
+                generatedRooms.Add(currentRoom);
                 generatedSpecialRooms.Add(currentRoom);
 
                 availableCorridorConnectors.Remove(currentSceneCorridorConnector);
@@ -221,6 +227,7 @@ public class SceneGenerator : MonoBehaviour
                 currentRoomConnector.connectedTo = currentSceneCorridorConnector;
 
                 SetRoomConnectorDistance(currentRoom, currentSceneCorridorConnector.distanceFromStart + 1);
+                wasRoomPlaced = true;
                 return;
             }
         }
