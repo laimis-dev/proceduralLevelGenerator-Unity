@@ -6,6 +6,7 @@ using System;
 public class SceneGenerator : MonoBehaviour
 {
     [SerializeField] Room startRoomPrefab;
+    [SerializeField] Room endRoomPrefab;
     [SerializeField] List<Room> roomPrefabs = new List<Room>();
     [SerializeField] List<Corridor> corridorPrefabs = new List<Corridor>();
 
@@ -63,14 +64,18 @@ public class SceneGenerator : MonoBehaviour
         PlaceStartRoom();
 
         int numberOfIterations = pseudoRandom.Next(roomNumberRange.x, roomNumberRange.y);
-        for(int i = 0; i < numberOfIterations; i++){
-            PlaceRoom();
+        for(int i = 0; i < numberOfIterations - 1; i++){
+            Room currentRoom = Instantiate(roomPrefabs[pseudoRandom.Next(0, roomPrefabs.Count)]) as Room;
+            PlaceRoom(currentRoom);
             yield return fixedUpdateInterval;
             // yield return startup;
 
             PlaceCorridor();
             yield return fixedUpdateInterval;
         }
+
+        Room endRoom = Instantiate(endRoomPrefab) as Room;
+        PlaceRoom(endRoom);
 
         yield return StartCoroutine(ConnectEmptyConnectors());
 
@@ -92,10 +97,8 @@ public class SceneGenerator : MonoBehaviour
         startRoom.transform.rotation = Quaternion.identity;
     }
 
-    void PlaceRoom(){
+    void PlaceRoom(Room currentRoom){
         // Debug.Log("place random room");
-        Room currentRoom = Instantiate(roomPrefabs[pseudoRandom.Next(0, roomPrefabs.Count)]) as Room;
-        
         currentRoom.transform.parent = this.transform;
         List<Connector> currentRoomConnectors = currentRoom.GetConnectors();
 
