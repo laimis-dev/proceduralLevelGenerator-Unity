@@ -8,6 +8,7 @@ public class Room : MonoBehaviour
     [SerializeField] List<BoxCollider> colliders = new List<BoxCollider>();
 
     [SerializeField] bool testCollision = false;
+
     // [SerializeField] MeshCollider meshCollider;
     // Start is called before the first frame update
     void Start()

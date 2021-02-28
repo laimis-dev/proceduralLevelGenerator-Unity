@@ -7,6 +7,7 @@ public class Connector : MonoBehaviour
     [SerializeField] bool drawGizmo = true;
     [SerializeField] GameObject door;
     public Connector connectedTo;
+    public int distanceFromStart = 0;
 
     // Start is called before the first frame update
     void Start()
