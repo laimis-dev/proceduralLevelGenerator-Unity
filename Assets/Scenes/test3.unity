@@ -345,6 +345,7 @@ MonoBehaviour:
   - {fileID: 6352129608209332735, guid: a2cf93c4b14db1c4a9f307331518c3af, type: 3}
   specialRoomPrefabs:
   - {fileID: 7289079867141731037, guid: 8c1002af8659a2140b1063f722ee01c1, type: 3}
+  - {fileID: 7260535116961275361, guid: 01a595ccad536ff42b18a400793271d9, type: 3}
   roomNumberRange: {x: 10, y: 20}
   cyclicConnectionPrefab: {fileID: 8630709098779315784, guid: 1c83ca103cb01f948957bb1faea7f0c0, type: 3}
   cyclicConnectionRange: 30
