@@ -333,6 +333,7 @@ MonoBehaviour:
   cyclicConnectionPrefab: {fileID: 6725314206217103578, guid: 31c69052146745746816b1d11e17dc1b, type: 3}
   wallPrefab: {fileID: 388562146214842704, guid: 8b7d1c3dfce1686439b6029b6919a0be, type: 3}
   startOnAwake: 0
+  addWallsOnFinish: 0
   maxGScore: 15
   isEndFound: 0
 --- !u!4 &1440322307
@@ -401,7 +402,7 @@ MonoBehaviour:
   maxGScore: 15
   corridorConnectorBuilder: {fileID: 1440322306}
   useRandomSeed: 0
-  seed: 44.76386
+  seed: 40.41552
 --- !u!4 &1850828772
 Transform:
   m_ObjectHideFlags: 0

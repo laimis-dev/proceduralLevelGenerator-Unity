@@ -27,6 +27,7 @@ public class SceneGenerator : MonoBehaviour
     List<Room> generatedRooms = new List<Room>();
     List<Corridor> generatedCorridors = new List<Corridor>();
     List<SpecialRoom> generatedSpecialRooms = new List<SpecialRoom>();
+    List<CorridorConnector> corridorConnectors = new List<CorridorConnector>();
 
     LayerMask sceneLayerMask;
 
@@ -110,6 +111,8 @@ public class SceneGenerator : MonoBehaviour
 
         DeleteUnconnectedCorridors();
         ProcessDoors();
+
+        AddWallsToCorridorConnectors();
         // Debug.Log("finished");
         StopCoroutine("GenerateScene");
     }
@@ -390,11 +393,18 @@ public class SceneGenerator : MonoBehaviour
                 if(newBuilder.isEndFound){
                     corridorConnector.connectedTo = foundConnector;
                     foundConnector.connectedTo = corridorConnector;
+                    corridorConnectors.Add(newBuilder);
                     break;                   
                 } else {
                     Destroy(newBuilder.gameObject);
                 }
             }
+        }
+    }
+
+    void AddWallsToCorridorConnectors(){
+        foreach(CorridorConnector corridorConnector in corridorConnectors){
+            StartCoroutine(corridorConnector.AddWallsToPath());
         }
     }
 
@@ -508,6 +518,7 @@ public class SceneGenerator : MonoBehaviour
         generatedSpecialRooms.Clear();
         availableRoomConnectors.Clear();
         availableCorridorConnectors.Clear();
+        corridorConnectors.Clear();
         foreach (Transform child in this.transform) {
             GameObject.Destroy(child.gameObject);
         }

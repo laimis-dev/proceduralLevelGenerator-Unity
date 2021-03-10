@@ -10,6 +10,7 @@ public class CorridorConnector : MonoBehaviour
     [SerializeField] SceneObject wallPrefab;
 
     [SerializeField] bool startOnAwake = false;
+    [SerializeField] bool addWallsOnFinish = false;
     [SerializeField] float maxGScore = 15f;
     
 
@@ -113,7 +114,11 @@ public class CorridorConnector : MonoBehaviour
                 GetFinalPath(current, startBlock);
                 
                 DeleteUnneededPaths();
-                yield return AddWallsToPath();
+
+                if(addWallsOnFinish){
+                    yield return AddWallsToPath();
+                }
+                
                 break;
             }
             openNodes.Remove(current);
@@ -209,7 +214,7 @@ public class CorridorConnector : MonoBehaviour
         return walls;
     }
 
-    IEnumerator AddWallsToPath(){
+    public IEnumerator AddWallsToPath(){
 
         List<SceneObject> walls = new List<SceneObject>();
         for(int i = 0; i < connectorPath.Count; i++){
