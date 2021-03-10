@@ -39,7 +39,7 @@ public class CorridorConnector : MonoBehaviour
         sceneLayerMask = LayerMask.GetMask("SceneColliders");
         SceneObject pathBlock = Instantiate(cyclicConnectionPrefab);
         cyclicBlockBounds = pathBlock.GetCollider().bounds;
-        minEndDistance = cyclicBlockBounds.size.x * 1.5f;
+        minEndDistance = cyclicBlockBounds.size.x;
         Destroy(pathBlock.gameObject);
 
         SceneObject wallBlock = Instantiate(wallPrefab);
@@ -92,7 +92,7 @@ public class CorridorConnector : MonoBehaviour
 
         startBlock.transform.position = new Vector3(
                                         startBlock.transform.position.x,
-                                        startBlock.transform.position.y,
+                                        startBlock.transform.position.y - 0.01f,
                                         startBlock.transform.position.z);
 
         
