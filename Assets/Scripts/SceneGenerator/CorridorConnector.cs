@@ -29,10 +29,24 @@ public class CorridorConnector : MonoBehaviour
     WaitForSeconds startup =  new WaitForSeconds(1);
     WaitForFixedUpdate fixedUpdateInterval = new WaitForFixedUpdate();
     public bool isEndFound = false;
+
+    float minEndDistance;
+    Bounds cyclicBlockBounds;
+    Bounds wallBounds;
     
     
     void Start() {
         sceneLayerMask = LayerMask.GetMask("SceneColliders");
+        SceneObject pathBlock = Instantiate(cyclicConnectionPrefab);
+        cyclicBlockBounds = pathBlock.GetCollider().bounds;
+        print(cyclicBlockBounds);
+        minEndDistance = cyclicBlockBounds.size.x * 1.5f;
+        Destroy(pathBlock);
+
+        SceneObject wallBlock = Instantiate(wallPrefab);
+        wallBounds = wallBlock.GetCollider().bounds;
+        Destroy(wallBlock);
+
         if(startOnAwake){
             StartCoroutine(StartConnecting());
         }
@@ -76,6 +90,11 @@ public class CorridorConnector : MonoBehaviour
         startBlock.transform.position = 
             corridorConnector.transform.position + 
             start.transform.rotation * Vector3.forward;
+
+        startBlock.transform.position = new Vector3(
+                                        startBlock.transform.position.x,
+                                        startBlock.transform.position.y - 0.01f,
+                                        startBlock.transform.position.z);
 
         
         startBlock.fScore = DistanceToEnd(startBlock.transform);
@@ -127,51 +146,108 @@ public class CorridorConnector : MonoBehaviour
             if(!isPath) GameObject.Destroy(child.gameObject);
         }
     }
+    
+    bool AreWallsPlacableInDirection(Vector3 current, Vector2 direction){
+        Vector3 checkPos = new Vector3(
+                        current.x + direction.x,
+                        current.y,
+                        current.z + direction.y);
+
+        foreach(SceneObject path in connectorPath){
+            if(checkPos == path.transform.position){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    List<SceneObject> PlaceWallsInDirection(Vector3 current, float edgeDist, string direction){
+        List<SceneObject> walls = new List<SceneObject>();
+        for(float j = -1 * edgeDist; j <= edgeDist; j += wallBounds.size.x){
+            SceneObject wall = Instantiate(wallPrefab);
+            walls.Add(wall);
+            wall.transform.parent = this.transform;
+            switch(direction){
+                case "up":
+                    wall.transform.position = 
+                    new Vector3(
+                        current.x + edgeDist,
+                        current.y,
+                        current.z + j);
+                    break;
+
+                case "down":
+                    wall.transform.position = 
+                    new Vector3(
+                        current.x - edgeDist,
+                        current.y,
+                        current.z + j);
+                    break;
+                    
+
+                case "left":
+                    wall.transform.position = 
+                    new Vector3(
+                        current.x + j,
+                        current.y,
+                        current.z - edgeDist);
+                    break;
+
+                case "right":
+                    wall.transform.position = 
+                    new Vector3(
+                        current.x + j,
+                        current.y,
+                        current.z + edgeDist);      
+                    break;            
+
+                default:
+                    break;
+            }
+
+        }
+        return walls;
+    }
 
     IEnumerator AddWallsToPath(){
+
+        List<SceneObject> walls = new List<SceneObject>();
         for(int i = 0; i < connectorPath.Count; i++){
             Vector3 current = connectorPath[i].transform.position;
+            //optimisation check some placement without colliders
+            float numberOfWalls = (cyclicBlockBounds.size.x * 2) / wallBounds.size.x;
+            float edgeDist = numberOfWalls/4 + wallBounds.size.x/2;
 
-            foreach(Vector2Int direction in directions){   
-                //optimisation check some placement without colliders
-                Vector3 checkPos = new Vector3(
-                        current.x + direction.x * 2f,
-                        current.y,
-                        current.z + direction.y * 2f);
-                bool isWallPlaceable = true;
-                foreach(SceneObject path in connectorPath){
-                    if(checkPos == path.transform.position){
-                        isWallPlaceable = false;
-                    }
-                }
+            
 
-                if(!isWallPlaceable) continue;
+            if(AreWallsPlacableInDirection(current, new Vector2(0f, cyclicBlockBounds.size.x))){
+                walls.AddRange(PlaceWallsInDirection(current, edgeDist, "right"));
+            }
 
-                for(int j = 1; j < 3; j++){
-                    SceneObject wall = Instantiate(wallPrefab);
-                    wall.transform.parent = this.transform;
-                    if(direction == Vector2Int.up || direction == Vector2Int.down){
-                        wall.transform.position = 
-                            new Vector3(
-                                current.x + direction.x * 1.5f + 2f - j - 0.5f,
-                                current.y,
-                                current.z + direction.y * 1.5f);
-                    } else {
-                        wall.transform.position = 
-                            new Vector3(
-                                current.x + direction.x * 1.5f,
-                                current.y,
-                                current.z + direction.y * 1.5f + 2f - j - 0.5f);
-                    }
+            if(AreWallsPlacableInDirection(current, new Vector2(0f, -cyclicBlockBounds.size.x))){
+                walls.AddRange(PlaceWallsInDirection(current, edgeDist, "left"));
+            }
 
-                    yield return fixedUpdateInterval;
-                    if(CheckOverlap(wall)){
-                        Destroy(wall.gameObject);
-                    }
-                }
+            if(AreWallsPlacableInDirection(current, new Vector2(cyclicBlockBounds.size.x, 0f))){
+                walls.AddRange(PlaceWallsInDirection(current, edgeDist, "up"));
+            }
+
+            if(AreWallsPlacableInDirection(current, new Vector2(-cyclicBlockBounds.size.x, 0f))){
+                walls.AddRange(PlaceWallsInDirection(current, edgeDist, "down"));
+            }
+        }
+            
+        
+        
+        foreach(SceneObject wall in walls){
+            yield return fixedUpdateInterval;
+            if(CheckOverlap(wall)){
+                Destroy(wall.gameObject);
             }
         }
         StopCoroutine("AddWallsToPath");
+        
     }
 
     SceneObject FindLowestFScoreNode(){
@@ -192,11 +268,14 @@ public class CorridorConnector : MonoBehaviour
         foreach(Vector2Int direction in directions){        
             float currentScore = from.gScore + connectionWeight;
             SceneObject pathBlock = Instantiate(cyclicConnectionPrefab);
+
+            Bounds bounds = pathBlock.GetCollider().bounds;
+
             pathBlock.transform.parent = this.transform;
             pathBlock.transform.position = new Vector3(
-                from.transform.position.x + direction.x * from.transform.localScale.x,
+                from.transform.position.x + direction.x * bounds.size.x,
                 from.transform.position.y,
-                from.transform.position.z + direction.y * from.transform.localScale.z);
+                from.transform.position.z + direction.y * bounds.size.z);
             
             
             foreach(SceneObject node in allNodes){
@@ -237,6 +316,10 @@ public class CorridorConnector : MonoBehaviour
         SceneObject pathBlock = Instantiate(cyclicConnectionPrefab);
         pathBlock.transform.parent = this.transform;
         pathBlock.transform.position = end.transform.position + end.transform.rotation * Vector3.forward;
+        pathBlock.transform.position = new Vector3(
+                                        pathBlock.transform.position.x,
+                                        pathBlock.transform.position.y - 0.01f,
+                                        pathBlock.transform.position.z);
 
         connectorPath.Add(pathBlock);
     }
@@ -248,7 +331,7 @@ public class CorridorConnector : MonoBehaviour
     }
 
     bool IfEndFound(Transform current){
-        if(DistanceToEnd(current) <= 3f){
+        if(DistanceToEnd(current) <= minEndDistance){
             return true;
             
         } else {
@@ -271,23 +354,23 @@ public class CorridorConnector : MonoBehaviour
 
 
      Collider CheckOverlap(SceneObject sceneObject){
-        List<BoxCollider> objectColliders = sceneObject.GetColliders();
-        foreach(BoxCollider boxCollider in objectColliders){
-            // print(boxCollider);
-            Bounds bounds = boxCollider.bounds;
-            bounds.Expand(-0.1f);
+        BoxCollider boxCollider = sceneObject.GetCollider();
 
-            Collider[] colliders = Physics.OverlapBox(boxCollider.transform.position, bounds.size / 2, boxCollider.transform.rotation, sceneLayerMask);
-            if(colliders.Length > 0){
-                foreach(Collider c in colliders){
-                    if(c.transform.parent.gameObject.transform.parent.gameObject.Equals(sceneObject.gameObject)){
-                        continue;
-                    } else {
-                        return c;
-                    }
+        // print(boxCollider);
+        Bounds bounds = boxCollider.bounds;
+        bounds.Expand(-0.1f);
+
+        Collider[] colliders = Physics.OverlapBox(boxCollider.transform.position, bounds.size / 2, boxCollider.transform.rotation, sceneLayerMask);
+        if(colliders.Length > 0){
+            foreach(Collider c in colliders){
+                if(c.transform.parent.gameObject.transform.parent.gameObject.Equals(sceneObject.gameObject)){
+                    continue;
+                } else {
+                    return c;
                 }
             }
         }
+        
 
         return null;
     }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class SceneObject : MonoBehaviour
 {
-    [SerializeField] List<BoxCollider> colliders = new List<BoxCollider>();
+    [SerializeField] BoxCollider collider;
     public float gScore = 0;
     public float fScore = 0;
     public SceneObject instantiatedFrom;
@@ -18,8 +18,8 @@ public class SceneObject : MonoBehaviour
     }
 
 
-    public List<BoxCollider> GetColliders(){
-        return colliders;
+    public BoxCollider GetCollider(){
+        return collider;
     }
 
     // public int getGScore(){
