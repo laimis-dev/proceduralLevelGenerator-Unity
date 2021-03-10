@@ -41,11 +41,11 @@ public class CorridorConnector : MonoBehaviour
         cyclicBlockBounds = pathBlock.GetCollider().bounds;
         print(cyclicBlockBounds);
         minEndDistance = cyclicBlockBounds.size.x * 1.5f;
-        Destroy(pathBlock);
+        Destroy(pathBlock.gameObject);
 
         SceneObject wallBlock = Instantiate(wallPrefab);
         wallBounds = wallBlock.GetCollider().bounds;
-        Destroy(wallBlock);
+        Destroy(wallBlock.gameObject);
 
         if(startOnAwake){
             StartCoroutine(StartConnecting());
@@ -166,8 +166,8 @@ public class CorridorConnector : MonoBehaviour
         List<SceneObject> walls = new List<SceneObject>();
         for(float j = -1 * edgeDist; j <= edgeDist; j += wallBounds.size.x){
             SceneObject wall = Instantiate(wallPrefab);
-            walls.Add(wall);
             wall.transform.parent = this.transform;
+            walls.Add(wall);
             switch(direction){
                 case "up":
                     wall.transform.position = 
