@@ -93,7 +93,7 @@ public class CorridorConnector : MonoBehaviour
 
         startBlock.transform.position = new Vector3(
                                         startBlock.transform.position.x,
-                                        startBlock.transform.position.y - 0.01f,
+                                        startBlock.transform.position.y,
                                         startBlock.transform.position.z);
 
         
@@ -173,7 +173,7 @@ public class CorridorConnector : MonoBehaviour
                     wall.transform.position = 
                     new Vector3(
                         current.x + edgeDist,
-                        current.y,
+                        current.y + wallBounds.size.y/4,
                         current.z + j);
                     break;
 
@@ -181,7 +181,7 @@ public class CorridorConnector : MonoBehaviour
                     wall.transform.position = 
                     new Vector3(
                         current.x - edgeDist,
-                        current.y,
+                        current.y + wallBounds.size.y/4,
                         current.z + j);
                     break;
                     
@@ -190,7 +190,7 @@ public class CorridorConnector : MonoBehaviour
                     wall.transform.position = 
                     new Vector3(
                         current.x + j,
-                        current.y,
+                        current.y + wallBounds.size.y/4,
                         current.z - edgeDist);
                     break;
 
@@ -198,7 +198,7 @@ public class CorridorConnector : MonoBehaviour
                     wall.transform.position = 
                     new Vector3(
                         current.x + j,
-                        current.y,
+                        current.y + wallBounds.size.y/4,
                         current.z + edgeDist);      
                     break;            
 
