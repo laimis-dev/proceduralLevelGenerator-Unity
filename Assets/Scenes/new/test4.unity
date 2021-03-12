@@ -310,7 +310,7 @@ GameObject:
   - component: {fileID: 1440322307}
   - component: {fileID: 1440322306}
   m_Layer: 0
-  m_Name: Connector
+  m_Name: PathFinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -325,7 +325,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1440322305}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b304be5701abef846a54d2bc06a2cfda, type: 3}
+  m_Script: {fileID: 11500000, guid: 8db5feef5c80a2343b195430ed46eb5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   start: {fileID: 0}
@@ -400,7 +400,7 @@ MonoBehaviour:
   cyclicConnectionPrefab: {fileID: 8630709098779315784, guid: 1c83ca103cb01f948957bb1faea7f0c0, type: 3}
   cyclicConnectionRange: 30
   maxGScore: 15
-  corridorConnectorBuilder: {fileID: 1440322306}
+  pathFinderBuilder: {fileID: 1440322306}
   useRandomSeed: 0
   seed: 40.41552
 --- !u!4 &1850828772

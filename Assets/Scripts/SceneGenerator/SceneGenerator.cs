@@ -16,18 +16,18 @@ public class SceneGenerator : MonoBehaviour
     [SerializeField] GameObject cyclicConnectionPrefab;
     [SerializeField] float cyclicConnectionRange = 15f;
     [SerializeField] float maxGScore = 15f;
-    [SerializeField] CorridorConnector corridorConnectorBuilder;
+    [SerializeField] PathFinder pathFinderBuilder;
 
     [SerializeField] bool useRandomSeed = true;
     [SerializeField] string seed;
 
     List<Connector> availableRoomConnectors = new List<Connector>();
-    List<Connector> availableCorridorConnectors = new List<Connector>();
+    List<Connector> availablePathFinders = new List<Connector>();
 
     List<Room> generatedRooms = new List<Room>();
     List<Corridor> generatedCorridors = new List<Corridor>();
     List<SpecialRoom> generatedSpecialRooms = new List<SpecialRoom>();
-    List<CorridorConnector> corridorConnectors = new List<CorridorConnector>();
+    List<PathFinder> pathFinders = new List<PathFinder>();
 
     LayerMask sceneLayerMask;
 
@@ -112,7 +112,7 @@ public class SceneGenerator : MonoBehaviour
         DeleteUnconnectedCorridors();
         ProcessDoors();
 
-        AddWallsToCorridorConnectors();
+        AddWallsToPathFinders();
         // Debug.Log("finished");
         StopCoroutine("GenerateScene");
     }
@@ -144,25 +144,25 @@ public class SceneGenerator : MonoBehaviour
         endRoom.transform.parent = this.transform;
         List<Connector> currentRoomConnectors = endRoom.GetConnectors();
 
-        List<Connector> sortedAvailableCorridorConnectors = new List<Connector>(availableCorridorConnectors);
+        List<Connector> sortedAvailablePathFinders = new List<Connector>(availablePathFinders);
         //sort connectors by distance
-        for(int i = 1; i < sortedAvailableCorridorConnectors.Count; i++){
-            Connector current = sortedAvailableCorridorConnectors[i];
+        for(int i = 1; i < sortedAvailablePathFinders.Count; i++){
+            Connector current = sortedAvailablePathFinders[i];
             int j = i - 1;
 
             while(j >= 0 && 
-                sortedAvailableCorridorConnectors[j].distanceFromStart < current.distanceFromStart){
+                sortedAvailablePathFinders[j].distanceFromStart < current.distanceFromStart){
 
-                    sortedAvailableCorridorConnectors[j+1] = sortedAvailableCorridorConnectors[j];
+                    sortedAvailablePathFinders[j+1] = sortedAvailablePathFinders[j];
                     j--;
             }
 
-            sortedAvailableCorridorConnectors[j+1] = current;
+            sortedAvailablePathFinders[j+1] = current;
         }
 
-        foreach(Connector currentSceneCorridorConnector in sortedAvailableCorridorConnectors){
+        foreach(Connector currentScenePathFinder in sortedAvailablePathFinders){
             foreach(Connector currentRoomConnector in currentRoomConnectors){
-                PositionRoomAtConnector(endRoom, currentRoomConnector, currentSceneCorridorConnector);
+                PositionRoomAtConnector(endRoom, currentRoomConnector, currentScenePathFinder);
 
                 if(CheckRoomOverlap(endRoom)){
                     continue;
@@ -171,13 +171,13 @@ public class SceneGenerator : MonoBehaviour
                 AddRoomConnectorsToList(endRoom);
                 generatedRooms.Add(endRoom);
 
-                availableCorridorConnectors.Remove(currentSceneCorridorConnector);
+                availablePathFinders.Remove(currentScenePathFinder);
                 availableRoomConnectors.Remove(currentRoomConnector);
 
-                currentSceneCorridorConnector.connectedTo = currentRoomConnector;
-                currentRoomConnector.connectedTo = currentSceneCorridorConnector;
+                currentScenePathFinder.connectedTo = currentRoomConnector;
+                currentRoomConnector.connectedTo = currentScenePathFinder;
 
-                SetRoomConnectorDistance(endRoom, currentSceneCorridorConnector.distanceFromStart + 1);
+                SetRoomConnectorDistance(endRoom, currentScenePathFinder.distanceFromStart + 1);
 
                 return;
             }
@@ -190,9 +190,9 @@ public class SceneGenerator : MonoBehaviour
         currentRoom.transform.parent = this.transform;
         List<Connector> currentRoomConnectors = currentRoom.GetConnectors();
 
-        foreach(Connector currentSceneCorridorConnector in availableCorridorConnectors){
+        foreach(Connector currentScenePathFinder in availablePathFinders){
             foreach(Connector currentRoomConnector in currentRoomConnectors){
-                PositionRoomAtConnector(currentRoom, currentRoomConnector, currentSceneCorridorConnector);
+                PositionRoomAtConnector(currentRoom, currentRoomConnector, currentScenePathFinder);
 
                 if(CheckRoomOverlap(currentRoom)){
                     continue;
@@ -201,13 +201,13 @@ public class SceneGenerator : MonoBehaviour
                 AddRoomConnectorsToList(currentRoom);
                 generatedRooms.Add(currentRoom);
 
-                availableCorridorConnectors.Remove(currentSceneCorridorConnector);
+                availablePathFinders.Remove(currentScenePathFinder);
                 availableRoomConnectors.Remove(currentRoomConnector);
 
-                currentSceneCorridorConnector.connectedTo = currentRoomConnector;
-                currentRoomConnector.connectedTo = currentSceneCorridorConnector;
+                currentScenePathFinder.connectedTo = currentRoomConnector;
+                currentRoomConnector.connectedTo = currentScenePathFinder;
 
-                SetRoomConnectorDistance(currentRoom, currentSceneCorridorConnector.distanceFromStart + 1);
+                SetRoomConnectorDistance(currentRoom, currentScenePathFinder.distanceFromStart + 1);
                 wasRoomPlaced = true;
                 return;
             }
@@ -220,10 +220,10 @@ public class SceneGenerator : MonoBehaviour
         currentRoom.transform.parent = this.transform;
         List<Connector> currentRoomConnectors = currentRoom.GetConnectors();
 
-        foreach(Connector currentSceneCorridorConnector in availableCorridorConnectors){
-            if(currentSceneCorridorConnector.distanceFromStart <= currentRoom.GetMinSpawnDistance()) continue;
+        foreach(Connector currentScenePathFinder in availablePathFinders){
+            if(currentScenePathFinder.distanceFromStart <= currentRoom.GetMinSpawnDistance()) continue;
             foreach(Connector currentRoomConnector in currentRoomConnectors){
-                PositionRoomAtConnector(currentRoom, currentRoomConnector, currentSceneCorridorConnector);
+                PositionRoomAtConnector(currentRoom, currentRoomConnector, currentScenePathFinder);
 
                 if(CheckRoomOverlap(currentRoom)){
                     continue;
@@ -233,13 +233,13 @@ public class SceneGenerator : MonoBehaviour
                 generatedRooms.Add(currentRoom);
                 generatedSpecialRooms.Add(currentRoom);
 
-                availableCorridorConnectors.Remove(currentSceneCorridorConnector);
+                availablePathFinders.Remove(currentScenePathFinder);
                 availableRoomConnectors.Remove(currentRoomConnector);
 
-                currentSceneCorridorConnector.connectedTo = currentRoomConnector;
-                currentRoomConnector.connectedTo = currentSceneCorridorConnector;
+                currentScenePathFinder.connectedTo = currentRoomConnector;
+                currentRoomConnector.connectedTo = currentScenePathFinder;
 
-                SetRoomConnectorDistance(currentRoom, currentSceneCorridorConnector.distanceFromStart + 1);
+                SetRoomConnectorDistance(currentRoom, currentScenePathFinder.distanceFromStart + 1);
                 wasRoomPlaced = true;
                 return;
             }
@@ -298,26 +298,26 @@ public class SceneGenerator : MonoBehaviour
     void PlaceCorridor(Corridor currentCorridor){
         
         currentCorridor.transform.parent = this.transform;
-        List<Connector> currentCorridorConnectors = currentCorridor.GetConnectors();
+        List<Connector> currentPathFinders = currentCorridor.GetConnectors();
 
         foreach(Connector currentSceneRoomConnector in availableRoomConnectors){
-            foreach(Connector currentCorridorConnector in currentCorridorConnectors){
-                PositionCorridorAtConnector(currentCorridor, currentCorridorConnector, currentSceneRoomConnector);
+            foreach(Connector currentPathFinder in currentPathFinders){
+                PositionCorridorAtConnector(currentCorridor, currentPathFinder, currentSceneRoomConnector);
 
                 if(CheckCorridorOverlap(currentCorridor)){
                     continue;
                 }
 
-                AddCorridorConnectorsToList(currentCorridor);
+                AddPathFindersToList(currentCorridor);
                 generatedCorridors.Add(currentCorridor);
 
                 availableRoomConnectors.Remove(currentSceneRoomConnector);
-                availableCorridorConnectors.Remove(currentCorridorConnector);
+                availablePathFinders.Remove(currentPathFinder);
 
-                currentSceneRoomConnector.connectedTo = currentCorridorConnector;
-                currentCorridorConnector.connectedTo = currentSceneRoomConnector;
+                currentSceneRoomConnector.connectedTo = currentPathFinder;
+                currentPathFinder.connectedTo = currentSceneRoomConnector;
 
-                SetCorridorConnectorDistance(currentCorridor, currentSceneRoomConnector.distanceFromStart + 1);
+                SetPathFinderDistance(currentCorridor, currentSceneRoomConnector.distanceFromStart + 1);
 
                 return;
             }
@@ -326,31 +326,31 @@ public class SceneGenerator : MonoBehaviour
     }
 
 
-    void AddCorridorConnectorsToList(Corridor corridor){
+    void AddPathFindersToList(Corridor corridor){
         foreach(Connector connector in corridor.GetConnectors()){
-            int randomExitPoint = pseudoRandom.Next(0, availableCorridorConnectors.Count);
-            availableCorridorConnectors.Insert(randomExitPoint, connector);
+            int randomExitPoint = pseudoRandom.Next(0, availablePathFinders.Count);
+            availablePathFinders.Insert(randomExitPoint, connector);
         }
     }
 
-    void SetCorridorConnectorDistance(Corridor corridor, int distance){
+    void SetPathFinderDistance(Corridor corridor, int distance){
         foreach(Connector connector in corridor.GetConnectors()){
             connector.distanceFromStart = distance;
         }
     }
 
 
-    void PositionCorridorAtConnector(Corridor corridor, Connector currentCorridorConnector, Connector targetConnector){
+    void PositionCorridorAtConnector(Corridor corridor, Connector currentPathFinder, Connector targetConnector){
         corridor.transform.position = Vector3.zero;
         corridor.transform.rotation = Quaternion.identity;
 
         Vector3 targetConnectorEuler = targetConnector.transform.eulerAngles;
-        Vector3 currentCorridorConnectorEuler = currentCorridorConnector.transform.eulerAngles;
-        float deltaAngle = Mathf.DeltaAngle(currentCorridorConnectorEuler.y, targetConnectorEuler.y);
+        Vector3 currentPathFinderEuler = currentPathFinder.transform.eulerAngles;
+        float deltaAngle = Mathf.DeltaAngle(currentPathFinderEuler.y, targetConnectorEuler.y);
         Quaternion currentCorridorTargetRotation = Quaternion.AngleAxis(deltaAngle, Vector3.up);
         corridor.transform.rotation = currentCorridorTargetRotation * Quaternion.Euler(0, 180f, 0);
 
-        Vector3 corridorPositionOffset = currentCorridorConnector.transform.position - corridor.transform.position;
+        Vector3 corridorPositionOffset = currentPathFinder.transform.position - corridor.transform.position;
         corridor.transform.position = targetConnector.transform.position - corridorPositionOffset;
     }
 
@@ -380,20 +380,20 @@ public class SceneGenerator : MonoBehaviour
 
 
     IEnumerator ConnectEmptyConnectors(){
-        foreach(Connector corridorConnector in availableCorridorConnectors){
-            if(corridorConnector.connectedTo != null) continue;
-            List<Connector> foundConnectors = FindClosestConnectors(corridorConnector);
+        foreach(Connector pathFinder in availablePathFinders){
+            if(pathFinder.connectedTo != null) continue;
+            List<Connector> foundConnectors = FindClosestConnectors(pathFinder);
             foreach(Connector foundConnector in foundConnectors){
-                CorridorConnector newBuilder = Instantiate(corridorConnectorBuilder);
+                PathFinder newBuilder = Instantiate(pathFinderBuilder);
                 newBuilder.transform.parent = this.transform;
                 newBuilder.SetMaxGScore(maxGScore);
-                newBuilder.SetConnectionPoints(corridorConnector, foundConnector);
+                newBuilder.SetConnectionPoints(pathFinder, foundConnector);
                 yield return StartCoroutine(newBuilder.StartConnecting());
 
                 if(newBuilder.isEndFound){
-                    corridorConnector.connectedTo = foundConnector;
-                    foundConnector.connectedTo = corridorConnector;
-                    corridorConnectors.Add(newBuilder);
+                    pathFinder.connectedTo = foundConnector;
+                    foundConnector.connectedTo = pathFinder;
+                    pathFinders.Add(newBuilder);
                     break;                   
                 } else {
                     Destroy(newBuilder.gameObject);
@@ -402,23 +402,23 @@ public class SceneGenerator : MonoBehaviour
         }
     }
 
-    void AddWallsToCorridorConnectors(){
-        foreach(CorridorConnector corridorConnector in corridorConnectors){
-            StartCoroutine(corridorConnector.AddWallsToPath());
+    void AddWallsToPathFinders(){
+        foreach(PathFinder pathFinder in pathFinders){
+            StartCoroutine(pathFinder.AddWallsToPath());
         }
     }
 
-    List<Connector> FindClosestConnectors(Connector corridorConnector){
+    List<Connector> FindClosestConnectors(Connector pathFinder){
         List<Connector> foundConnectors = new List<Connector>();
         foreach(Connector roomConnector in availableRoomConnectors){
             if(roomConnector.connectedTo != null) continue;
 
             float distanceBetweenConnectors = Vector3.Distance(
-                corridorConnector.transform.position, 
+                pathFinder.transform.position, 
                 roomConnector.transform.position);
 
             if(distanceBetweenConnectors <= cyclicConnectionRange){
-                if(!CheckIfSameRoom(corridorConnector, roomConnector)){
+                if(!CheckIfSameRoom(pathFinder, roomConnector)){
                     foundConnectors.Add(roomConnector);
                 }
                 
@@ -429,12 +429,12 @@ public class SceneGenerator : MonoBehaviour
         for(int i = 1; i < foundConnectors.Count; i++){
             Connector current = foundConnectors[i];
             float currentDist = Vector3.Distance(
-                corridorConnector.transform.position, 
+                pathFinder.transform.position, 
                 current.transform.position);
             int j = i - 1;
 
             while(j >= 0 && 
-                Vector3.Distance(corridorConnector.transform.position, 
+                Vector3.Distance(pathFinder.transform.position, 
                 foundConnectors[j].transform.position) > currentDist){
 
                     foundConnectors[j+1] = foundConnectors[j];
@@ -447,16 +447,16 @@ public class SceneGenerator : MonoBehaviour
         return foundConnectors;
     }
 
-    bool CheckIfSameRoom(Connector startCorridorConnector, Connector endRoomConnector){
-        GameObject corridorGameObject = GetRootGameObject(startCorridorConnector.transform);
+    bool CheckIfSameRoom(Connector startPathFinder, Connector endRoomConnector){
+        GameObject corridorGameObject = GetRootGameObject(startPathFinder.transform);
         Corridor currentCorridor = corridorGameObject.GetComponent<Corridor>();
-        List<Connector> corridorConnectors = currentCorridor.GetConnectors();
+        List<Connector> pathFinders = currentCorridor.GetConnectors();
 
-        foreach(Connector corridorConnector in corridorConnectors){
+        foreach(Connector pathFinder in pathFinders){
             
-            if(corridorConnector == startCorridorConnector) continue;
-            if(corridorConnector.connectedTo == null) continue;
-            GameObject roomGameObject = GetRootGameObject(corridorConnector.connectedTo.transform);
+            if(pathFinder == startPathFinder) continue;
+            if(pathFinder.connectedTo == null) continue;
+            GameObject roomGameObject = GetRootGameObject(pathFinder.connectedTo.transform);
             Room currentRoom = roomGameObject.GetComponent<Room>();
             List<Connector> roomConnectors = currentRoom.GetConnectors();
             
@@ -517,8 +517,8 @@ public class SceneGenerator : MonoBehaviour
         generatedRooms.Clear();
         generatedSpecialRooms.Clear();
         availableRoomConnectors.Clear();
-        availableCorridorConnectors.Clear();
-        corridorConnectors.Clear();
+        availablePathFinders.Clear();
+        pathFinders.Clear();
         foreach (Transform child in this.transform) {
             GameObject.Destroy(child.gameObject);
         }

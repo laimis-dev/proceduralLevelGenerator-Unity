@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CorridorConnector : MonoBehaviour
+public class PathFinder : MonoBehaviour
 {
     [SerializeField] Connector start;
     [SerializeField] Connector end;
@@ -14,7 +14,7 @@ public class CorridorConnector : MonoBehaviour
     [SerializeField] float maxGScore = 15f;
     
 
-    LayerMask sceneLayerMask;
+    
 
     Vector2Int[] directions = new Vector2Int[] {
         Vector2Int.up,
@@ -37,7 +37,6 @@ public class CorridorConnector : MonoBehaviour
     
     
     void Start() {
-        sceneLayerMask = LayerMask.GetMask("SceneColliders");
         PathFinderNode pathBlock = Instantiate(cyclicConnectionPrefab);
         cyclicBlockBounds = pathBlock.GetCollider().bounds;
         minEndDistance = cyclicBlockBounds.size.x;
@@ -74,7 +73,7 @@ public class CorridorConnector : MonoBehaviour
         openNodes = new List<PathFinderNode>();
         allNodes = new List<PathFinderNode>();
         connectorPath = new List<PathFinderNode>();
-        yield return StartCoroutine("PathFinder");
+        yield return StartCoroutine("FindPath");
         if(!isEndFound){
             DeleteAll();
         }
@@ -82,7 +81,7 @@ public class CorridorConnector : MonoBehaviour
        
     }
 
-    IEnumerator PathFinder(){
+    IEnumerator FindPath(){
         Connector corridorConnector = start;
         Connector roomConnector = end;
         PathFinderNode startBlock = Instantiate(cyclicConnectionPrefab);
@@ -246,7 +245,7 @@ public class CorridorConnector : MonoBehaviour
         
         foreach(PathFinderObject wall in walls){
             yield return fixedUpdateInterval;
-            if(CheckOverlap(wall)){
+            if(wall.CheckOverlap()){
                 Destroy(wall.gameObject);
             }
         }
@@ -303,7 +302,7 @@ public class CorridorConnector : MonoBehaviour
             if(pathBlock == null) continue;
 
             yield return fixedUpdateInterval;
-            if(CheckOverlap(pathBlock)){
+            if(pathBlock.CheckOverlap()){
                 Destroy(pathBlock.gameObject);
             } else {
                 pathBlock.instantiatedFrom = from;
@@ -342,41 +341,10 @@ public class CorridorConnector : MonoBehaviour
             return false;
         }
     }
-
-
-
-
-
-
-
     void DeleteAll(){
         foreach (Transform child in this.transform) {
             GameObject.Destroy(child.gameObject);
         }
-    }
-
-
-
-     Collider CheckOverlap(PathFinderObject PathFinderNode){
-        BoxCollider boxCollider = PathFinderNode.GetCollider();
-
-        // print(boxCollider);
-        Bounds bounds = boxCollider.bounds;
-        bounds.Expand(-0.1f);
-
-        Collider[] colliders = Physics.OverlapBox(boxCollider.transform.position, bounds.size / 2, boxCollider.transform.rotation, sceneLayerMask);
-        if(colliders.Length > 0){
-            foreach(Collider c in colliders){
-                if(c.transform.parent.gameObject.transform.parent.gameObject.Equals(PathFinderNode.gameObject)){
-                    continue;
-                } else {
-                    return c;
-                }
-            }
-        }
-        
-
-        return null;
     }
 
 }
