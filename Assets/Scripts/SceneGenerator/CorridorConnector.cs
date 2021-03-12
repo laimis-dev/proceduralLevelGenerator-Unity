@@ -6,8 +6,8 @@ public class CorridorConnector : MonoBehaviour
 {
     [SerializeField] Connector start;
     [SerializeField] Connector end;
-    [SerializeField] SceneObject cyclicConnectionPrefab;
-    [SerializeField] SceneObject wallPrefab;
+    [SerializeField] PathFinderNode cyclicConnectionPrefab;
+    [SerializeField] PathFinderObject wallPrefab;
 
     [SerializeField] bool startOnAwake = false;
     [SerializeField] bool addWallsOnFinish = false;
@@ -23,9 +23,9 @@ public class CorridorConnector : MonoBehaviour
         Vector2Int.right
     };
         
-    List<SceneObject> openNodes = new List<SceneObject>();
-    List<SceneObject> allNodes = new List<SceneObject>();
-    List<SceneObject> connectorPath = new List<SceneObject>();
+    List<PathFinderNode> openNodes = new List<PathFinderNode>();
+    List<PathFinderNode> allNodes = new List<PathFinderNode>();
+    List<PathFinderNode> connectorPath = new List<PathFinderNode>();
 
     WaitForSeconds startup =  new WaitForSeconds(1);
     WaitForFixedUpdate fixedUpdateInterval = new WaitForFixedUpdate();
@@ -38,12 +38,12 @@ public class CorridorConnector : MonoBehaviour
     
     void Start() {
         sceneLayerMask = LayerMask.GetMask("SceneColliders");
-        SceneObject pathBlock = Instantiate(cyclicConnectionPrefab);
+        PathFinderNode pathBlock = Instantiate(cyclicConnectionPrefab);
         cyclicBlockBounds = pathBlock.GetCollider().bounds;
         minEndDistance = cyclicBlockBounds.size.x;
         Destroy(pathBlock.gameObject);
 
-        SceneObject wallBlock = Instantiate(wallPrefab);
+        PathFinderObject wallBlock = Instantiate(wallPrefab);
         wallBounds = wallBlock.GetCollider().bounds;
         Destroy(wallBlock.gameObject);
 
@@ -71,9 +71,9 @@ public class CorridorConnector : MonoBehaviour
 
     public IEnumerator StartConnecting(){
         isEndFound = false;
-        openNodes = new List<SceneObject>();
-        allNodes = new List<SceneObject>();
-        connectorPath = new List<SceneObject>();
+        openNodes = new List<PathFinderNode>();
+        allNodes = new List<PathFinderNode>();
+        connectorPath = new List<PathFinderNode>();
         yield return StartCoroutine("PathFinder");
         if(!isEndFound){
             DeleteAll();
@@ -85,7 +85,7 @@ public class CorridorConnector : MonoBehaviour
     IEnumerator PathFinder(){
         Connector corridorConnector = start;
         Connector roomConnector = end;
-        SceneObject startBlock = Instantiate(cyclicConnectionPrefab);
+        PathFinderNode startBlock = Instantiate(cyclicConnectionPrefab);
         startBlock.transform.parent = this.transform;
         startBlock.transform.position = 
             corridorConnector.transform.position + 
@@ -128,8 +128,8 @@ public class CorridorConnector : MonoBehaviour
         StopCoroutine("PathFinder");
     }
 
-    void GetFinalPath(SceneObject current, SceneObject startBlock){
-        SceneObject currentPath = current;
+    void GetFinalPath(PathFinderNode current, PathFinderNode startBlock){
+        PathFinderNode currentPath = current;
         connectorPath.Add(currentPath);
         while(currentPath != startBlock){
             currentPath = currentPath.instantiatedFrom;
@@ -141,7 +141,7 @@ public class CorridorConnector : MonoBehaviour
     void DeleteUnneededPaths(){
         foreach (Transform child in this.transform) {
             bool isPath = false;
-            foreach (SceneObject path in connectorPath) {
+            foreach (PathFinderNode path in connectorPath) {
                 if(child.position == path.transform.position){
                     isPath = true;
                 }
@@ -157,7 +157,7 @@ public class CorridorConnector : MonoBehaviour
                         current.y,
                         current.z + direction.y);
 
-        foreach(SceneObject path in connectorPath){
+        foreach(PathFinderNode path in connectorPath){
             if(checkPos == path.transform.position){
                 return false;
             }
@@ -166,10 +166,10 @@ public class CorridorConnector : MonoBehaviour
         return true;
     }
 
-    List<SceneObject> PlaceWallsInDirection(Vector3 current, float edgeDist, string direction){
-        List<SceneObject> walls = new List<SceneObject>();
+    List<PathFinderObject> PlaceWallsInDirection(Vector3 current, float edgeDist, string direction){
+        List<PathFinderObject> walls = new List<PathFinderObject>();
         for(float j = -1 * edgeDist; j <= edgeDist; j += wallBounds.size.x){
-            SceneObject wall = Instantiate(wallPrefab);
+            PathFinderObject wall = Instantiate(wallPrefab);
             wall.transform.parent = this.transform;
             walls.Add(wall);
             switch(direction){
@@ -216,7 +216,7 @@ public class CorridorConnector : MonoBehaviour
 
     public IEnumerator AddWallsToPath(){
 
-        List<SceneObject> walls = new List<SceneObject>();
+        List<PathFinderObject> walls = new List<PathFinderObject>();
         for(int i = 0; i < connectorPath.Count; i++){
             Vector3 current = connectorPath[i].transform.position;
             //optimisation check some placement without colliders
@@ -244,7 +244,7 @@ public class CorridorConnector : MonoBehaviour
             
         
         
-        foreach(SceneObject wall in walls){
+        foreach(PathFinderObject wall in walls){
             yield return fixedUpdateInterval;
             if(CheckOverlap(wall)){
                 Destroy(wall.gameObject);
@@ -254,11 +254,11 @@ public class CorridorConnector : MonoBehaviour
         
     }
 
-    SceneObject FindLowestFScoreNode(){
+    PathFinderNode FindLowestFScoreNode(){
 
-        SceneObject minPathObject = openNodes[0];
+        PathFinderNode minPathObject = openNodes[0];
         float minFScore = minPathObject.fScore;
-        foreach(SceneObject path in openNodes){
+        foreach(PathFinderNode path in openNodes){
             if(path.fScore < minFScore){
                 minPathObject = path;
                 minFScore = minPathObject.fScore;
@@ -267,11 +267,11 @@ public class CorridorConnector : MonoBehaviour
         return minPathObject;
     }
 
-    IEnumerator ExploreNeighbours(SceneObject from){
+    IEnumerator ExploreNeighbours(PathFinderNode from){
         int connectionWeight = 1;
         foreach(Vector2Int direction in directions){        
             float currentScore = from.gScore + connectionWeight;
-            SceneObject pathBlock = Instantiate(cyclicConnectionPrefab);
+            PathFinderNode pathBlock = Instantiate(cyclicConnectionPrefab);
 
             Bounds bounds = pathBlock.GetCollider().bounds;
 
@@ -282,7 +282,7 @@ public class CorridorConnector : MonoBehaviour
                 from.transform.position.z + direction.y * bounds.size.z);
             
             
-            foreach(SceneObject node in allNodes){
+            foreach(PathFinderNode node in allNodes){
                 if(pathBlock.transform.position == node.transform.position){
                     if(currentScore < node.gScore){
                         Destroy(pathBlock.gameObject);
@@ -317,7 +317,7 @@ public class CorridorConnector : MonoBehaviour
     }
 
     void PlaceEndPath() {
-        SceneObject pathBlock = Instantiate(cyclicConnectionPrefab);
+        PathFinderNode pathBlock = Instantiate(cyclicConnectionPrefab);
         pathBlock.transform.parent = this.transform;
         pathBlock.transform.position = end.transform.position + end.transform.rotation * Vector3.forward;
         pathBlock.transform.position = new Vector3(
@@ -357,8 +357,8 @@ public class CorridorConnector : MonoBehaviour
 
 
 
-     Collider CheckOverlap(SceneObject sceneObject){
-        BoxCollider boxCollider = sceneObject.GetCollider();
+     Collider CheckOverlap(PathFinderObject PathFinderNode){
+        BoxCollider boxCollider = PathFinderNode.GetCollider();
 
         // print(boxCollider);
         Bounds bounds = boxCollider.bounds;
@@ -367,7 +367,7 @@ public class CorridorConnector : MonoBehaviour
         Collider[] colliders = Physics.OverlapBox(boxCollider.transform.position, bounds.size / 2, boxCollider.transform.rotation, sceneLayerMask);
         if(colliders.Length > 0){
             foreach(Collider c in colliders){
-                if(c.transform.parent.gameObject.transform.parent.gameObject.Equals(sceneObject.gameObject)){
+                if(c.transform.parent.gameObject.transform.parent.gameObject.Equals(PathFinderNode.gameObject)){
                     continue;
                 } else {
                     return c;
