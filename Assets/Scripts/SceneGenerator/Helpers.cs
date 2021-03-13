@@ -14,8 +14,8 @@ namespace Utils {
 
         public static LayerMask sceneLayerMask = LayerMask.GetMask("SceneColliders");
 
-
-
-
+        public static GameObject GetRootGameObject(Transform transform){
+            return transform.parent.gameObject.transform.parent.gameObject;
+        }
     }
 }

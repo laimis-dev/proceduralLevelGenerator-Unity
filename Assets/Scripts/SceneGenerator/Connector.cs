@@ -45,5 +45,4 @@ public class Connector : MonoBehaviour
     public Connector GetConnectedTo(){
         return connectedTo;
     }
-
 }

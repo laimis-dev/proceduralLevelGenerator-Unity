@@ -102,7 +102,6 @@ public class SceneGenerator : MonoBehaviour
         yield return StartCoroutine(ConnectEmptyConnectors());
 
         DeleteUnconnectedCorridors();
-        ProcessDoors();
 
         AddWallsToPathFinders();
         // Debug.Log("finished");
@@ -156,7 +155,7 @@ public class SceneGenerator : MonoBehaviour
             foreach(Connector currentRoomConnector in currentRoomConnectors){
                 PositionRoomAtConnector(endRoom, currentRoomConnector, currentScenePathFinder);
 
-                if(CheckRoomOverlap(endRoom)){
+                if(endRoom.CheckOverlap()){
                     continue;
                 }
 
@@ -186,7 +185,7 @@ public class SceneGenerator : MonoBehaviour
             foreach(Connector currentRoomConnector in currentRoomConnectors){
                 PositionRoomAtConnector(currentRoom, currentRoomConnector, currentScenePathFinder);
 
-                if(CheckRoomOverlap(currentRoom)){
+                if(currentRoom.CheckOverlap()){
                     continue;
                 }
 
@@ -217,7 +216,7 @@ public class SceneGenerator : MonoBehaviour
             foreach(Connector currentRoomConnector in currentRoomConnectors){
                 PositionRoomAtConnector(currentRoom, currentRoomConnector, currentScenePathFinder);
 
-                if(CheckRoomOverlap(currentRoom)){
+                if(currentRoom.CheckOverlap()){
                     continue;
                 }
 
@@ -266,27 +265,6 @@ public class SceneGenerator : MonoBehaviour
         room.transform.position = targetConnector.transform.position - roomPositionOffset;
     }
 
-    bool CheckRoomOverlap(Room room){
-        List<BoxCollider> roomColliders = room.GetColliders();
-        foreach(BoxCollider roomCollider in roomColliders){
-            Bounds bounds = roomCollider.bounds;
-            bounds.Expand(-0.1f);
-
-            Collider[] colliders = Physics.OverlapBox(roomCollider.transform.position, bounds.size / 2, roomCollider.transform.rotation, Helpers.sceneLayerMask);
-            if(colliders.Length > 0){
-                foreach(Collider c in colliders){
-                    if(GetRootGameObject(c.transform).Equals(room.gameObject)){
-                        continue;
-                    } else {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
     void PlaceCorridor(Corridor currentCorridor){
         
         currentCorridor.transform.parent = this.transform;
@@ -296,7 +274,7 @@ public class SceneGenerator : MonoBehaviour
             foreach(Connector currentPathFinder in currentPathFinders){
                 PositionCorridorAtConnector(currentCorridor, currentPathFinder, currentSceneRoomConnector);
 
-                if(CheckCorridorOverlap(currentCorridor)){
+                if(currentCorridor.CheckOverlap()){
                     continue;
                 }
 
@@ -346,25 +324,7 @@ public class SceneGenerator : MonoBehaviour
         corridor.transform.position = targetConnector.transform.position - corridorPositionOffset;
     }
 
-    bool CheckCorridorOverlap(Corridor corridor){
-        List<BoxCollider> corridorColliders = corridor.GetColliders();
-        foreach(BoxCollider corridorCollider in corridorColliders){
-            Bounds bounds = corridorCollider.bounds;
-            bounds.Expand(-0.1f);
 
-            Collider[] colliders = Physics.OverlapBox(corridorCollider.transform.position, bounds.size / 2, corridorCollider.transform.rotation, Helpers.sceneLayerMask);
-            if(colliders.Length > 0){
-                foreach(Collider c in colliders){
-                    if(GetRootGameObject(c.transform).Equals(corridor.gameObject)){
-                        continue;
-                    } else {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
 
 
 
@@ -440,7 +400,7 @@ public class SceneGenerator : MonoBehaviour
     }
 
     bool CheckIfSameRoom(Connector startPathFinder, Connector endRoomConnector){
-        GameObject corridorGameObject = GetRootGameObject(startPathFinder.transform);
+        GameObject corridorGameObject = Helpers.GetRootGameObject(startPathFinder.transform);
         Corridor currentCorridor = corridorGameObject.GetComponent<Corridor>();
         List<Connector> pathFinders = currentCorridor.GetConnectors();
 
@@ -448,7 +408,7 @@ public class SceneGenerator : MonoBehaviour
             
             if(pathFinder == startPathFinder) continue;
             if(pathFinder.GetConnectedTo() == null) continue;
-            GameObject roomGameObject = GetRootGameObject(pathFinder.GetConnectedTo().transform);
+            GameObject roomGameObject = Helpers.GetRootGameObject(pathFinder.GetConnectedTo().transform);
             Room currentRoom = roomGameObject.GetComponent<Room>();
             List<Connector> roomConnectors = currentRoom.GetConnectors();
             
@@ -483,13 +443,6 @@ public class SceneGenerator : MonoBehaviour
         }
     }
 
-    void ProcessDoors(){
-
-    }
-
-    GameObject GetRootGameObject(Transform transform){
-        return transform.parent.gameObject.transform.parent.gameObject;
-    }
 
 
     void CleanUp(){
