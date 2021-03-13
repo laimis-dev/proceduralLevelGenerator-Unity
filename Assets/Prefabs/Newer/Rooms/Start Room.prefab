@@ -355,11 +355,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6826e396bdddba40826225bb6d05b17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roomName: 
   connectors:
   - {fileID: 3164297132444190592}
   colliders:
   - {fileID: 2817501666413597515}
-  testCollision: 0
 --- !u!1 &7639260897548867472
 GameObject:
   m_ObjectHideFlags: 0
@@ -2723,7 +2723,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3608753831430756670, guid: 1e09497e38ed6364f9550b4b8876c434, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3608753831430915358, guid: 1e09497e38ed6364f9550b4b8876c434, type: 3}
       propertyPath: m_RootOrder

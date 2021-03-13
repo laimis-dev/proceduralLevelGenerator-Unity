@@ -174,8 +174,8 @@ public class SceneGenerator : MonoBehaviour
                 availablePathFinders.Remove(currentScenePathFinder);
                 availableRoomConnectors.Remove(currentRoomConnector);
 
-                currentScenePathFinder.connectedTo = currentRoomConnector;
-                currentRoomConnector.connectedTo = currentScenePathFinder;
+                currentScenePathFinder.SetConnectedTo(currentRoomConnector);
+                currentRoomConnector.SetConnectedTo(currentScenePathFinder);
 
                 SetRoomConnectorDistance(endRoom, currentScenePathFinder.distanceFromStart + 1);
 
@@ -204,8 +204,8 @@ public class SceneGenerator : MonoBehaviour
                 availablePathFinders.Remove(currentScenePathFinder);
                 availableRoomConnectors.Remove(currentRoomConnector);
 
-                currentScenePathFinder.connectedTo = currentRoomConnector;
-                currentRoomConnector.connectedTo = currentScenePathFinder;
+                currentScenePathFinder.SetConnectedTo(currentRoomConnector);
+                currentRoomConnector.SetConnectedTo(currentScenePathFinder);
 
                 SetRoomConnectorDistance(currentRoom, currentScenePathFinder.distanceFromStart + 1);
                 wasRoomPlaced = true;
@@ -236,8 +236,8 @@ public class SceneGenerator : MonoBehaviour
                 availablePathFinders.Remove(currentScenePathFinder);
                 availableRoomConnectors.Remove(currentRoomConnector);
 
-                currentScenePathFinder.connectedTo = currentRoomConnector;
-                currentRoomConnector.connectedTo = currentScenePathFinder;
+                currentScenePathFinder.SetConnectedTo(currentRoomConnector);
+                currentRoomConnector.SetConnectedTo(currentScenePathFinder);
 
                 SetRoomConnectorDistance(currentRoom, currentScenePathFinder.distanceFromStart + 1);
                 wasRoomPlaced = true;
@@ -314,8 +314,8 @@ public class SceneGenerator : MonoBehaviour
                 availableRoomConnectors.Remove(currentSceneRoomConnector);
                 availablePathFinders.Remove(currentPathFinder);
 
-                currentSceneRoomConnector.connectedTo = currentPathFinder;
-                currentPathFinder.connectedTo = currentSceneRoomConnector;
+                currentSceneRoomConnector.SetConnectedTo(currentPathFinder);
+                currentPathFinder.SetConnectedTo(currentSceneRoomConnector);
 
                 SetPathFinderDistance(currentCorridor, currentSceneRoomConnector.distanceFromStart + 1);
 
@@ -381,7 +381,7 @@ public class SceneGenerator : MonoBehaviour
 
     IEnumerator ConnectEmptyConnectors(){
         foreach(Connector pathFinder in availablePathFinders){
-            if(pathFinder.connectedTo != null) continue;
+            if(pathFinder.GetConnectedTo() != null) continue;
             List<Connector> foundConnectors = FindClosestConnectors(pathFinder);
             foreach(Connector foundConnector in foundConnectors){
                 PathFinder newBuilder = Instantiate(pathFinderBuilder);
@@ -391,8 +391,8 @@ public class SceneGenerator : MonoBehaviour
                 yield return StartCoroutine(newBuilder.StartConnecting());
 
                 if(newBuilder.isEndFound){
-                    pathFinder.connectedTo = foundConnector;
-                    foundConnector.connectedTo = pathFinder;
+                    pathFinder.SetConnectedTo(foundConnector);
+                    foundConnector.SetConnectedTo(pathFinder);
                     pathFinders.Add(newBuilder);
                     break;                   
                 } else {
@@ -411,7 +411,7 @@ public class SceneGenerator : MonoBehaviour
     List<Connector> FindClosestConnectors(Connector pathFinder){
         List<Connector> foundConnectors = new List<Connector>();
         foreach(Connector roomConnector in availableRoomConnectors){
-            if(roomConnector.connectedTo != null) continue;
+            if(roomConnector.GetConnectedTo() != null) continue;
 
             float distanceBetweenConnectors = Vector3.Distance(
                 pathFinder.transform.position, 
@@ -455,14 +455,14 @@ public class SceneGenerator : MonoBehaviour
         foreach(Connector pathFinder in pathFinders){
             
             if(pathFinder == startPathFinder) continue;
-            if(pathFinder.connectedTo == null) continue;
-            GameObject roomGameObject = GetRootGameObject(pathFinder.connectedTo.transform);
+            if(pathFinder.GetConnectedTo() == null) continue;
+            GameObject roomGameObject = GetRootGameObject(pathFinder.GetConnectedTo().transform);
             Room currentRoom = roomGameObject.GetComponent<Room>();
             List<Connector> roomConnectors = currentRoom.GetConnectors();
             
             
             foreach(Connector roomConnector in roomConnectors){
-                if(roomConnector.connectedTo != null) continue;
+                if(roomConnector.GetConnectedTo() != null) continue;
                 if(roomConnector.transform.position == endRoomConnector.transform.position){
                     return true;
                 }
@@ -477,13 +477,13 @@ public class SceneGenerator : MonoBehaviour
             List<Connector> connectors = corridor.GetConnectors();
             int connections = 0;
             foreach(Connector connector in connectors){
-                if(connector.connectedTo != null) connections++;
+                if(connector.GetConnectedTo() != null) connections++;
             }
 
             if(connections < 2) {
                 foreach(Connector connector in connectors){
-                    if(connector.connectedTo != null) {
-                        connector.connectedTo.connectedTo = null;
+                    if(connector.GetConnectedTo() != null) {
+                        connector.GetConnectedTo().SetConnectedTo(null);
                     }
                 }
                 Destroy(corridor.gameObject);
@@ -492,19 +492,7 @@ public class SceneGenerator : MonoBehaviour
     }
 
     void ProcessDoors(){
-        foreach(Corridor corridor in generatedCorridors){
-            List<Connector> connectors = corridor.GetConnectors();
-            foreach(Connector connector in connectors){
-                connector.ProcessDoor();
-            }
-        }
 
-        foreach(Room room in generatedRooms){
-            List<Connector> connectors = room.GetConnectors();
-            foreach(Connector connector in connectors){
-                connector.ProcessDoor();
-            }
-        }
     }
 
     GameObject GetRootGameObject(Transform transform){

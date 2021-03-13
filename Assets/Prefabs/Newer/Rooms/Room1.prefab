@@ -35388,7 +35388,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4215541155801135133
 Transform:
   m_ObjectHideFlags: 0
@@ -41380,7 +41380,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4555519161156443416
 Transform:
   m_ObjectHideFlags: 0
@@ -47783,6 +47783,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6826e396bdddba40826225bb6d05b17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roomName: 
   connectors:
   - {fileID: 1173609473003340231}
   - {fileID: 183482380133225542}
@@ -47796,7 +47797,6 @@ MonoBehaviour:
   - {fileID: 4532044059821964512}
   - {fileID: 3440056153504478001}
   - {fileID: 5010765679086921037}
-  testCollision: 0
 --- !u!1 &5007494380583006452
 GameObject:
   m_ObjectHideFlags: 0
@@ -58745,7 +58745,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7781354363565099902
 Transform:
   m_ObjectHideFlags: 0
@@ -86775,7 +86775,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &664923587529104731
 Transform:
   m_ObjectHideFlags: 0
@@ -87401,7 +87401,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7263358262348003482
 Transform:
   m_ObjectHideFlags: 0
@@ -88381,7 +88381,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8466358420750768591
 Transform:
   m_ObjectHideFlags: 0

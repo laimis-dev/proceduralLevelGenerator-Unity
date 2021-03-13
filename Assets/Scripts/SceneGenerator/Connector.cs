@@ -6,19 +6,19 @@ public class Connector : MonoBehaviour
 {
     [SerializeField] bool drawGizmo = true;
     [SerializeField] GameObject door;
-    public Connector connectedTo;
+    [SerializeField] Connector connectedTo;
     public int distanceFromStart = 0;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        ProcessDoor();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     void OnDrawGizmos(){
@@ -35,6 +35,15 @@ public class Connector : MonoBehaviour
         } else {
             door.SetActive(false);
         }
+    }
+
+    public void SetConnectedTo(Connector connectedTo){
+        this.connectedTo = connectedTo;
+        ProcessDoor();
+    }
+
+    public Connector GetConnectedTo(){
+        return connectedTo;
     }
 
 }

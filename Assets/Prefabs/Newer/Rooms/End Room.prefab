@@ -109,11 +109,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6826e396bdddba40826225bb6d05b17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roomName: 
   connectors:
   - {fileID: 9222534482013652428}
   colliders:
   - {fileID: 6701214808298823219}
-  testCollision: 0
 --- !u!1 &3112850879349071974
 GameObject:
   m_ObjectHideFlags: 0
@@ -190,7 +190,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7592601808151110693
 Transform:
   m_ObjectHideFlags: 0
