@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using System;
 using Utils;
 
@@ -42,10 +43,10 @@ public class SceneGenerator : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
-        if (Input.GetMouseButtonDown(0)) {
-            CleanUp();
-            StartCoroutine("GenerateScene");
-        }   
+        // if (Input.GetMouseButtonDown(0)) {
+        //     CleanUp();
+        //     StartCoroutine("GenerateScene");
+        // }   
     }
 
     IEnumerator GenerateScene(){
@@ -99,6 +100,7 @@ public class SceneGenerator : MonoBehaviour
         DeleteUnconnectedCorridors();
 
         AddWallsToPathFinders();
+        BakeNavMesh();
         // Debug.Log("finished");
         StopCoroutine("GenerateScene");
     }
@@ -393,6 +395,7 @@ public class SceneGenerator : MonoBehaviour
 
 
     void DeleteUnconnectedCorridors(){
+        List<Corridor> deletedCorridors = new List<Corridor>();
         foreach(Corridor corridor in generatedCorridors){
             List<Connector> connectors = corridor.GetConnectors();
             int connections = 0;
@@ -406,8 +409,23 @@ public class SceneGenerator : MonoBehaviour
                         connector.GetConnectedTo().SetConnectedTo(null);
                     }
                 }
+                deletedCorridors.Add(corridor);
                 Destroy(corridor.gameObject);
             }
+        }
+
+        foreach(Corridor remove in deletedCorridors){
+            generatedCorridors.Remove(remove);
+        }
+    }
+
+    void BakeNavMesh(){
+        foreach(Room room in generatedRooms){
+            room.GetComponent<NavMeshSurface>().BuildNavMesh();
+        }
+
+        foreach(Corridor corridor in generatedCorridors){
+            corridor.GetComponent<NavMeshSurface>().BuildNavMesh();
         }
     }
 

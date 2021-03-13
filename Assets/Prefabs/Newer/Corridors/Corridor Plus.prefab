@@ -72095,6 +72095,7 @@ GameObject:
   m_Component:
   - component: {fileID: 123000745285694357}
   - component: {fileID: 4197428069884667054}
+  - component: {fileID: 6587569884370468818}
   m_Layer: 0
   m_Name: Corridor Plus
   m_TagString: Untagged
@@ -72140,6 +72141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a29ba9c5403868743bf52a4460e0f221, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roomName: 
   connectors:
   - {fileID: 1973519604960906596}
   - {fileID: 1080440009156973803}
@@ -72148,7 +72150,35 @@ MonoBehaviour:
   colliders:
   - {fileID: 1347071384074600255}
   - {fileID: 4731433402164211558}
-  testCollision: 0
+--- !u!114 &6587569884370468818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6668472223681551069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.13333334
+  m_BuildHeightMesh: 0
+  m_NavMeshData: {fileID: 23800000, guid: 5c1f967d2e4f54943a39d835dea541f1, type: 2}
 --- !u!1 &6753769087175007122
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6424622337158179272}
   - component: {fileID: 4194601884858270696}
+  - component: {fileID: 4295195160261468188}
   m_Layer: 0
   m_Name: Room5
   m_TagString: Untagged
@@ -60,6 +61,35 @@ MonoBehaviour:
   - {fileID: 7469409784830550275}
   colliders:
   - {fileID: 4380225371942881342}
+--- !u!114 &4295195160261468188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 294712372078035072}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.13333334
+  m_BuildHeightMesh: 0
+  m_NavMeshData: {fileID: 23800000, guid: 39ec89c2e13e30548a0924041fb4aaf5, type: 2}
 --- !u!1 &1010440286080045601
 GameObject:
   m_ObjectHideFlags: 0
@@ -6816,13 +6846,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1e09497e38ed6364f9550b4b8876c434, type: 3}
---- !u!1 &5515645161049218592 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3608753831430756670, guid: 1e09497e38ed6364f9550b4b8876c434, type: 3}
-  m_PrefabInstance: {fileID: 9124113007779137310}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5515645161049637376 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3608753831430915358, guid: 1e09497e38ed6364f9550b4b8876c434, type: 3}
+  m_PrefabInstance: {fileID: 9124113007779137310}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5515645161049218592 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3608753831430756670, guid: 1e09497e38ed6364f9550b4b8876c434, type: 3}
   m_PrefabInstance: {fileID: 9124113007779137310}
   m_PrefabAsset: {fileID: 0}

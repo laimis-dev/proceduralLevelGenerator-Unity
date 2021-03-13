@@ -387,6 +387,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3536837816499285149}
   - component: {fileID: 8208503229434107624}
+  - component: {fileID: 9067403061197030904}
   m_Layer: 0
   m_Name: Room3
   m_TagString: Untagged
@@ -429,12 +430,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6826e396bdddba40826225bb6d05b17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roomName: 
   connectors:
   - {fileID: 8342488286028890967}
   - {fileID: 3124602028034575354}
   colliders:
   - {fileID: 6224158251947270421}
-  testCollision: 0
+--- !u!114 &9067403061197030904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7794200365642941909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.13333334
+  m_BuildHeightMesh: 0
+  m_NavMeshData: {fileID: 23800000, guid: cee9dd71c3984cc42b897bd04dc91864, type: 2}
 --- !u!1001 &70560145816345542
 PrefabInstance:
   m_ObjectHideFlags: 0

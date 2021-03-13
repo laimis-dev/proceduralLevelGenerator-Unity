@@ -67,6 +67,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4996672955612438740}
   - component: {fileID: 6150982230716041453}
+  - component: {fileID: 6530479804455236267}
   m_Layer: 0
   m_Name: End Room
   m_TagString: Untagged
@@ -114,6 +115,35 @@ MonoBehaviour:
   - {fileID: 9222534482013652428}
   colliders:
   - {fileID: 6701214808298823219}
+--- !u!114 &6530479804455236267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758777952957434268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.13333334
+  m_BuildHeightMesh: 0
+  m_NavMeshData: {fileID: 23800000, guid: da6ca172e35c006429c0c9d5bfd80180, type: 2}
 --- !u!1 &3112850879349071974
 GameObject:
   m_ObjectHideFlags: 0
@@ -2684,14 +2714,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1e09497e38ed6364f9550b4b8876c434, type: 3}
---- !u!1 &1579913878776539636 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3608753831430756670, guid: 1e09497e38ed6364f9550b4b8876c434, type: 3}
-  m_PrefabInstance: {fileID: 2880092850000621770}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1579913878776116692 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3608753831430915358, guid: 1e09497e38ed6364f9550b4b8876c434, type: 3}
+  m_PrefabInstance: {fileID: 2880092850000621770}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1579913878776539636 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3608753831430756670, guid: 1e09497e38ed6364f9550b4b8876c434, type: 3}
   m_PrefabInstance: {fileID: 2880092850000621770}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3039777980870944637
