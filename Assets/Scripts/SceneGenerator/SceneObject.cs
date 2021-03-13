@@ -6,28 +6,30 @@ using UnityEngine;
 
 public class SceneObject : MonoBehaviour
 {
-    [SerializeField] BoxCollider collider;
-    public float gScore = 0;
-    public float fScore = 0;
-    public SceneObject instantiatedFrom;
+    [SerializeField] string roomName;
 
+    [SerializeField] List<Connector> connectors = new List<Connector>();
+    [SerializeField] List<BoxCollider> colliders = new List<BoxCollider>();
 
     void Start()
     {
         
     }
 
-
-    public BoxCollider GetCollider(){
-        return collider;
+    void Update()
+    {
+        
     }
 
-    // public int getGScore(){
-    //     return gScore;
-    // }
+    public List<Connector> GetConnectors(){
+        return connectors;
+    }
 
-    // public int getFScore(){
-    //     return fScore;
-    // }
+    public List<BoxCollider> GetColliders(){
+        return colliders;
+    }
 
+    public string GetName(){
+        return roomName;
+    }
 }

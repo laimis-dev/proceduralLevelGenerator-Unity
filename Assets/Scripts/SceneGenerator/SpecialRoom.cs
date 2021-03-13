@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class SpecialRoom : Room
 {
-    [SerializeField] string roomName;
-
     [SerializeField] int minSpawnDistance = 1;
 
     [Range(0,100)]
@@ -33,9 +31,5 @@ public class SpecialRoom : Room
 
     public int GetMaxAmountPerScene(){
         return maxAmountPerScene;
-    }
-
-    public string GetName(){
-        return roomName;
     }
 }
