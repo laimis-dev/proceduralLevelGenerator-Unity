@@ -54,11 +54,8 @@ public class SceneGenerator : MonoBehaviour
         }
 
         pseudoRandom = new System.Random(seed.GetHashCode());
-
-        WaitForSeconds startup =  new WaitForSeconds(1);
-        WaitForFixedUpdate fixedUpdateInterval = new WaitForFixedUpdate();
     
-        yield return startup;
+        yield return Helpers.startup;
         PlaceStartRoom();
 
         int numberOfIterations = pseudoRandom.Next(roomNumberRange.x, roomNumberRange.y);
@@ -83,17 +80,15 @@ public class SceneGenerator : MonoBehaviour
                 Room currentRoom = possibleRooms[pseudoRandom.Next(0, possibleRooms.Count)];
                 possibleRooms.Remove(currentRoom);
                 PlaceRoom(Instantiate(currentRoom));
-                yield return fixedUpdateInterval;
+                yield return Helpers.fixedUpdateInterval;
             }
             
-            
-            // yield return startup;
             
             while(!wasCorridorPlaced && possibleCorridors.Count > 0){
                 Corridor currentCorridor = corridorPrefabs[pseudoRandom.Next(0, corridorPrefabs.Count)];
                 possibleCorridors.Remove(currentCorridor);
                 PlaceCorridor(Instantiate(currentCorridor));
-                yield return fixedUpdateInterval;
+                yield return Helpers.fixedUpdateInterval;
             }
         }
 
@@ -118,13 +113,14 @@ public class SceneGenerator : MonoBehaviour
         return count;
     }
 
+
     void PlaceStartRoom(){
         // Debug.Log("placed start room");
         Room startRoom = Instantiate(startRoomPrefab);
         startRoom.transform.parent = this.transform;
         generatedRooms.Add(startRoom);
 
-        AddRoomConnectorsToList(startRoom);
+        AddConnectorsToList(availableRoomConnectors, startRoom);
 
         startRoom.transform.position = Vector3.zero;
         startRoom.transform.rotation = Quaternion.identity;
@@ -153,13 +149,13 @@ public class SceneGenerator : MonoBehaviour
 
         foreach(Connector currentSceneCorridorConnector in sortedAvailableCorridorConnectors){
             foreach(Connector currentRoomConnector in currentRoomConnectors){
-                PositionRoomAtConnector(endRoom, currentRoomConnector, currentSceneCorridorConnector);
+                PositionSceneObjectAtConnector(endRoom, currentRoomConnector, currentSceneCorridorConnector);
 
                 if(endRoom.CheckOverlap()){
                     continue;
                 }
 
-                AddRoomConnectorsToList(endRoom);
+                AddConnectorsToList(availableRoomConnectors, endRoom);
                 generatedRooms.Add(endRoom);
 
                 availableCorridorConnectors.Remove(currentSceneCorridorConnector);
@@ -168,7 +164,7 @@ public class SceneGenerator : MonoBehaviour
                 currentSceneCorridorConnector.SetConnectedTo(currentRoomConnector);
                 currentRoomConnector.SetConnectedTo(currentSceneCorridorConnector);
 
-                SetRoomConnectorDistance(endRoom, currentSceneCorridorConnector.distanceFromStart + 1);
+                SetConnectorDistance(endRoom, currentSceneCorridorConnector.distanceFromStart + 1);
 
                 return;
             }
@@ -184,13 +180,13 @@ public class SceneGenerator : MonoBehaviour
 
         foreach(Connector currentSceneCorridorConnector in availableCorridorConnectors){
             foreach(Connector currentRoomConnector in currentRoomConnectors){
-                PositionRoomAtConnector(currentRoom, currentRoomConnector, currentSceneCorridorConnector);
+                PositionSceneObjectAtConnector(currentRoom, currentRoomConnector, currentSceneCorridorConnector);
 
                 if(currentRoom.CheckOverlap()){
                     continue;
                 }
 
-                AddRoomConnectorsToList(currentRoom);
+                AddConnectorsToList(availableRoomConnectors, currentRoom);
                 generatedRooms.Add(currentRoom);
 
                 availableCorridorConnectors.Remove(currentSceneCorridorConnector);
@@ -199,7 +195,7 @@ public class SceneGenerator : MonoBehaviour
                 currentSceneCorridorConnector.SetConnectedTo(currentRoomConnector);
                 currentRoomConnector.SetConnectedTo(currentSceneCorridorConnector);
 
-                SetRoomConnectorDistance(currentRoom, currentSceneCorridorConnector.distanceFromStart + 1);
+                SetConnectorDistance(currentRoom, currentSceneCorridorConnector.distanceFromStart + 1);
                 wasRoomPlaced = true;
                 return;
             }
@@ -215,13 +211,13 @@ public class SceneGenerator : MonoBehaviour
         foreach(Connector currentSceneCorridorConnector in availableCorridorConnectors){
             if(currentSceneCorridorConnector.distanceFromStart <= currentRoom.GetMinSpawnDistance()) continue;
             foreach(Connector currentRoomConnector in currentRoomConnectors){
-                PositionRoomAtConnector(currentRoom, currentRoomConnector, currentSceneCorridorConnector);
+                PositionSceneObjectAtConnector(currentRoom, currentRoomConnector, currentSceneCorridorConnector);
 
                 if(currentRoom.CheckOverlap()){
                     continue;
                 }
 
-                AddRoomConnectorsToList(currentRoom);
+                AddConnectorsToList(availableRoomConnectors, currentRoom);
                 generatedRooms.Add(currentRoom);
                 generatedSpecialRooms.Add(currentRoom);
 
@@ -231,7 +227,7 @@ public class SceneGenerator : MonoBehaviour
                 currentSceneCorridorConnector.SetConnectedTo(currentRoomConnector);
                 currentRoomConnector.SetConnectedTo(currentSceneCorridorConnector);
 
-                SetRoomConnectorDistance(currentRoom, currentSceneCorridorConnector.distanceFromStart + 1);
+                SetConnectorDistance(currentRoom, currentSceneCorridorConnector.distanceFromStart + 1);
                 wasRoomPlaced = true;
                 return;
             }
@@ -239,31 +235,31 @@ public class SceneGenerator : MonoBehaviour
         Destroy(currentRoom.gameObject);
     }
   
-    void AddRoomConnectorsToList(Room room){
-        foreach(Connector connector in room.GetConnectors()){
+    void AddConnectorsToList(List<Connector> list, SceneObject sceneObject){
+        foreach(Connector connector in sceneObject.GetConnectors()){
             int randomExitPoint = pseudoRandom.Next(0, availableRoomConnectors.Count);
-            availableRoomConnectors.Insert(randomExitPoint, connector);
+            list.Insert(randomExitPoint, connector);
         }
     }
 
-    void SetRoomConnectorDistance(Room room, int distance){
-        foreach(Connector connector in room.GetConnectors()){
+    void SetConnectorDistance(SceneObject sceneObject, int distance){
+        foreach(Connector connector in sceneObject.GetConnectors()){
             connector.distanceFromStart = distance;
         }
     }
 
-    void PositionRoomAtConnector(Room room, Connector currentRoomConnector, Connector targetConnector){
-        room.transform.position = Vector3.zero;
-        room.transform.rotation = Quaternion.identity;
+    void PositionSceneObjectAtConnector(SceneObject sceneObject, Connector sceneObjectConnector, Connector targetConnector){
+        sceneObject.transform.position = Vector3.zero;
+        sceneObject.transform.rotation = Quaternion.identity;
 
         Vector3 targetConnectorEuler = targetConnector.transform.eulerAngles;
-        Vector3 currentRoomConnectorEuler = currentRoomConnector.transform.eulerAngles;
-        float deltaAngle = Mathf.DeltaAngle(currentRoomConnectorEuler.y, targetConnectorEuler.y);
-        Quaternion currentRoomTargetRotation = Quaternion.AngleAxis(deltaAngle, Vector3.up);
-        room.transform.rotation = currentRoomTargetRotation * Quaternion.Euler(0, 180f, 0);
+        Vector3 sceneObjectConnectorEuler = sceneObjectConnector.transform.eulerAngles;
+        float deltaAngle = Mathf.DeltaAngle(sceneObjectConnectorEuler.y, targetConnectorEuler.y);
+        Quaternion sceneObjectTargetRotation = Quaternion.AngleAxis(deltaAngle, Vector3.up);
+        sceneObject.transform.rotation = sceneObjectTargetRotation * Quaternion.Euler(0, 180f, 0);
 
-        Vector3 roomPositionOffset = currentRoomConnector.transform.position - room.transform.position;
-        room.transform.position = targetConnector.transform.position - roomPositionOffset;
+        Vector3 sceneObjectPositionOffset = sceneObjectConnector.transform.position - sceneObject.transform.position;
+        sceneObject.transform.position = targetConnector.transform.position - sceneObjectPositionOffset;
     }
 
     void PlaceCorridor(Corridor currentCorridor){
@@ -273,13 +269,13 @@ public class SceneGenerator : MonoBehaviour
 
         foreach(Connector currentSceneRoomConnector in availableRoomConnectors){
             foreach(Connector currentCorridorConnector in currentCorridorConnectors){
-                PositionCorridorAtConnector(currentCorridor, currentCorridorConnector, currentSceneRoomConnector);
+                PositionSceneObjectAtConnector(currentCorridor, currentCorridorConnector, currentSceneRoomConnector);
 
                 if(currentCorridor.CheckOverlap()){
                     continue;
                 }
 
-                AddCorridorConnectorsToList(currentCorridor);
+                AddConnectorsToList(availableCorridorConnectors, currentCorridor);
                 generatedCorridors.Add(currentCorridor);
 
                 availableRoomConnectors.Remove(currentSceneRoomConnector);
@@ -288,43 +284,12 @@ public class SceneGenerator : MonoBehaviour
                 currentSceneRoomConnector.SetConnectedTo(currentCorridorConnector);
                 currentCorridorConnector.SetConnectedTo(currentSceneRoomConnector);
 
-                SetCorridorConnectorDistance(currentCorridor, currentSceneRoomConnector.distanceFromStart + 1);
+                SetConnectorDistance(currentCorridor, currentSceneRoomConnector.distanceFromStart + 1);
 
                 return;
             }
         }
         Destroy(currentCorridor.gameObject);
-    }
-
-
-
-
-    void AddCorridorConnectorsToList(Corridor corridor){
-        foreach(Connector connector in corridor.GetConnectors()){
-            int randomExitPoint = pseudoRandom.Next(0, availableCorridorConnectors.Count);
-            availableCorridorConnectors.Insert(randomExitPoint, connector);
-        }
-    }
-
-    void SetCorridorConnectorDistance(Corridor corridor, int distance){
-        foreach(Connector connector in corridor.GetConnectors()){
-            connector.distanceFromStart = distance;
-        }
-    }
-
-
-    void PositionCorridorAtConnector(Corridor corridor, Connector currentCorridorConnector, Connector targetConnector){
-        corridor.transform.position = Vector3.zero;
-        corridor.transform.rotation = Quaternion.identity;
-
-        Vector3 targetConnectorEuler = targetConnector.transform.eulerAngles;
-        Vector3 currentCorridorConnectorEuler = currentCorridorConnector.transform.eulerAngles;
-        float deltaAngle = Mathf.DeltaAngle(currentCorridorConnectorEuler.y, targetConnectorEuler.y);
-        Quaternion currentCorridorTargetRotation = Quaternion.AngleAxis(deltaAngle, Vector3.up);
-        corridor.transform.rotation = currentCorridorTargetRotation * Quaternion.Euler(0, 180f, 0);
-
-        Vector3 corridorPositionOffset = currentCorridorConnector.transform.position - corridor.transform.position;
-        corridor.transform.position = targetConnector.transform.position - corridorPositionOffset;
     }
 
 

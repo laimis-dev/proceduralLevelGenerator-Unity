@@ -18,8 +18,6 @@ public class PathFinder : MonoBehaviour
     List<PathFinderNode> allNodes = new List<PathFinderNode>();
     List<PathFinderNode> connectorPath = new List<PathFinderNode>();
 
-    WaitForSeconds startup =  new WaitForSeconds(1);
-    WaitForFixedUpdate fixedUpdateInterval = new WaitForFixedUpdate();
     public bool isEndFound = false;
 
     float minEndDistance;
@@ -235,7 +233,7 @@ public class PathFinder : MonoBehaviour
         
         
         foreach(PathFinderObject wall in walls){
-            yield return fixedUpdateInterval;
+            yield return Helpers.fixedUpdateInterval;
             if(wall.CheckOverlap()){
                 Destroy(wall.gameObject);
             }
@@ -292,7 +290,7 @@ public class PathFinder : MonoBehaviour
 
             if(pathBlock == null) continue;
 
-            yield return fixedUpdateInterval;
+            yield return Helpers.fixedUpdateInterval;
             if(pathBlock.CheckOverlap()){
                 Destroy(pathBlock.gameObject);
             } else {

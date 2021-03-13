@@ -12,6 +12,9 @@ namespace Utils {
             Vector2Int.right
         };
 
+        public static WaitForSeconds startup =  new WaitForSeconds(1);
+        public static WaitForFixedUpdate fixedUpdateInterval = new WaitForFixedUpdate();
+
         public static LayerMask sceneLayerMask = LayerMask.GetMask("SceneColliders");
 
         public static GameObject GetRootGameObject(Transform transform){
