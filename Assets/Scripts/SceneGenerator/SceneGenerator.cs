@@ -99,7 +99,7 @@ public class SceneGenerator : MonoBehaviour
 
         DeleteUnconnectedCorridors();
 
-        AddWallsToPathFinders();
+        yield return AddWallsToPathFinders();
         BakeNavMesh();
         // Debug.Log("finished");
         StopCoroutine("GenerateScene");
@@ -324,9 +324,9 @@ public class SceneGenerator : MonoBehaviour
         }
     }
 
-    void AddWallsToPathFinders(){
+    IEnumerator AddWallsToPathFinders(){
         foreach(PathFinder pathFinder in pathFinders){
-            StartCoroutine(pathFinder.AddWallsToPath());
+            yield return StartCoroutine(pathFinder.AddWallsToPath());
         }
     }
 

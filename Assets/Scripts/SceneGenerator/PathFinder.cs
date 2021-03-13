@@ -81,7 +81,7 @@ public class PathFinder : MonoBehaviour
 
         startBlock.transform.position = new Vector3(
                                         startBlock.transform.position.x,
-                                        startBlock.transform.position.y - 0.01f,
+                                        startBlock.transform.position.y,
                                         startBlock.transform.position.z);
 
         
@@ -310,7 +310,7 @@ public class PathFinder : MonoBehaviour
         pathBlock.transform.position = end.transform.position + end.transform.rotation * Vector3.forward;
         pathBlock.transform.position = new Vector3(
                                         pathBlock.transform.position.x,
-                                        pathBlock.transform.position.y - 0.01f,
+                                        pathBlock.transform.position.y,
                                         pathBlock.transform.position.z);
 
         connectorPath.Add(pathBlock);
