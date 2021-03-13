@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Utils;
 
 public class SceneGenerator : MonoBehaviour
 {
@@ -29,22 +30,13 @@ public class SceneGenerator : MonoBehaviour
     List<SpecialRoom> generatedSpecialRooms = new List<SpecialRoom>();
     List<PathFinder> pathFinders = new List<PathFinder>();
 
-    LayerMask sceneLayerMask;
 
     bool wasRoomPlaced = false;
     bool wasCorridorPlaced = false;
 
-    Vector2Int[] directions = new Vector2Int[] {
-        Vector2Int.up,
-        Vector2Int.down,
-        Vector2Int.left,
-        Vector2Int.right
-    };
-        
     System.Random pseudoRandom;
     
     void Start() {
-        sceneLayerMask = LayerMask.GetMask("SceneColliders");
         StartCoroutine("GenerateScene");
     }
 
@@ -280,7 +272,7 @@ public class SceneGenerator : MonoBehaviour
             Bounds bounds = roomCollider.bounds;
             bounds.Expand(-0.1f);
 
-            Collider[] colliders = Physics.OverlapBox(roomCollider.transform.position, bounds.size / 2, roomCollider.transform.rotation, sceneLayerMask);
+            Collider[] colliders = Physics.OverlapBox(roomCollider.transform.position, bounds.size / 2, roomCollider.transform.rotation, Helpers.sceneLayerMask);
             if(colliders.Length > 0){
                 foreach(Collider c in colliders){
                     if(GetRootGameObject(c.transform).Equals(room.gameObject)){
@@ -360,7 +352,7 @@ public class SceneGenerator : MonoBehaviour
             Bounds bounds = corridorCollider.bounds;
             bounds.Expand(-0.1f);
 
-            Collider[] colliders = Physics.OverlapBox(corridorCollider.transform.position, bounds.size / 2, corridorCollider.transform.rotation, sceneLayerMask);
+            Collider[] colliders = Physics.OverlapBox(corridorCollider.transform.position, bounds.size / 2, corridorCollider.transform.rotation, Helpers.sceneLayerMask);
             if(colliders.Length > 0){
                 foreach(Collider c in colliders){
                     if(GetRootGameObject(c.transform).Equals(corridor.gameObject)){

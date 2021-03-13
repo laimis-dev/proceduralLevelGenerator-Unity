@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 
 public class PathFinder : MonoBehaviour
 {
@@ -12,16 +13,6 @@ public class PathFinder : MonoBehaviour
     [SerializeField] bool startOnAwake = false;
     [SerializeField] bool addWallsOnFinish = false;
     [SerializeField] float maxGScore = 15f;
-    
-
-    
-
-    Vector2Int[] directions = new Vector2Int[] {
-        Vector2Int.up,
-        Vector2Int.down,
-        Vector2Int.left,
-        Vector2Int.right
-    };
         
     List<PathFinderNode> openNodes = new List<PathFinderNode>();
     List<PathFinderNode> allNodes = new List<PathFinderNode>();
@@ -268,7 +259,7 @@ public class PathFinder : MonoBehaviour
 
     IEnumerator ExploreNeighbours(PathFinderNode from){
         int connectionWeight = 1;
-        foreach(Vector2Int direction in directions){        
+        foreach(Vector2Int direction in Helpers.directions){        
             float currentScore = from.gScore + connectionWeight;
             PathFinderNode pathBlock = Instantiate(cyclicConnectionPrefab);
 
