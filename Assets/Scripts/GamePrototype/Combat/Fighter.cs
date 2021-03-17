@@ -36,7 +36,10 @@ namespace RPG.Combat
         //Animation Event
         public void Hit(){
             Health healthComponent = target.GetComponent<Health>();
-            healthComponent.TakeDamage(weaponDamage);
+            if(healthComponent){
+                healthComponent.TakeDamage(weaponDamage);
+            }
+            
         }
         public void Attack(CombatTarget combatTarget){
             GetComponent<ActionScheduler>().StartAction(this);

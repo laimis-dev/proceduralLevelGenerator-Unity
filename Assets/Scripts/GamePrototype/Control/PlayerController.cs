@@ -19,7 +19,6 @@ namespace RPG.Control {
                 if(target == null) continue;
 
                 if(Input.GetMouseButtonDown(0)){
-                    print(hit);
                     GetComponent<Fighter>().Attack(target);
                 }
                 return true;
