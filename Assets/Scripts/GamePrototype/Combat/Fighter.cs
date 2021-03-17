@@ -11,7 +11,8 @@ namespace RPG.Combat
         [SerializeField] float timeBetweenAttacks = 1f;
         [SerializeField] float weaponDamage = 5f;
         Health target;
-        float timeSinceLastAttack = 0;
+        float timeSinceLastAttack = Mathf.Infinity;
+
         void Update(){
             timeSinceLastAttack += Time.deltaTime;
 
@@ -30,25 +31,28 @@ namespace RPG.Combat
             transform.LookAt(target.transform);
             if(timeSinceLastAttack > timeBetweenAttacks){
                 //This will trigger Hit() event
-                GetComponent<Animator>().SetTrigger("Attack");
+                TriggerAttack();
                 timeSinceLastAttack = 0;
             }
         }
 
-        //Animation Event
-        public void Hit(){
-            if(target){
-                target.TakeDamage(weaponDamage);
-            }
-            
+        private void TriggerAttack() {
+            GetComponent<Animator>().ResetTrigger("StopAttack");
+            GetComponent<Animator>().SetTrigger("Attack");
         }
 
-        public void Attack(CombatTarget combatTarget){
+        //Animation Event
+        public void Hit(){
+            if(target == null) return;
+            target.TakeDamage(weaponDamage);
+        }
+
+        public void Attack(GameObject combatTarget){
             GetComponent<ActionScheduler>().StartAction(this);
             target = combatTarget.GetComponent<Health>();
         }
 
-        public bool CanAttack(CombatTarget combatTarget){
+        public bool CanAttack(GameObject combatTarget){
             if(combatTarget == null) return false;
             Health targetToTest = combatTarget.GetComponent<Health>();
             return targetToTest != null && !targetToTest.IsDead();
@@ -56,6 +60,11 @@ namespace RPG.Combat
 
         public void Cancel(){
             target = null;
+            StopAttack();
+        }
+
+        private void StopAttack(){
+            GetComponent<Animator>().ResetTrigger("Attack");
             GetComponent<Animator>().SetTrigger("StopAttack");
         }
 

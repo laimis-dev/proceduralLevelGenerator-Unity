@@ -26,6 +26,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 645585e1afad07b458b95534c16dd984, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5249877886875829776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3901911038805212997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e66de5a97a6d2ee48b4b57d00afd7a50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chaseDistance: 5
 --- !u!114 &5486633641079901639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38,19 +51,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58654b30c27cafb4ab14dafa73201cfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7497474477174503306
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3901911038805212997}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c9bd0d70527ed843b2c5859991ae03b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: 15
 --- !u!195 &8060758715409324092
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -61,7 +61,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 5.66
+  m_Speed: 3
   m_Acceleration: 50
   avoidancePriority: 50
   m_AngularSpeed: 1000
@@ -100,6 +100,19 @@ MonoBehaviour:
   weaponRange: 4
   timeBetweenAttacks: 1
   weaponDamage: 5
+--- !u!114 &8781817844185504885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3901911038805212997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cca17637fba621746ae9deb09540b5c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 15
 --- !u!1001 &3901911038805341899
 PrefabInstance:
   m_ObjectHideFlags: 0
