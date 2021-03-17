@@ -115,7 +115,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6399746604788524890}
-  - component: {fileID: 388562146214842704}
+  - component: {fileID: 7907805417394638790}
   m_Layer: 0
   m_Name: WallBlock
   m_TagString: Untagged
@@ -139,7 +139,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &388562146214842704
+--- !u!114 &7907805417394638790
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -148,13 +148,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 7507109842053251450}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ddcf565ac573db4babd5d33de3656a5, type: 3}
+  m_Script: {fileID: 11500000, guid: c4379448dcc1ba04d94dee33019c32ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   collider: {fileID: 5586184958440617}
-  gScore: 0
-  fScore: 0
-  instantiatedFrom: {fileID: 0}
 --- !u!1 &7562737597034128100
 GameObject:
   m_ObjectHideFlags: 0
