@@ -420,13 +420,9 @@ public class SceneGenerator : MonoBehaviour
     }
 
     void BakeNavMesh(){
-        foreach(Room room in generatedRooms){
-            room.GetComponent<NavMeshSurface>().BuildNavMesh();
-        }
-
-        foreach(Corridor corridor in generatedCorridors){
-            corridor.GetComponent<NavMeshSurface>().BuildNavMesh();
-        }
+        
+        GetComponent<NavMeshSurface>().BuildNavMesh();
+        
     }
 
 

@@ -26959,7 +26959,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4156615057146544285}
   - component: {fileID: 884525657546622264}
-  - component: {fileID: 7874776662867153549}
   m_Layer: 0
   m_Name: Corridor T
   m_TagString: Untagged
@@ -27009,35 +27008,6 @@ MonoBehaviour:
   colliders:
   - {fileID: 3074407757261179959}
   - {fileID: 2372076111675266215}
---- !u!114 &7874776662867153549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7246454466344856021}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_AgentTypeID: 0
-  m_CollectObjects: 0
-  m_Size: {x: 10, y: 10, z: 10}
-  m_Center: {x: 0, y: 2, z: 0}
-  m_LayerMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_UseGeometry: 0
-  m_DefaultArea: 0
-  m_IgnoreNavMeshAgent: 1
-  m_IgnoreNavMeshObstacle: 1
-  m_OverrideTileSize: 0
-  m_TileSize: 256
-  m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.13333334
-  m_BuildHeightMesh: 0
-  m_NavMeshData: {fileID: 23800000, guid: 40e9a522df0c64345a33fc9e42d11dbd, type: 2}
 --- !u!1 &7371692421887274186
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,9 +8,7 @@ namespace RPG.Combat {
         [SerializeField] Weapon weapon = null;
 
         private void OnTriggerEnter(Collider other) {
-            print("Trigger");
             if(other.gameObject.tag == "Player"){
-                print("Player trigger");
                 other.GetComponent<Fighter>().EquipWeapon(weapon);
                 Destroy(gameObject);
             }
