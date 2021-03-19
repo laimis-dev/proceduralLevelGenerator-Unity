@@ -17,7 +17,6 @@ namespace RPG.Control{
         }
         private void Update(){
             if(health.IsDead()) return;
-            print(fighter.CanAttack(player));
             if(InAttackRange() && fighter.CanAttack(player)){
                 fighter.Attack(player);
                 // print("chase");
