@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1271350140}
   m_LocalRotation: {x: 0.42660013, y: -0.33944437, z: 0.17670354, w: 0.8194912}
-  m_LocalPosition: {x: 4.0558004, y: 8.191524, z: -4.0557976}
+  m_LocalPosition: {x: 10.545079, y: 21.297956, z: -10.545073}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7346014636944004832}
@@ -246,13 +246,13 @@ MonoBehaviour:
   m_ZDamping: 1
   m_ScreenX: 0.5
   m_ScreenY: 0.5
-  m_CameraDistance: 10
-  m_DeadZoneWidth: 0.1
+  m_CameraDistance: 26
+  m_DeadZoneWidth: 0.05
   m_DeadZoneHeight: 0.1
   m_DeadZoneDepth: 0
   m_UnlimitedSoftZone: 0
-  m_SoftZoneWidth: 0.8
-  m_SoftZoneHeight: 0.8
+  m_SoftZoneWidth: 0.72
+  m_SoftZoneHeight: 1
   m_BiasX: 0
   m_BiasY: 0
   m_GroupFramingMode: 2
@@ -291,7 +291,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5692650051625961073}
   m_LocalRotation: {x: 0.42660013, y: -0.33944437, z: 0.17670354, w: 0.8194912}
-  m_LocalPosition: {x: 4.0558004, y: 66.6, z: -4.0557976}
+  m_LocalPosition: {x: 10.545079, y: 21.297956, z: -10.545073}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5753506047450649824}
@@ -324,6 +324,36 @@ MonoBehaviour:
     FarClipPlane: 5000
     Dutch: 0
   m_ComponentOwner: {fileID: 5753506047450649824}
+--- !u!54 &1739777441214076331
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5878785164937526708}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!136 &6475710212488578092
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5878785164937526708}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.3
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!114 &1664092176061986406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -361,9 +391,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 037ba1e9f23a399428edde9a550cc120, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponRange: 3.7
   timeBetweenAttacks: 1
-  weaponDamage: 5
+  handTransform: {fileID: 5878785164937142098}
+  defaultWeapon: {fileID: 11400000, guid: 18a383690f71e4643ab56267fa6d4406, type: 2}
 --- !u!195 &7525414633519210403
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -574,5 +604,10 @@ GameObject:
 --- !u!4 &5878785164937245644 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 435482, guid: 679ff741e12a7e740819ede24a7000b7, type: 3}
+  m_PrefabInstance: {fileID: 5878785164937336534}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5878785164937142098 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 461188, guid: 679ff741e12a7e740819ede24a7000b7, type: 3}
   m_PrefabInstance: {fileID: 5878785164937336534}
   m_PrefabAsset: {fileID: 0}

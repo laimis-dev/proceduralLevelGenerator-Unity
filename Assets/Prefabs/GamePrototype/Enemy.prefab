@@ -39,6 +39,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chaseDistance: 10
+  suspicionTime: 5
 --- !u!114 &5486633641079901639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110,9 +111,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 037ba1e9f23a399428edde9a550cc120, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponRange: 4
   timeBetweenAttacks: 1
-  weaponDamage: 5
+  handTransform: {fileID: 3901911038805443013}
+  defaultWeapon: {fileID: 11400000, guid: 18a383690f71e4643ab56267fa6d4406, type: 2}
 --- !u!1001 &3901911038805341899
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -193,6 +194,11 @@ PrefabInstance:
 --- !u!1 &3901911038805212997 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 133518, guid: 30cf93deff988e74e88a144bd2127c18, type: 3}
+  m_PrefabInstance: {fileID: 3901911038805341899}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &3901911038805443013 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 423694, guid: 30cf93deff988e74e88a144bd2127c18, type: 3}
   m_PrefabInstance: {fileID: 3901911038805341899}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6045663190394940194
