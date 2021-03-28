@@ -11,7 +11,7 @@ namespace RPG.Control{
         Fighter fighter;
         Health health;
         Mover mover;
-        GameObject player;
+        GameObject player = null;
 
         Vector3 guardPosition;
         float timeSinceLastSawPlayer = Mathf.Infinity;
@@ -25,6 +25,9 @@ namespace RPG.Control{
             guardPosition = transform.position;
         }
         private void Update(){
+            if(player == null) {
+                player = GameObject.FindWithTag("Player");
+            }
             if(health.IsDead()) return;
             if(InAttackRange() && fighter.CanAttack(player)){
                 timeSinceLastSawPlayer = 0;
@@ -40,6 +43,7 @@ namespace RPG.Control{
         }
 
         private bool InAttackRange(){
+            if(player == null) return false;
             return Vector3.Distance(player.transform.position, transform.position) < chaseDistance;
         }
     

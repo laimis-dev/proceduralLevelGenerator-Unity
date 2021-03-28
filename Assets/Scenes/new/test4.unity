@@ -322,7 +322,7 @@ MonoBehaviour:
   maxGScore: 10
   pathFinderBuilder: {fileID: 1440322306}
   useRandomSeed: 0
-  seed: 40.41552
+  seed: 82.56119
 --- !u!4 &1850828772
 Transform:
   m_ObjectHideFlags: 0

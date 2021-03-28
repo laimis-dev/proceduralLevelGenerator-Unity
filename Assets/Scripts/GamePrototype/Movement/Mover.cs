@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using RPG.Core;
+using Utils;
 
 namespace RPG.Movement {
     public class Mover : MonoBehaviour, IAction
     {
-        NavMeshAgent navMeshAgent;
+        NavMeshAgent navMeshAgent = null;
         Health health;
         void Start()
         {
@@ -31,11 +32,13 @@ namespace RPG.Movement {
         }
 
         public void MoveTo(Vector3 destination){
+            if(!Helpers.navBaked) return;
             navMeshAgent.destination = destination;
             navMeshAgent.isStopped = false;
         }
 
         public void Cancel(){
+            if(!Helpers.navBaked) return;
             navMeshAgent.isStopped = true;
         }
 

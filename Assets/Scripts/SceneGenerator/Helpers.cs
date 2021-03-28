@@ -20,5 +20,8 @@ namespace Utils {
         public static GameObject GetRootGameObject(Transform transform){
             return transform.parent.gameObject.transform.parent.gameObject;
         }
+        
+        public static bool navBaked = false;
+        
     }
 }
