@@ -295,7 +295,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1243959770243408536, guid: 8a3b3d57b8dbc3a4cb479b73140c17e3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -42
       objectReference: {fileID: 0}
     - target: {fileID: 1243959770243408536, guid: 8a3b3d57b8dbc3a4cb479b73140c17e3, type: 3}
       propertyPath: m_LocalRotation.w
@@ -325,9 +325,33 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3683779974467541145, guid: 8a3b3d57b8dbc3a4cb479b73140c17e3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 10.545077
+      objectReference: {fileID: 0}
+    - target: {fileID: 3683779974467541145, guid: 8a3b3d57b8dbc3a4cb479b73140c17e3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 21.297958
+      objectReference: {fileID: 0}
+    - target: {fileID: 3683779974467541145, guid: 8a3b3d57b8dbc3a4cb479b73140c17e3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -10.545078
+      objectReference: {fileID: 0}
     - target: {fileID: 5511489497922636752, guid: 8a3b3d57b8dbc3a4cb479b73140c17e3, type: 3}
       propertyPath: m_Name
       value: Start Room
+      objectReference: {fileID: 0}
+    - target: {fileID: 7050878426725783309, guid: 8a3b3d57b8dbc3a4cb479b73140c17e3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 10.545077
+      objectReference: {fileID: 0}
+    - target: {fileID: 7050878426725783309, guid: 8a3b3d57b8dbc3a4cb479b73140c17e3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 21.297958
+      objectReference: {fileID: 0}
+    - target: {fileID: 7050878426725783309, guid: 8a3b3d57b8dbc3a4cb479b73140c17e3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -10.545078
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8a3b3d57b8dbc3a4cb479b73140c17e3, type: 3}
@@ -461,15 +485,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 2024421852}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b304be5701abef846a54d2bc06a2cfda, type: 3}
+  m_Script: {fileID: 11500000, guid: 8db5feef5c80a2343b195430ed46eb5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  start: {fileID: 1405791031}
-  end: {fileID: 222846459}
-  cyclicConnectionPrefab: {fileID: 6725314206217103578, guid: 31c69052146745746816b1d11e17dc1b, type: 3}
-  wallPrefab: {fileID: 388562146214842704, guid: 8b7d1c3dfce1686439b6029b6919a0be, type: 3}
+  start: {fileID: 222846459}
+  end: {fileID: 1405791031}
+  cyclicConnectionPrefab: {fileID: 1793866952923191202, guid: 31c69052146745746816b1d11e17dc1b, type: 3}
+  wallPrefab: {fileID: 5060298891927390557, guid: 8b7d1c3dfce1686439b6029b6919a0be, type: 3}
   startOnAwake: 1
-  maxGScore: 60
+  addWallsOnFinish: 1
+  maxGScore: 30
   isEndFound: 0
 --- !u!4 &2024421854
 Transform:

@@ -251,7 +251,7 @@ MonoBehaviour:
   wallPrefab: {fileID: 5060298891927390557, guid: 8b7d1c3dfce1686439b6029b6919a0be, type: 3}
   startOnAwake: 0
   addWallsOnFinish: 0
-  maxGScore: 15
+  maxGScore: 10
   isEndFound: 0
 --- !u!4 &1440322307
 Transform:
@@ -313,11 +313,13 @@ MonoBehaviour:
   - {fileID: 6906007923130111023, guid: 9b7d92a8c7001f14fba03185067a0dc3, type: 3}
   - {fileID: 884525657546622264, guid: 83ba640eea5e37049926b2445dfcb30b, type: 3}
   - {fileID: 5050143615763782071, guid: 0df6eafaffb905848a4707ba0b49b0c8, type: 3}
-  specialRoomPrefabs: []
+  specialRoomPrefabs:
+  - {fileID: 2942166763370001194, guid: 7821c19aec1e20749b6c70dd089bb316, type: 3}
+  - {fileID: 2942166763370001194, guid: 1daeac8bbf13b7c4f9eccdeabbc11321, type: 3}
   roomNumberRange: {x: 10, y: 20}
   cyclicConnectionPrefab: {fileID: 8630709098779315784, guid: 1c83ca103cb01f948957bb1faea7f0c0, type: 3}
   cyclicConnectionRange: 30
-  maxGScore: 15
+  maxGScore: 10
   pathFinderBuilder: {fileID: 1440322306}
   useRandomSeed: 0
   seed: 40.41552
@@ -361,6 +363,6 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.23333333
+  m_VoxelSize: 0.13333334
   m_BuildHeightMesh: 0
   m_NavMeshData: {fileID: 0}

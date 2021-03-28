@@ -95,6 +95,7 @@ public class SceneGenerator : MonoBehaviour
 
         PlaceEndRoom();
 
+        // Debug.Break();
         yield return StartCoroutine(ConnectEmptyConnectors());
 
         DeleteUnconnectedCorridors();
@@ -104,7 +105,6 @@ public class SceneGenerator : MonoBehaviour
         // Debug.Log("finished");
         StopCoroutine("GenerateScene");
     }
-
     int CountGeneratedSpecialRooms(SpecialRoom specRoom){
         int count = 0;
         for(int i = 0; i < generatedSpecialRooms.Count; i++){
