@@ -387,8 +387,8 @@ MonoBehaviour:
   cyclicConnectionRange: 30
   maxGScore: 10
   pathFinderBuilder: {fileID: 1440322306}
-  useRandomSeed: 0
-  seed: 82.56119
+  useRandomSeed: 1
+  seed: 56870
 --- !u!4 &1850828772
 Transform:
   m_ObjectHideFlags: 0
