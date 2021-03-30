@@ -14,16 +14,27 @@ namespace Utils
         [SerializeField] List<Room> roomPrefabs = new List<Room>();
         [SerializeField] List<Corridor> corridorPrefabs = new List<Corridor>();
         [SerializeField] List<SpecialRoom> specialRoomPrefabs = new List<SpecialRoom>();
-
-        [SerializeField] Vector2Int roomNumberRange = new Vector2Int(1, 5);
-
         [SerializeField] GameObject cyclicConnectionPrefab;
         [SerializeField] float cyclicConnectionRange = 15f;
         [SerializeField] float maxGScore = 15f;
         [SerializeField] PathFinder pathFinderBuilder;
+        
 
-        [SerializeField] bool useRandomSeed = true;
+        [SerializeField] bool useEditorValues = false;
+        [SerializeField] int minRooms = 5;
+        [SerializeField] int maxRooms = 10;
+        [SerializeField] int sceneX;
+        [SerializeField] int sceneY;
+        [SerializeField] int roomSizeMin;
+        [SerializeField] int roomSizeMax;
+        [SerializeField] int corridorSizeMin;
+        [SerializeField] int corridorSizeMax;
+
+        [SerializeField] bool useRandomSeed = false;
         [SerializeField] string seed;
+        
+
+        
 
         List<Connector> availableRoomConnectors = new List<Connector>();
         List<Connector> availableCorridorConnectors = new List<Connector>();
@@ -51,7 +62,8 @@ namespace Utils
         }
 
         IEnumerator GenerateScene(){
-            if (useRandomSeed) {
+            SetParameters();
+            if (useRandomSeed || seed == "") {
                 seed = Time.time.ToString();
             }
 
@@ -60,7 +72,7 @@ namespace Utils
             yield return Helpers.startup;
             PlaceStartRoom();
 
-            int numberOfIterations = pseudoRandom.Next(roomNumberRange.x, roomNumberRange.y);
+            int numberOfIterations = pseudoRandom.Next(minRooms, maxRooms);
             for(int i = 0; i < numberOfIterations - 1; i++){
                 wasRoomPlaced = false;
                 wasCorridorPlaced = false;
@@ -105,6 +117,19 @@ namespace Utils
             BakeNavMesh();
             // Debug.Log("finished");
             StopCoroutine("GenerateScene");
+        }
+
+        public void SetParameters(){
+            if(useEditorValues) return;
+            minRooms = PlayerPrefsController.GetMinRooms();
+            maxRooms = PlayerPrefsController.GetMaxRooms();
+            // sceneX = PlayerPrefsController.GetSceneSizeX().ToString();
+            // sceneY = PlayerPrefsController.GetSceneSizeY().ToString();
+            // roomSizeMin = PlayerPrefsController.GetMinRoomSize().ToString();
+            // roomSizeMax = PlayerPrefsController.GetMaxRoomSize().ToString();
+            // corridorSizeMin = PlayerPrefsController.GetMinCorridorSize().ToString();
+            // corridorSizeMax = PlayerPrefsController.GetMaxCorridorSize().ToString();
+            seed = PlayerPrefsController.GetSeed();
         }
 
 
