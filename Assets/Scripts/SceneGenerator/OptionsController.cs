@@ -16,16 +16,7 @@ public class OptionsController : MonoBehaviour {
     [SerializeField] TMP_InputField seed;
 
     void Start(){
-        minRooms.text = PlayerPrefsController.GetMinRooms().ToString();
-        maxRooms.text = PlayerPrefsController.GetMaxRooms().ToString();
-        sceneX.text = PlayerPrefsController.GetSceneSizeX().ToString();
-        sceneY.text = PlayerPrefsController.GetSceneSizeY().ToString();
-        roomSizeMin.text = PlayerPrefsController.GetMinRoomSize().ToString();
-        roomSizeMax.text = PlayerPrefsController.GetMaxRoomSize().ToString();
-        corridorSizeMin.text = PlayerPrefsController.GetMinCorridorSize().ToString();
-        corridorSizeMax.text = PlayerPrefsController.GetMaxCorridorSize().ToString();
-        seed.text = PlayerPrefsController.GetSeed();
-        
+        SetText();
     }
 
     public void SaveSettings(){
@@ -38,9 +29,31 @@ public class OptionsController : MonoBehaviour {
         PlayerPrefsController.SetMinCorridorSize(Int32.Parse(corridorSizeMin.text));
         PlayerPrefsController.SetMaxCorridorSize(Int32.Parse(corridorSizeMax.text));
         PlayerPrefsController.SetSeed(seed.text);
+        SetText();
     }
 
     public void SetDefaults(){
+        PlayerPrefsController.SetMinRooms(10);
+        PlayerPrefsController.SetMaxRooms(20);
+        PlayerPrefsController.SetSceneSizeX(1000);
+        PlayerPrefsController.SetSceneSizeY(1000);
+        PlayerPrefsController.SetMinRoomSize(0);
+        PlayerPrefsController.SetMaxRoomSize(200);
+        PlayerPrefsController.SetMinCorridorSize(0);
+        PlayerPrefsController.SetMaxCorridorSize(200);
+        PlayerPrefsController.SetSeed("");
+        SetText();
+    }
 
+    private void SetText(){
+        minRooms.text = PlayerPrefsController.GetMinRooms().ToString();
+        maxRooms.text = PlayerPrefsController.GetMaxRooms().ToString();
+        sceneX.text = PlayerPrefsController.GetSceneSizeX().ToString();
+        sceneY.text = PlayerPrefsController.GetSceneSizeY().ToString();
+        roomSizeMin.text = PlayerPrefsController.GetMinRoomSize().ToString();
+        roomSizeMax.text = PlayerPrefsController.GetMaxRoomSize().ToString();
+        corridorSizeMin.text = PlayerPrefsController.GetMinCorridorSize().ToString();
+        corridorSizeMax.text = PlayerPrefsController.GetMaxCorridorSize().ToString();
+        seed.text = PlayerPrefsController.GetSeed();
     }
 }
