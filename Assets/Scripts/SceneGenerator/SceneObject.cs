@@ -53,4 +53,15 @@ public class SceneObject : MonoBehaviour
         }
         return false;
     }
+
+    public float GetSize(){
+        List<BoxCollider> objectColliders = this.GetColliders();
+        float size = 0;
+        foreach(BoxCollider objectCollider in objectColliders){
+            Bounds bounds = objectCollider.bounds;
+            size += bounds.size.x * bounds.size.z;
+        }
+        
+        return size;
+    }
 }

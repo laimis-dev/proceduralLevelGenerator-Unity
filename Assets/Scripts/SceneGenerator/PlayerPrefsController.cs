@@ -12,7 +12,7 @@ public class PlayerPrefsController : MonoBehaviour {
     const string SEED = "SEED";
 
     const int MIN_SIZE = 0;
-    const int MAX_SIZE = 100;
+    const int MAX_SIZE = 2000;
 
     const int MIN_SIZE_SCENE = 0;
     const int MAX_SIZE_SCENE = 10000;

@@ -94,14 +94,27 @@ namespace Utils
                     if(specRoomPrefab.GetMaxAmountPerScene() <= CountGeneratedSpecialRooms(specRoomPrefab)) continue;
                         
                     SpecialRoom specRoom = Instantiate(specRoomPrefab);
-                    PlaceSpecialRoom(specRoom);
-                    break;
+                    print("spec " + specRoom.GetSize());
+                    if(specRoom.GetSize() < roomSizeMin || specRoom.GetSize() > roomSizeMax){
+                        print("destr spec");
+                        Destroy(specRoom.gameObject);
+                    } else {
+                        PlaceSpecialRoom(specRoom);
+                        break;
+                    }
                 }
 
                 while(!wasRoomPlaced && possibleRooms.Count > 0){
                     Room currentRoom = possibleRooms[pseudoRandom.Next(0, possibleRooms.Count)];
                     possibleRooms.Remove(currentRoom);
-                    PlaceRoom(Instantiate(currentRoom));
+                    Room roomInstance = Instantiate(currentRoom);
+                    print("room " + roomInstance.GetSize());
+                    if(roomInstance.GetSize() < roomSizeMin || roomInstance.GetSize() > roomSizeMax){
+                        print("destr room");
+                        Destroy(roomInstance.gameObject);
+                    } else {
+                        PlaceRoom(roomInstance);
+                    }
                     yield return Helpers.fixedUpdateInterval;
                 }
                 
@@ -109,7 +122,14 @@ namespace Utils
                 while(!wasCorridorPlaced && possibleCorridors.Count > 0){
                     Corridor currentCorridor = corridorPrefabs[pseudoRandom.Next(0, corridorPrefabs.Count)];
                     possibleCorridors.Remove(currentCorridor);
-                    PlaceCorridor(Instantiate(currentCorridor));
+                    Corridor corridorInstance = Instantiate(currentCorridor);
+                    print("corr " + corridorInstance.GetSize());
+                    if(corridorInstance.GetSize() < corridorSizeMin || corridorInstance.GetSize() > corridorSizeMax){
+                        print("destr cor");
+                        Destroy(corridorInstance.gameObject);
+                    } else {
+                        PlaceCorridor(corridorInstance);
+                    }
                     yield return Helpers.fixedUpdateInterval;
                 }
             }
@@ -133,10 +153,10 @@ namespace Utils
             maxRooms = PlayerPrefsController.GetMaxRooms();
             sceneX = PlayerPrefsController.GetSceneSizeX();
             sceneY = PlayerPrefsController.GetSceneSizeY();
-            // roomSizeMin = PlayerPrefsController.GetMinRoomSize().ToString();
-            // roomSizeMax = PlayerPrefsController.GetMaxRoomSize().ToString();
-            // corridorSizeMin = PlayerPrefsController.GetMinCorridorSize().ToString();
-            // corridorSizeMax = PlayerPrefsController.GetMaxCorridorSize().ToString();
+            roomSizeMin = PlayerPrefsController.GetMinRoomSize();
+            roomSizeMax = PlayerPrefsController.GetMaxRoomSize();
+            corridorSizeMin = PlayerPrefsController.GetMinCorridorSize();
+            corridorSizeMax = PlayerPrefsController.GetMaxCorridorSize();
             seed = PlayerPrefsController.GetSeed();
         }
 
@@ -485,6 +505,7 @@ namespace Utils
             availableRoomConnectors.Clear();
             availableCorridorConnectors.Clear();
             pathFinders.Clear();
+
             foreach (Transform child in this.transform) {
                 GameObject.Destroy(child.gameObject);
             }
