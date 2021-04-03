@@ -14,6 +14,9 @@ public class PlayerPrefsController : MonoBehaviour {
     const int MIN_SIZE = 0;
     const int MAX_SIZE = 100;
 
+    const int MIN_SIZE_SCENE = 0;
+    const int MAX_SIZE_SCENE = 10000;
+
     public static void SetMinRooms(int min){
         if(min > MAX_SIZE) PlayerPrefs.SetInt(MIN_ROOMS, MAX_SIZE);
         else if(min < MIN_SIZE) PlayerPrefs.SetInt(MIN_ROOMS, MIN_SIZE);
@@ -27,14 +30,14 @@ public class PlayerPrefsController : MonoBehaviour {
     }
 
     public static void SetSceneSizeX(int x){
-        if(x > MAX_SIZE) PlayerPrefs.SetInt(SCENE_SIZE_X, MAX_SIZE);
-        else if(x < MIN_SIZE) PlayerPrefs.SetInt(SCENE_SIZE_X, MIN_SIZE);
+        if(x > MAX_SIZE_SCENE) PlayerPrefs.SetInt(SCENE_SIZE_X, MAX_SIZE_SCENE);
+        else if(x < MIN_SIZE_SCENE) PlayerPrefs.SetInt(SCENE_SIZE_X, MIN_SIZE_SCENE);
         else PlayerPrefs.SetInt(SCENE_SIZE_X, x);
     }
 
     public static void SetSceneSizeY(int y){
-        if(y > MAX_SIZE) PlayerPrefs.SetInt(SCENE_SIZE_Y, MAX_SIZE);
-        else if(y < MIN_SIZE) PlayerPrefs.SetInt(SCENE_SIZE_Y, MIN_SIZE);
+        if(y > MAX_SIZE_SCENE) PlayerPrefs.SetInt(SCENE_SIZE_Y, MAX_SIZE_SCENE);
+        else if(y < MIN_SIZE_SCENE) PlayerPrefs.SetInt(SCENE_SIZE_Y, MIN_SIZE_SCENE);
         else PlayerPrefs.SetInt(SCENE_SIZE_Y, y);
     }
 

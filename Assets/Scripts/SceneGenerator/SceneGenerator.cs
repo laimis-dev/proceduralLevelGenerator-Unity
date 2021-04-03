@@ -18,17 +18,22 @@ namespace Utils
         [SerializeField] float cyclicConnectionRange = 15f;
         [SerializeField] float maxGScore = 15f;
         [SerializeField] PathFinder pathFinderBuilder;
+
+        [SerializeField] GameObject positiveX;
+        [SerializeField] GameObject negativeX;
+        [SerializeField] GameObject positiveZ;
+        [SerializeField] GameObject negativeZ;
         
 
         [SerializeField] bool useEditorValues = false;
         [SerializeField] int minRooms = 5;
         [SerializeField] int maxRooms = 10;
-        [SerializeField] int sceneX;
-        [SerializeField] int sceneY;
-        [SerializeField] int roomSizeMin;
-        [SerializeField] int roomSizeMax;
-        [SerializeField] int corridorSizeMin;
-        [SerializeField] int corridorSizeMax;
+        [SerializeField] int sceneX = 500;
+        [SerializeField] int sceneY = 500;
+        [SerializeField] int roomSizeMin = 0;
+        [SerializeField] int roomSizeMax = 50;
+        [SerializeField] int corridorSizeMin = 0;
+        [SerializeField] int corridorSizeMax = 50;
 
         [SerializeField] bool useRandomSeed = false;
         [SerializeField] string seed;
@@ -63,6 +68,7 @@ namespace Utils
 
         IEnumerator GenerateScene(){
             SetParameters();
+            SetSceneSize();
             if (useRandomSeed || seed == "") {
                 seed = Time.time.ToString();
             }
@@ -123,8 +129,8 @@ namespace Utils
             if(useEditorValues) return;
             minRooms = PlayerPrefsController.GetMinRooms();
             maxRooms = PlayerPrefsController.GetMaxRooms();
-            // sceneX = PlayerPrefsController.GetSceneSizeX().ToString();
-            // sceneY = PlayerPrefsController.GetSceneSizeY().ToString();
+            sceneX = PlayerPrefsController.GetSceneSizeX();
+            sceneY = PlayerPrefsController.GetSceneSizeY();
             // roomSizeMin = PlayerPrefsController.GetMinRoomSize().ToString();
             // roomSizeMax = PlayerPrefsController.GetMaxRoomSize().ToString();
             // corridorSizeMin = PlayerPrefsController.GetMinCorridorSize().ToString();
@@ -132,6 +138,19 @@ namespace Utils
             seed = PlayerPrefsController.GetSeed();
         }
 
+        public void SetSceneSize(){
+            positiveX.transform.position = new Vector3(sceneY/4, 0f, positiveX.transform.position.z);
+            positiveX.transform.localScale = new Vector3(positiveX.transform.localScale.x, 10f, sceneX/2);
+
+            negativeX.transform.position = new Vector3(-sceneY/4, 0f, negativeX.transform.position.z);
+            negativeX.transform.localScale = new Vector3(negativeX.transform.localScale.x, 10f, sceneX/2);
+
+            positiveZ.transform.position = new Vector3(positiveZ.transform.position.x, 0f, sceneX/4);
+            positiveZ.transform.localScale = new Vector3(sceneY/2, 10f, positiveZ.transform.localScale.z);
+
+            negativeZ.transform.position = new Vector3(negativeZ.transform.position.x, 0f, -sceneX/4);
+            negativeZ.transform.localScale = new Vector3(sceneY/2, 10f, negativeZ.transform.localScale.z);
+        }
 
         int CountGeneratedSpecialRooms(SpecialRoom specRoom){
             int count = 0;
