@@ -24,9 +24,9 @@ public class SpawnableItem : MonoBehaviour
     void Spawn(){
         if(SceneGenerator.pseudoRandom == null) return;
         int rand = SceneGenerator.pseudoRandom.Next(0, 100);
-        print(rand);
+
         if(spawnChance <= rand) {
-            print("destroying");
+            // print("destroying");
             Destroy(gameObject);
         } else {
             spawned = true;

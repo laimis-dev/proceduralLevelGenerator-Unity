@@ -19,6 +19,7 @@ namespace Utils
         [SerializeField] float maxGScore = 15f;
         [SerializeField] PathFinder pathFinderBuilder;
 
+
         [SerializeField] GameObject positiveX;
         [SerializeField] GameObject negativeX;
         [SerializeField] GameObject positiveZ;
@@ -35,11 +36,10 @@ namespace Utils
         [SerializeField] int corridorSizeMin = 0;
         [SerializeField] int corridorSizeMax = 50;
 
-        [SerializeField] bool useRandomSeed = false;
-        [SerializeField] string seed;
-        
 
-        
+        [SerializeField] bool useRandomSeed = false;
+        [SerializeField] string seed = "";
+
 
         List<Connector> availableRoomConnectors = new List<Connector>();
         List<Connector> availableCorridorConnectors = new List<Connector>();
@@ -69,7 +69,9 @@ namespace Utils
         IEnumerator GenerateScene(){
             SetParameters();
             SetSceneSize();
-            if (useRandomSeed || seed == "") {
+            print("Seed: " + seed);
+            if (seed == "") {
+                print("seed is empty");
                 seed = Time.time.ToString();
             }
 

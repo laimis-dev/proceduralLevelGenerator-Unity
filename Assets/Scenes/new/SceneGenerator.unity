@@ -790,7 +790,7 @@ MonoBehaviour:
   corridorSizeMin: 0
   corridorSizeMax: 0
   useRandomSeed: 1
-  seed: 56870
+  seed: 
 --- !u!4 &1850828772
 Transform:
   m_ObjectHideFlags: 0
