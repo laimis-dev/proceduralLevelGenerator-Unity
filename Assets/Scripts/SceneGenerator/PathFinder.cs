@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Utils;
+using Observer;
 
 public class PathFinder : MonoBehaviour
 {
@@ -28,7 +29,7 @@ public class PathFinder : MonoBehaviour
     void Start() {
         PathFinderNode pathBlock = Instantiate(cyclicConnectionPrefab);
         cyclicBlockBounds = pathBlock.GetCollider().bounds;
-        minEndDistance = cyclicBlockBounds.size.x;
+        minEndDistance = cyclicBlockBounds.size.x + 2f;
         Destroy(pathBlock.gameObject);
 
         PathFinderObject wallBlock = Instantiate(wallPrefab);

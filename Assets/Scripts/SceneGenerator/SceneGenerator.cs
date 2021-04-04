@@ -4,10 +4,11 @@ using UnityEngine;
 using UnityEngine.AI;
 using System;
 using Utils;
+using Observer;
 
 namespace Utils
 {
-    public class SceneGenerator : MonoBehaviour
+    public class SceneGenerator : MonoBehaviour, ISubject
     {
         [SerializeField] Room startRoomPrefab;
         [SerializeField] Room endRoomPrefab;
@@ -95,9 +96,7 @@ namespace Utils
                     if(specRoomPrefab.GetMaxAmountPerScene() <= CountGeneratedSpecialRooms(specRoomPrefab)) continue;
                         
                     SpecialRoom specRoom = Instantiate(specRoomPrefab);
-                    print("spec " + specRoom.GetSize());
                     if(specRoom.GetSize() < roomSizeMin || specRoom.GetSize() > roomSizeMax){
-                        print("destr spec");
                         Destroy(specRoom.gameObject);
                     } else {
                         PlaceSpecialRoom(specRoom);
@@ -109,9 +108,7 @@ namespace Utils
                     Room currentRoom = possibleRooms[pseudoRandom.Next(0, possibleRooms.Count)];
                     possibleRooms.Remove(currentRoom);
                     Room roomInstance = Instantiate(currentRoom);
-                    print("room " + roomInstance.GetSize());
                     if(roomInstance.GetSize() < roomSizeMin || roomInstance.GetSize() > roomSizeMax){
-                        print("destr room");
                         Destroy(roomInstance.gameObject);
                     } else {
                         PlaceRoom(roomInstance);
@@ -124,9 +121,7 @@ namespace Utils
                     Corridor currentCorridor = corridorPrefabs[pseudoRandom.Next(0, corridorPrefabs.Count)];
                     possibleCorridors.Remove(currentCorridor);
                     Corridor corridorInstance = Instantiate(currentCorridor);
-                    print("corr " + corridorInstance.GetSize());
                     if(corridorInstance.GetSize() < corridorSizeMin || corridorInstance.GetSize() > corridorSizeMax){
-                        print("destr cor");
                         Destroy(corridorInstance.gameObject);
                     } else {
                         PlaceCorridor(corridorInstance);
@@ -145,11 +140,14 @@ namespace Utils
             yield return AddWallsToPathFinders();
             BakeNavMesh();
             // Debug.Log("finished");
+
+            this.Notify("Finished");
             StopCoroutine("GenerateScene");
         }
 
         public void SetParameters(){
             if(useEditorValues) return;
+            this.Notify("Loading parameters");
             minRooms = PlayerPrefsController.GetMinRooms();
             maxRooms = PlayerPrefsController.GetMaxRooms();
             sceneX = PlayerPrefsController.GetSceneSizeX();
@@ -187,6 +185,7 @@ namespace Utils
 
 
         void PlaceStartRoom(){
+            this.Notify("Placing start room");
             // Debug.Log("placed start room");
             Room startRoom = Instantiate(startRoomPrefab);
             startRoom.transform.parent = this.transform;
@@ -200,6 +199,7 @@ namespace Utils
 
 
         void PlaceEndRoom(){
+            this.Notify("Placing end room");
             Room endRoom = Instantiate(endRoomPrefab) as Room;
             endRoom.transform.parent = this.transform;
             List<Connector> currentRoomConnectors = endRoom.GetConnectors();
@@ -248,6 +248,7 @@ namespace Utils
 
         void PlaceRoom(Room currentRoom){
             // Debug.Log("place random room");
+            this.Notify("Placing room");
             currentRoom.transform.parent = this.transform;
             List<Connector> currentRoomConnectors = currentRoom.GetConnectors();
 
@@ -278,6 +279,7 @@ namespace Utils
 
         void PlaceSpecialRoom(SpecialRoom currentRoom){
             // Debug.Log("place random room");
+            this.Notify("Placing special room");
             currentRoom.transform.parent = this.transform;
             List<Connector> currentRoomConnectors = currentRoom.GetConnectors();
 
@@ -336,7 +338,7 @@ namespace Utils
         }
 
         void PlaceCorridor(Corridor currentCorridor){
-            
+            this.Notify("Placing corridor");
             currentCorridor.transform.parent = this.transform;
             List<Connector> currentCorridorConnectors = currentCorridor.GetConnectors();
 
@@ -373,6 +375,7 @@ namespace Utils
 
 
         IEnumerator ConnectEmptyConnectors(){
+            this.Notify("Attempting cyclic connection");
             foreach(Connector corridorConnector in availableCorridorConnectors){
                 if(corridorConnector.GetConnectedTo() != null) continue;
                 List<Connector> foundConnectors = FindClosestConnectors(corridorConnector);
@@ -396,6 +399,7 @@ namespace Utils
         }
 
         IEnumerator AddWallsToPathFinders(){
+            this.Notify("Adding walls to paths");
             foreach(PathFinder pathFinder in pathFinders){
                 yield return StartCoroutine(pathFinder.AddWallsToPath());
             }
@@ -491,6 +495,7 @@ namespace Utils
         }
 
         void BakeNavMesh(){
+            this.Notify("Baking NavMesh");
             
             GetComponent<NavMeshSurface>().BuildNavMesh();
             Helpers.navBaked = true;
@@ -512,6 +517,28 @@ namespace Utils
             }
         }
 
+        private List<IObserver> _observers = new List<IObserver>();
+        // Attach an observer to the subject.
+        public void Attach(IObserver observer){
+            Console.WriteLine("Subject: Attached an observer.");
+            this._observers.Add(observer);
+        }
+
+        // Detach an observer from the subject.
+        public void Detach(IObserver observer){
+            this._observers.Remove(observer);
+            Console.WriteLine("Subject: Detached an observer.");
+        }
+
+        // Notify all observers about an event.
+        public void Notify(string state){
+            Console.WriteLine("Subject: Notifying observers...");
+
+            foreach (var observer in _observers)
+            {
+                observer.UpdateObserver(state);
+            }
+        }
 
     }
     
