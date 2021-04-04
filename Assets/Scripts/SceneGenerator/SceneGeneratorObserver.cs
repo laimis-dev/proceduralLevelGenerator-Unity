@@ -8,12 +8,14 @@ public class SceneGeneratorObserver : MonoBehaviour, IObserver {
     [SerializeField] SceneGenerator sceneGenerator;
     [SerializeField] GameObject startButton;
     [SerializeField] GameObject UI;
+    [SerializeField] GameObject sun;
     [SerializeField] TMP_Text stateText;
 
-    float cameraSpeed = 500.0f;
+    float cameraSpeed = 300.0f;
     void Start(){
         startButton.SetActive(false);
         sceneGenerator.Attach(this);
+        sun.transform.rotation = Quaternion.Euler(50,-30,0);
     }
 
     void Update(){
@@ -32,10 +34,13 @@ public class SceneGeneratorObserver : MonoBehaviour, IObserver {
     }
 
     public void TurnOffCanvas(){
+        sun.SetActive(false);
         UI.SetActive(false);
+        
     }
 
     private void TurnOnCanvas(){
+        sun.SetActive(true);
         UI.SetActive(true);
     }
 
