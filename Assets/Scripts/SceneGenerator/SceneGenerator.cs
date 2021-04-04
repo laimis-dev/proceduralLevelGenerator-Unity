@@ -52,7 +52,7 @@ namespace Utils
 
         bool wasRoomPlaced = false;
         bool wasCorridorPlaced = false;
-        public static System.Random pseudoRandom;
+        public static System.Random pseudoRandom = null;
 
         void Start() {
             StartCoroutine("GenerateScene");
@@ -75,6 +75,7 @@ namespace Utils
                 seed = Time.time.ToString();
             }
 
+            print(seed.GetHashCode());
             pseudoRandom = new System.Random(seed.GetHashCode());
         
             yield return Helpers.startup;
