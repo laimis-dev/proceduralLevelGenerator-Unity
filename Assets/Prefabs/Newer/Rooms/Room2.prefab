@@ -15384,7 +15384,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6826e396bdddba40826225bb6d05b17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomName: 
+  roomName: room2
   connectors:
   - {fileID: 5534496340848599148}
   - {fileID: 6777029862792984045}

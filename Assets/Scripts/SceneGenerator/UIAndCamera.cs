@@ -22,8 +22,12 @@ public class UIAndCamera : MonoBehaviour, IObserver {
     }
 
     void Update(){
-        Health playerHealth = GameObject.FindGameObjectsWithTag("Player")[0].GetComponent<Health>();
-        if(playerHealth != null) healthText.text = playerHealth.GetHealth().ToString();
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        if(players.Length > 0){
+            Health playerHealth = players[0].GetComponent<Health>();
+            if(playerHealth != null) healthText.text = playerHealth.GetHealth().ToString();
+        }
+        
 
         if (Input.GetKeyDown("escape"))
         {

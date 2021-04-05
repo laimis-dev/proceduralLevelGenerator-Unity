@@ -10,11 +10,7 @@ namespace Utils
 {
     public class SceneGenerator : MonoBehaviour, ISubject
     {
-        [SerializeField] Room startRoomPrefab;
-        [SerializeField] Room endRoomPrefab;
-        [SerializeField] List<Room> roomPrefabs = new List<Room>();
-        [SerializeField] List<Corridor> corridorPrefabs = new List<Corridor>();
-        [SerializeField] List<SpecialRoom> specialRoomPrefabs = new List<SpecialRoom>();
+        [SerializeField] SceneObjectFactory sceneObjectFactory;
         [SerializeField] GameObject cyclicConnectionPrefab;
         [SerializeField] float cyclicConnectionRange = 15f;
         [SerializeField] float maxGScore = 15f;
@@ -86,45 +82,57 @@ namespace Utils
             for(int i = 0; i < numberOfIterations - 1; i++){
                 wasRoomPlaced = false;
                 wasCorridorPlaced = false;
-                List<Room> possibleRooms = new List<Room>(roomPrefabs);
-                List<Corridor> possibleCorridors = new List<Corridor>(corridorPrefabs);
+                List<SceneObject> possibleRooms = sceneObjectFactory.GetList("regularRoom");
+                List<SceneObject> possibleCorridors = sceneObjectFactory.GetList("corridor");
+                List<SceneObject> possibleSpecialRooms = sceneObjectFactory.GetList("specialRoom");
+   
 
-                for(int j = 0; j < specialRoomPrefabs.Count; j++){
-                    SpecialRoom specRoomPrefab = specialRoomPrefabs[j];
-
-                    if(specRoomPrefab.GetSpawnChance() < pseudoRandom.Next(0, 100)) continue;
-                    if(specRoomPrefab.GetMaxAmountPerScene() <= CountGeneratedSpecialRooms(specRoomPrefab)) continue;
+                while(!wasRoomPlaced && possibleSpecialRooms.Count > 0){
+                    print(possibleSpecialRooms.Count);
+                    SpecialRoom specRoom = sceneObjectFactory.Create("specialRoom") as SpecialRoom;
+                    possibleSpecialRooms.RemoveAll(r => r.GetName() == specRoom.GetName());
+                    print(possibleSpecialRooms.Count);
+                    if(specRoom.GetSpawnChance() < pseudoRandom.Next(0, 100)) {
+                        Destroy(specRoom.gameObject);
+                        continue;
+                    }
+                    if(specRoom.GetMaxAmountPerScene() <= CountGeneratedSpecialRooms(specRoom)) {
+                        Destroy(specRoom.gameObject);
+                        continue;
+                    }
+                    
                         
-                    SpecialRoom specRoom = Instantiate(specRoomPrefab);
                     if(specRoom.GetSize() < roomSizeMin || specRoom.GetSize() > roomSizeMax){
                         Destroy(specRoom.gameObject);
                     } else {
                         PlaceSpecialRoom(specRoom);
                         break;
                     }
+                    yield return Helpers.fixedUpdateInterval;
                 }
 
+                print("aa");
+
                 while(!wasRoomPlaced && possibleRooms.Count > 0){
-                    Room currentRoom = possibleRooms[pseudoRandom.Next(0, possibleRooms.Count)];
-                    possibleRooms.Remove(currentRoom);
-                    Room roomInstance = Instantiate(currentRoom);
-                    if(roomInstance.GetSize() < roomSizeMin || roomInstance.GetSize() > roomSizeMax){
-                        Destroy(roomInstance.gameObject);
+                    Room currentRoom = sceneObjectFactory.Create("regularRoom") as Room;
+                    possibleRooms.RemoveAll(r => r.GetName() == currentRoom.GetName());
+                    print(possibleRooms.Count);
+                    if(currentRoom.GetSize() < roomSizeMin || currentRoom.GetSize() > roomSizeMax){
+                        Destroy(currentRoom.gameObject);
                     } else {
-                        PlaceRoom(roomInstance);
+                        PlaceRoom(currentRoom);
                     }
                     yield return Helpers.fixedUpdateInterval;
                 }
                 
                 
                 while(!wasCorridorPlaced && possibleCorridors.Count > 0){
-                    Corridor currentCorridor = corridorPrefabs[pseudoRandom.Next(0, corridorPrefabs.Count)];
-                    possibleCorridors.Remove(currentCorridor);
-                    Corridor corridorInstance = Instantiate(currentCorridor);
-                    if(corridorInstance.GetSize() < corridorSizeMin || corridorInstance.GetSize() > corridorSizeMax){
-                        Destroy(corridorInstance.gameObject);
+                    Corridor currentCorridor = sceneObjectFactory.Create("corridor") as Corridor;
+                    possibleCorridors.RemoveAll(r => r.GetName() == currentCorridor.GetName());
+                    if(currentCorridor.GetSize() < corridorSizeMin || currentCorridor.GetSize() > corridorSizeMax){
+                        Destroy(currentCorridor.gameObject);
                     } else {
-                        PlaceCorridor(corridorInstance);
+                        PlaceCorridor(currentCorridor);
                     }
                     yield return Helpers.fixedUpdateInterval;
                 }
@@ -187,7 +195,7 @@ namespace Utils
         void PlaceStartRoom(){
             this.Notify("Placing start room");
             // Debug.Log("placed start room");
-            Room startRoom = Instantiate(startRoomPrefab);
+            Room startRoom = sceneObjectFactory.Create("startRoom") as Room;
             startRoom.transform.parent = this.transform;
             generatedRooms.Add(startRoom);
 
@@ -200,7 +208,7 @@ namespace Utils
 
         void PlaceEndRoom(){
             this.Notify("Placing end room");
-            Room endRoom = Instantiate(endRoomPrefab) as Room;
+            Room endRoom = sceneObjectFactory.Create("endRoom") as Room;
             endRoom.transform.parent = this.transform;
             List<Connector> currentRoomConnectors = endRoom.GetConnectors();
 

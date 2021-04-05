@@ -2429,6 +2429,7 @@ GameObject:
   - component: {fileID: 1850828772}
   - component: {fileID: 1850828771}
   - component: {fileID: 1850828773}
+  - component: {fileID: 1850828774}
   m_Layer: 0
   m_Name: SceneGenerator
   m_TagString: Untagged
@@ -2448,25 +2449,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 396d193a4d126e048ace9fba318a0735, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startRoomPrefab: {fileID: 3619713441820725596, guid: 8a3b3d57b8dbc3a4cb479b73140c17e3, type: 3}
-  endRoomPrefab: {fileID: 6150982230716041453, guid: b849327d3496f624c99d9044ab3749bb, type: 3}
-  roomPrefabs:
-  - {fileID: 2624508121982915825, guid: ab8680189ffb7fd4c9f24f67f7d271f7, type: 3}
-  - {fileID: 8713098289546032474, guid: 3af73649306be2845affbb8e5cfd0b03, type: 3}
-  - {fileID: 8208503229434107624, guid: ab0b425e310141e468b2720f2b0e9e55, type: 3}
-  - {fileID: 5277263928038124855, guid: fbef170c2d550824aa49958a1cfc89da, type: 3}
-  - {fileID: 4194601884858270696, guid: 2c12b3d80b04cc348a2ef21535d4d595, type: 3}
-  - {fileID: 5809644119075682264, guid: b501285b90bc3994cac1cce8011bf015, type: 3}
-  - {fileID: 8125477226886228366, guid: c29cb495f10cfb4468139d58a0ef1fe9, type: 3}
-  corridorPrefabs:
-  - {fileID: 4619930964291464197, guid: f6f1c907ebfdc784093b8510ce1eb0e7, type: 3}
-  - {fileID: 4197428069884667054, guid: 379343d4e58002741b8de1afa9517434, type: 3}
-  - {fileID: 6906007923130111023, guid: 9b7d92a8c7001f14fba03185067a0dc3, type: 3}
-  - {fileID: 884525657546622264, guid: 83ba640eea5e37049926b2445dfcb30b, type: 3}
-  - {fileID: 5050143615763782071, guid: 0df6eafaffb905848a4707ba0b49b0c8, type: 3}
-  specialRoomPrefabs:
-  - {fileID: 2942166763370001194, guid: 7821c19aec1e20749b6c70dd089bb316, type: 3}
-  - {fileID: 2942166763370001194, guid: 1daeac8bbf13b7c4f9eccdeabbc11321, type: 3}
+  sceneObjectFactory: {fileID: 1850828774}
   cyclicConnectionPrefab: {fileID: 8630709098779315784, guid: 1c83ca103cb01f948957bb1faea7f0c0, type: 3}
   cyclicConnectionRange: 30
   maxGScore: 15
@@ -2529,6 +2512,37 @@ MonoBehaviour:
   m_VoxelSize: 0.13333334
   m_BuildHeightMesh: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &1850828774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850828770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 472e8c46bcf738e4da86eb2fd3f5035a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startRoomPrefab: {fileID: 3619713441820725596, guid: 8a3b3d57b8dbc3a4cb479b73140c17e3, type: 3}
+  endRoomPrefab: {fileID: 6150982230716041453, guid: b849327d3496f624c99d9044ab3749bb, type: 3}
+  roomPrefabs:
+  - {fileID: 2624508121982915825, guid: ab8680189ffb7fd4c9f24f67f7d271f7, type: 3}
+  - {fileID: 8713098289546032474, guid: 3af73649306be2845affbb8e5cfd0b03, type: 3}
+  - {fileID: 8208503229434107624, guid: ab0b425e310141e468b2720f2b0e9e55, type: 3}
+  - {fileID: 5277263928038124855, guid: fbef170c2d550824aa49958a1cfc89da, type: 3}
+  - {fileID: 4194601884858270696, guid: 2c12b3d80b04cc348a2ef21535d4d595, type: 3}
+  - {fileID: 5809644119075682264, guid: b501285b90bc3994cac1cce8011bf015, type: 3}
+  - {fileID: 8125477226886228366, guid: c29cb495f10cfb4468139d58a0ef1fe9, type: 3}
+  corridorPrefabs:
+  - {fileID: 4619930964291464197, guid: f6f1c907ebfdc784093b8510ce1eb0e7, type: 3}
+  - {fileID: 4197428069884667054, guid: 379343d4e58002741b8de1afa9517434, type: 3}
+  - {fileID: 6906007923130111023, guid: 9b7d92a8c7001f14fba03185067a0dc3, type: 3}
+  - {fileID: 884525657546622264, guid: 83ba640eea5e37049926b2445dfcb30b, type: 3}
+  - {fileID: 5050143615763782071, guid: 0df6eafaffb905848a4707ba0b49b0c8, type: 3}
+  specialRoomPrefabs:
+  - {fileID: 2942166763370001194, guid: 1daeac8bbf13b7c4f9eccdeabbc11321, type: 3}
+  - {fileID: 2942166763370001194, guid: 7821c19aec1e20749b6c70dd089bb316, type: 3}
 --- !u!1 &1929782578
 GameObject:
   m_ObjectHideFlags: 0
