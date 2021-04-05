@@ -3,22 +3,28 @@ using UnityEngine.UI;
 using TMPro;
 using Observer;
 using Utils;
+using RPG.Core;
 
-public class SceneGeneratorObserver : MonoBehaviour, IObserver {
+public class UIAndCamera : MonoBehaviour, IObserver {
     [SerializeField] SceneGenerator sceneGenerator;
     [SerializeField] GameObject startButton;
-    [SerializeField] GameObject UI;
-    [SerializeField] GameObject sun;
+    [SerializeField] GameObject topView;
     [SerializeField] TMP_Text stateText;
+
+    [SerializeField] GameObject gameView;
+    [SerializeField] TMP_Text healthText;
 
     float cameraSpeed = 300.0f;
     void Start(){
         startButton.SetActive(false);
         sceneGenerator.Attach(this);
-        sun.transform.rotation = Quaternion.Euler(50,-30,0);
+        TurnOnCanvas();
     }
 
     void Update(){
+        Health playerHealth = GameObject.FindGameObjectsWithTag("Player")[0].GetComponent<Health>();
+        if(playerHealth != null) healthText.text = playerHealth.GetHealth().ToString();
+
         if (Input.GetKeyDown("escape"))
         {
             TurnOnCanvas();
@@ -34,14 +40,13 @@ public class SceneGeneratorObserver : MonoBehaviour, IObserver {
     }
 
     public void TurnOffCanvas(){
-        sun.SetActive(false);
-        UI.SetActive(false);
-        
+        gameView.SetActive(true);
+        topView.SetActive(false);
     }
 
     private void TurnOnCanvas(){
-        sun.SetActive(true);
-        UI.SetActive(true);
+        topView.SetActive(true);
+        gameView.SetActive(false);
     }
 
     private void MoveCamera(){

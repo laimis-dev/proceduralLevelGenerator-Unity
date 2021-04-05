@@ -27,6 +27,10 @@ namespace RPG.Core
             GetComponent<Animator>().SetTrigger("Die");
             GetComponent<ActionScheduler>().CancelCurrentAction();
         }
+
+        public float GetHealth(){
+            return health;
+        }
     }
 
 }
