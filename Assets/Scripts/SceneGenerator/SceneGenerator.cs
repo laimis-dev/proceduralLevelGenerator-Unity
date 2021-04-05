@@ -88,10 +88,8 @@ namespace Utils
    
 
                 while(!wasRoomPlaced && possibleSpecialRooms.Count > 0){
-                    print(possibleSpecialRooms.Count);
                     SpecialRoom specRoom = sceneObjectFactory.Create("specialRoom") as SpecialRoom;
                     possibleSpecialRooms.RemoveAll(r => r.GetName() == specRoom.GetName());
-                    print(possibleSpecialRooms.Count);
                     if(specRoom.GetSpawnChance() < pseudoRandom.Next(0, 100)) {
                         Destroy(specRoom.gameObject);
                         continue;
@@ -111,12 +109,10 @@ namespace Utils
                     yield return Helpers.fixedUpdateInterval;
                 }
 
-                print("aa");
 
                 while(!wasRoomPlaced && possibleRooms.Count > 0){
                     Room currentRoom = sceneObjectFactory.Create("regularRoom") as Room;
                     possibleRooms.RemoveAll(r => r.GetName() == currentRoom.GetName());
-                    print(possibleRooms.Count);
                     if(currentRoom.GetSize() < roomSizeMin || currentRoom.GetSize() > roomSizeMax){
                         Destroy(currentRoom.gameObject);
                     } else {
@@ -137,19 +133,23 @@ namespace Utils
                     yield return Helpers.fixedUpdateInterval;
                 }
             }
-
             PlaceEndRoom();
 
-            // Debug.Break();
-            yield return StartCoroutine(ConnectEmptyConnectors());
+            if(generatedRooms.Count < minRooms){
+                this.Notify("Error, try generating with different parameters");
+            } else {
+                // Debug.Break();
+                yield return StartCoroutine(ConnectEmptyConnectors());
 
-            DeleteUnconnectedCorridors();
+                DeleteUnconnectedCorridors();
 
-            yield return AddWallsToPathFinders();
-            BakeNavMesh();
-            // Debug.Log("finished");
+                yield return AddWallsToPathFinders();
+                BakeNavMesh();
+                // Debug.Log("finished");
 
-            this.Notify("Finished");
+                this.Notify("Finished");
+            }
+
             StopCoroutine("GenerateScene");
         }
 
