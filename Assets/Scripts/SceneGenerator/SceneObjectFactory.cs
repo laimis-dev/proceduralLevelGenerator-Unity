@@ -17,13 +17,19 @@ public class SceneObjectFactory : MonoBehaviour {
             case "endRoom": 
                 return Instantiate(endRoomPrefab);
             case "specialRoom": 
-                SpecialRoom specRoomPrefab = specialRoomPrefabs[SceneGenerator.pseudoRandom.Next(0, specialRoomPrefabs.Count)];
+                int random = SceneGenerator.pseudoRandom.Next(0, specialRoomPrefabs.Count); 
+                print(random);
+                SpecialRoom specRoomPrefab = specialRoomPrefabs[random];
                 return Instantiate(specRoomPrefab);
             case "regularRoom": 
-                Room roomInstance = roomPrefabs[SceneGenerator.pseudoRandom.Next(0, roomPrefabs.Count)];
+                random = SceneGenerator.pseudoRandom.Next(0, roomPrefabs.Count); 
+                print(random);
+                Room roomInstance = roomPrefabs[random];
                 return Instantiate(roomInstance);
             case "corridor": 
-                Corridor corridor = corridorPrefabs[SceneGenerator.pseudoRandom.Next(0, corridorPrefabs.Count)];
+                random = SceneGenerator.pseudoRandom.Next(0, corridorPrefabs.Count); 
+                print(random);
+                Corridor corridor = corridorPrefabs[random];
                 return Instantiate(corridor);
             default:
                 Debug.LogError("Wrong sceneObject type passed.");
