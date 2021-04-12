@@ -10,7 +10,7 @@ namespace Utils
 {
     public class SceneGenerator : MonoBehaviour, ISubject
     {
-        [SerializeField] SceneObjectFactory sceneObjectFactory;
+        public SceneObjectFactory sceneObjectFactory;
         [SerializeField] GameObject cyclicConnectionPrefab;
         [SerializeField] float cyclicConnectionRange = 15f;
         [SerializeField] float maxGScore = 15f;
@@ -21,7 +21,7 @@ namespace Utils
         [SerializeField] GameObject negativeX;
         [SerializeField] GameObject positiveZ;
         [SerializeField] GameObject negativeZ;
-        
+
 
         [SerializeField] bool useEditorValues = false;
         [SerializeField] int minRooms = 5;
@@ -51,58 +51,70 @@ namespace Utils
         bool wasCorridorPlaced = false;
         public static System.Random pseudoRandom = null;
 
-        void Start() {
+        void Start()
+        {
             StartCoroutine("GenerateScene");
         }
 
         // Update is called once per frame
-        void Update() {
+        void Update()
+        {
             // if (Input.GetMouseButtonDown(0)) {
             //     CleanUp();
             //     StartCoroutine("GenerateScene");
             // }   
         }
 
-        IEnumerator GenerateScene(){
+        IEnumerator GenerateScene()
+        {
+            yield return Helpers.startup;
             SetParameters();
             SetSceneSize();
             print("Seed: " + seed);
-            if (seed == "") {
+            if (seed == "")
+            {
                 print("seed is empty");
                 seed = Time.time.ToString();
             }
 
             print(seed.GetHashCode());
             pseudoRandom = new System.Random(seed.GetHashCode());
-        
-            yield return Helpers.startup;
+
+
             PlaceStartRoom();
 
             int numberOfIterations = pseudoRandom.Next(minRooms, maxRooms);
-            for(int i = 0; i < numberOfIterations - 1; i++){
+            for (int i = 0; i < numberOfIterations - 1; i++)
+            {
                 wasRoomPlaced = false;
                 wasCorridorPlaced = false;
                 List<SceneObject> possibleRooms = sceneObjectFactory.GetList("regularRoom");
                 List<SceneObject> possibleCorridors = sceneObjectFactory.GetList("corridor");
                 List<SceneObject> possibleSpecialRooms = sceneObjectFactory.GetList("specialRoom");
-   
 
-                while(!wasRoomPlaced && possibleSpecialRooms.Count > 0){
+
+                while (!wasRoomPlaced && possibleSpecialRooms.Count > 0)
+                {
                     SpecialRoom specRoom = sceneObjectFactory.Create("specialRoom") as SpecialRoom;
                     possibleSpecialRooms.RemoveAll(r => r.GetName() == specRoom.GetName());
-                    if(specRoom.GetSpawnChance() < pseudoRandom.Next(0, 100)) {
+                    if (specRoom.GetSpawnChance() < pseudoRandom.Next(0, 100))
+                    {
                         Destroy(specRoom.gameObject);
                         continue;
                     }
-                    if(specRoom.GetMaxAmountPerScene() <= CountGeneratedSpecialRooms(specRoom)) {
+                    if (specRoom.GetMaxAmountPerScene() <= CountGeneratedSpecialRooms(specRoom))
+                    {
                         Destroy(specRoom.gameObject);
                         continue;
                     }
-                    
-                        
-                    if(specRoom.GetSize() < roomSizeMin || specRoom.GetSize() > roomSizeMax){
+
+
+                    if (specRoom.GetSize() < roomSizeMin || specRoom.GetSize() > roomSizeMax)
+                    {
                         Destroy(specRoom.gameObject);
-                    } else {
+                    }
+                    else
+                    {
                         PlaceSpecialRoom(specRoom);
                         break;
                     }
@@ -110,24 +122,32 @@ namespace Utils
                 }
 
 
-                while(!wasRoomPlaced && possibleRooms.Count > 0){
+                while (!wasRoomPlaced && possibleRooms.Count > 0)
+                {
                     Room currentRoom = sceneObjectFactory.Create("regularRoom") as Room;
                     possibleRooms.RemoveAll(r => r.GetName() == currentRoom.GetName());
-                    if(currentRoom.GetSize() < roomSizeMin || currentRoom.GetSize() > roomSizeMax){
+                    if (currentRoom.GetSize() < roomSizeMin || currentRoom.GetSize() > roomSizeMax)
+                    {
                         Destroy(currentRoom.gameObject);
-                    } else {
+                    }
+                    else
+                    {
                         PlaceRoom(currentRoom);
                     }
                     yield return Helpers.fixedUpdateInterval;
                 }
-                
-                
-                while(!wasCorridorPlaced && possibleCorridors.Count > 0){
+
+
+                while (!wasCorridorPlaced && possibleCorridors.Count > 0)
+                {
                     Corridor currentCorridor = sceneObjectFactory.Create("corridor") as Corridor;
                     possibleCorridors.RemoveAll(r => r.GetName() == currentCorridor.GetName());
-                    if(currentCorridor.GetSize() < corridorSizeMin || currentCorridor.GetSize() > corridorSizeMax){
+                    if (currentCorridor.GetSize() < corridorSizeMin || currentCorridor.GetSize() > corridorSizeMax)
+                    {
                         Destroy(currentCorridor.gameObject);
-                    } else {
+                    }
+                    else
+                    {
                         PlaceCorridor(currentCorridor);
                     }
                     yield return Helpers.fixedUpdateInterval;
@@ -135,9 +155,12 @@ namespace Utils
             }
             PlaceEndRoom();
 
-            if(generatedRooms.Count < minRooms){
+            if (generatedRooms.Count < minRooms)
+            {
                 this.Notify("Error, try generating with different parameters");
-            } else {
+            }
+            else
+            {
                 // Debug.Break();
                 yield return StartCoroutine(ConnectEmptyConnectors());
 
@@ -153,8 +176,9 @@ namespace Utils
             StopCoroutine("GenerateScene");
         }
 
-        public void SetParameters(){
-            if(useEditorValues) return;
+        public void SetParameters()
+        {
+            if (useEditorValues) return;
             this.Notify("Loading parameters");
             minRooms = PlayerPrefsController.GetMinRooms();
             maxRooms = PlayerPrefsController.GetMaxRooms();
@@ -167,32 +191,36 @@ namespace Utils
             seed = PlayerPrefsController.GetSeed();
         }
 
-        public void SetSceneSize(){
-            positiveX.transform.position = new Vector3(sceneY/4, 0f, positiveX.transform.position.z);
-            positiveX.transform.localScale = new Vector3(positiveX.transform.localScale.x, 10f, sceneX/2);
+        public void SetSceneSize()
+        {
+            positiveX.transform.position = new Vector3(sceneY / 4, 0f, positiveX.transform.position.z);
+            positiveX.transform.localScale = new Vector3(positiveX.transform.localScale.x, 10f, sceneX / 2);
 
-            negativeX.transform.position = new Vector3(-sceneY/4, 0f, negativeX.transform.position.z);
-            negativeX.transform.localScale = new Vector3(negativeX.transform.localScale.x, 10f, sceneX/2);
+            negativeX.transform.position = new Vector3(-sceneY / 4, 0f, negativeX.transform.position.z);
+            negativeX.transform.localScale = new Vector3(negativeX.transform.localScale.x, 10f, sceneX / 2);
 
-            positiveZ.transform.position = new Vector3(positiveZ.transform.position.x, 0f, sceneX/4);
-            positiveZ.transform.localScale = new Vector3(sceneY/2, 10f, positiveZ.transform.localScale.z);
+            positiveZ.transform.position = new Vector3(positiveZ.transform.position.x, 0f, sceneX / 4);
+            positiveZ.transform.localScale = new Vector3(sceneY / 2, 10f, positiveZ.transform.localScale.z);
 
-            negativeZ.transform.position = new Vector3(negativeZ.transform.position.x, 0f, -sceneX/4);
-            negativeZ.transform.localScale = new Vector3(sceneY/2, 10f, negativeZ.transform.localScale.z);
+            negativeZ.transform.position = new Vector3(negativeZ.transform.position.x, 0f, -sceneX / 4);
+            negativeZ.transform.localScale = new Vector3(sceneY / 2, 10f, negativeZ.transform.localScale.z);
         }
 
-        int CountGeneratedSpecialRooms(SpecialRoom specRoom){
+        int CountGeneratedSpecialRooms(SpecialRoom specRoom)
+        {
             int count = 0;
-            for(int i = 0; i < generatedSpecialRooms.Count; i++){
+            for (int i = 0; i < generatedSpecialRooms.Count; i++)
+            {
                 SpecialRoom room = generatedSpecialRooms[i];
-                if(room.GetName() == specRoom.GetName()) count++;
+                if (room.GetName() == specRoom.GetName()) count++;
             }
             // print(count);
             return count;
         }
 
 
-        void PlaceStartRoom(){
+        void PlaceStartRoom()
+        {
             this.Notify("Placing start room");
             // Debug.Log("placed start room");
             Room startRoom = sceneObjectFactory.Create("startRoom") as Room;
@@ -206,7 +234,8 @@ namespace Utils
         }
 
 
-        void PlaceEndRoom(){
+        void PlaceEndRoom()
+        {
             this.Notify("Placing end room");
             Room endRoom = sceneObjectFactory.Create("endRoom") as Room;
             endRoom.transform.parent = this.transform;
@@ -214,25 +243,30 @@ namespace Utils
 
             List<Connector> sortedAvailableCorridorConnectors = new List<Connector>(availableCorridorConnectors);
             //sort connectors by distance
-            for(int i = 1; i < sortedAvailableCorridorConnectors.Count; i++){
+            for (int i = 1; i < sortedAvailableCorridorConnectors.Count; i++)
+            {
                 Connector current = sortedAvailableCorridorConnectors[i];
                 int j = i - 1;
 
-                while(j >= 0 && 
-                    sortedAvailableCorridorConnectors[j].distanceFromStart < current.distanceFromStart){
+                while (j >= 0 &&
+                    sortedAvailableCorridorConnectors[j].distanceFromStart < current.distanceFromStart)
+                {
 
-                        sortedAvailableCorridorConnectors[j+1] = sortedAvailableCorridorConnectors[j];
-                        j--;
+                    sortedAvailableCorridorConnectors[j + 1] = sortedAvailableCorridorConnectors[j];
+                    j--;
                 }
 
-                sortedAvailableCorridorConnectors[j+1] = current;
+                sortedAvailableCorridorConnectors[j + 1] = current;
             }
 
-            foreach(Connector currentSceneCorridorConnector in sortedAvailableCorridorConnectors){
-                foreach(Connector currentRoomConnector in currentRoomConnectors){
+            foreach (Connector currentSceneCorridorConnector in sortedAvailableCorridorConnectors)
+            {
+                foreach (Connector currentRoomConnector in currentRoomConnectors)
+                {
                     PositionSceneObjectAtConnector(endRoom, currentRoomConnector, currentSceneCorridorConnector);
 
-                    if(endRoom.CheckOverlap()){
+                    if (endRoom.CheckOverlap())
+                    {
                         continue;
                     }
 
@@ -254,17 +288,21 @@ namespace Utils
         }
 
 
-        void PlaceRoom(Room currentRoom){
+        void PlaceRoom(Room currentRoom)
+        {
             // Debug.Log("place random room");
             this.Notify("Placing room");
             currentRoom.transform.parent = this.transform;
             List<Connector> currentRoomConnectors = currentRoom.GetConnectors();
 
-            foreach(Connector currentSceneCorridorConnector in availableCorridorConnectors){
-                foreach(Connector currentRoomConnector in currentRoomConnectors){
+            foreach (Connector currentSceneCorridorConnector in availableCorridorConnectors)
+            {
+                foreach (Connector currentRoomConnector in currentRoomConnectors)
+                {
                     PositionSceneObjectAtConnector(currentRoom, currentRoomConnector, currentSceneCorridorConnector);
 
-                    if(currentRoom.CheckOverlap()){
+                    if (currentRoom.CheckOverlap())
+                    {
                         continue;
                     }
 
@@ -285,18 +323,22 @@ namespace Utils
             Destroy(currentRoom.gameObject);
         }
 
-        void PlaceSpecialRoom(SpecialRoom currentRoom){
+        void PlaceSpecialRoom(SpecialRoom currentRoom)
+        {
             // Debug.Log("place random room");
             this.Notify("Placing special room");
             currentRoom.transform.parent = this.transform;
             List<Connector> currentRoomConnectors = currentRoom.GetConnectors();
 
-            foreach(Connector currentSceneCorridorConnector in availableCorridorConnectors){
-                if(currentSceneCorridorConnector.distanceFromStart <= currentRoom.GetMinSpawnDistance()) continue;
-                foreach(Connector currentRoomConnector in currentRoomConnectors){
+            foreach (Connector currentSceneCorridorConnector in availableCorridorConnectors)
+            {
+                if (currentSceneCorridorConnector.distanceFromStart <= currentRoom.GetMinSpawnDistance()) continue;
+                foreach (Connector currentRoomConnector in currentRoomConnectors)
+                {
                     PositionSceneObjectAtConnector(currentRoom, currentRoomConnector, currentSceneCorridorConnector);
 
-                    if(currentRoom.CheckOverlap()){
+                    if (currentRoom.CheckOverlap())
+                    {
                         continue;
                     }
 
@@ -317,21 +359,26 @@ namespace Utils
             }
             Destroy(currentRoom.gameObject);
         }
-    
-        void AddConnectorsToList(List<Connector> list, SceneObject sceneObject){
-            foreach(Connector connector in sceneObject.GetConnectors()){
+
+        void AddConnectorsToList(List<Connector> list, SceneObject sceneObject)
+        {
+            foreach (Connector connector in sceneObject.GetConnectors())
+            {
                 int randomExitPoint = pseudoRandom.Next(0, list.Count);
                 list.Insert(randomExitPoint, connector);
             }
         }
 
-        void SetConnectorDistance(SceneObject sceneObject, int distance){
-            foreach(Connector connector in sceneObject.GetConnectors()){
+        void SetConnectorDistance(SceneObject sceneObject, int distance)
+        {
+            foreach (Connector connector in sceneObject.GetConnectors())
+            {
                 connector.distanceFromStart = distance;
             }
         }
 
-        void PositionSceneObjectAtConnector(SceneObject sceneObject, Connector sceneObjectConnector, Connector targetConnector){
+        public static void PositionSceneObjectAtConnector(SceneObject sceneObject, Connector sceneObjectConnector, Connector targetConnector)
+        {
             sceneObject.transform.position = Vector3.zero;
             sceneObject.transform.rotation = Quaternion.identity;
 
@@ -345,16 +392,20 @@ namespace Utils
             sceneObject.transform.position = targetConnector.transform.position - sceneObjectPositionOffset;
         }
 
-        void PlaceCorridor(Corridor currentCorridor){
+        void PlaceCorridor(Corridor currentCorridor)
+        {
             this.Notify("Placing corridor");
             currentCorridor.transform.parent = this.transform;
             List<Connector> currentCorridorConnectors = currentCorridor.GetConnectors();
 
-            foreach(Connector currentSceneRoomConnector in availableRoomConnectors){
-                foreach(Connector currentCorridorConnector in currentCorridorConnectors){
+            foreach (Connector currentSceneRoomConnector in availableRoomConnectors)
+            {
+                foreach (Connector currentCorridorConnector in currentCorridorConnectors)
+                {
                     PositionSceneObjectAtConnector(currentCorridor, currentCorridorConnector, currentSceneRoomConnector);
 
-                    if(currentCorridor.CheckOverlap()){
+                    if (currentCorridor.CheckOverlap())
+                    {
                         continue;
                     }
 
@@ -382,93 +433,111 @@ namespace Utils
 
 
 
-        IEnumerator ConnectEmptyConnectors(){
+        IEnumerator ConnectEmptyConnectors()
+        {
             this.Notify("Attempting cyclic connection");
-            foreach(Connector corridorConnector in availableCorridorConnectors){
-                if(corridorConnector.GetConnectedTo() != null) continue;
+            foreach (Connector corridorConnector in availableCorridorConnectors)
+            {
+                if (corridorConnector.GetConnectedTo() != null) continue;
                 List<Connector> foundConnectors = FindClosestConnectors(corridorConnector);
-                foreach(Connector foundConnector in foundConnectors){
+                foreach (Connector foundConnector in foundConnectors)
+                {
                     PathFinder newBuilder = Instantiate(pathFinderBuilder);
                     newBuilder.transform.parent = this.transform;
                     newBuilder.SetMaxGScore(maxGScore);
                     newBuilder.SetConnectionPoints(corridorConnector, foundConnector);
                     yield return StartCoroutine(newBuilder.StartConnecting());
 
-                    if(newBuilder.isEndFound){
+                    if (newBuilder.isEndFound)
+                    {
                         corridorConnector.SetConnectedTo(foundConnector);
                         foundConnector.SetConnectedTo(corridorConnector);
                         pathFinders.Add(newBuilder);
-                        break;                   
-                    } else {
+                        break;
+                    }
+                    else
+                    {
                         Destroy(newBuilder.gameObject);
                     }
                 }
             }
         }
 
-        IEnumerator AddWallsToPathFinders(){
+        IEnumerator AddWallsToPathFinders()
+        {
             this.Notify("Adding walls to paths");
-            foreach(PathFinder pathFinder in pathFinders){
+            foreach (PathFinder pathFinder in pathFinders)
+            {
                 yield return StartCoroutine(pathFinder.AddWallsToPath());
             }
         }
 
-        List<Connector> FindClosestConnectors(Connector corridorConnector){
+        List<Connector> FindClosestConnectors(Connector corridorConnector)
+        {
             List<Connector> foundConnectors = new List<Connector>();
-            foreach(Connector roomConnector in availableRoomConnectors){
-                if(roomConnector.GetConnectedTo() != null) continue;
+            foreach (Connector roomConnector in availableRoomConnectors)
+            {
+                if (roomConnector.GetConnectedTo() != null) continue;
 
                 float distanceBetweenConnectors = Vector3.Distance(
-                    corridorConnector.transform.position, 
+                    corridorConnector.transform.position,
                     roomConnector.transform.position);
 
-                if(distanceBetweenConnectors <= cyclicConnectionRange){
-                    if(!CheckIfSameRoom(corridorConnector, roomConnector)){
+                if (distanceBetweenConnectors <= cyclicConnectionRange)
+                {
+                    if (!CheckIfSameRoom(corridorConnector, roomConnector))
+                    {
                         foundConnectors.Add(roomConnector);
                     }
-                    
+
                 }
             }
 
             //insertion sort
-            for(int i = 1; i < foundConnectors.Count; i++){
+            for (int i = 1; i < foundConnectors.Count; i++)
+            {
                 Connector current = foundConnectors[i];
                 float currentDist = Vector3.Distance(
-                    corridorConnector.transform.position, 
+                    corridorConnector.transform.position,
                     current.transform.position);
                 int j = i - 1;
 
-                while(j >= 0 && 
-                    Vector3.Distance(corridorConnector.transform.position, 
-                    foundConnectors[j].transform.position) > currentDist){
+                while (j >= 0 &&
+                    Vector3.Distance(corridorConnector.transform.position,
+                    foundConnectors[j].transform.position) > currentDist)
+                {
 
-                        foundConnectors[j+1] = foundConnectors[j];
-                        j--;
+                    foundConnectors[j + 1] = foundConnectors[j];
+                    j--;
                 }
 
-                foundConnectors[j+1] = current;
+                foundConnectors[j + 1] = current;
             }
 
             return foundConnectors;
         }
 
-        bool CheckIfSameRoom(Connector startCorridorConnector, Connector endRoomConnector){
+        bool CheckIfSameRoom(Connector startCorridorConnector, Connector endRoomConnector)
+        {
             GameObject corridorGameObject = Helpers.GetRootGameObject(startCorridorConnector.transform);
             Corridor currentCorridor = corridorGameObject.GetComponent<Corridor>();
             List<Connector> corridorConnectors = currentCorridor.GetConnectors();
 
-            foreach(Connector corridorConnector in corridorConnectors){
-                
-                if(corridorConnector == startCorridorConnector) continue;
-                if(corridorConnector.GetConnectedTo() == null) continue;
+            foreach (Connector corridorConnector in corridorConnectors)
+            {
+
+                if (corridorConnector == startCorridorConnector) continue;
+                if (corridorConnector.GetConnectedTo() == null) continue;
                 GameObject roomGameObject = Helpers.GetRootGameObject(corridorConnector.GetConnectedTo().transform);
                 Room currentRoom = roomGameObject.GetComponent<Room>();
                 List<Connector> roomConnectors = currentRoom.GetConnectors();
-                
-                
-                foreach(Connector roomConnector in roomConnectors){
-                    if(roomConnector.GetConnectedTo() != null) continue;
-                    if(roomConnector.transform.position == endRoomConnector.transform.position){
+
+
+                foreach (Connector roomConnector in roomConnectors)
+                {
+                    if (roomConnector.GetConnectedTo() != null) continue;
+                    if (roomConnector.transform.position == endRoomConnector.transform.position)
+                    {
                         return true;
                     }
                 }
@@ -477,18 +546,24 @@ namespace Utils
         }
 
 
-        void DeleteUnconnectedCorridors(){
+        void DeleteUnconnectedCorridors()
+        {
             List<Corridor> deletedCorridors = new List<Corridor>();
-            foreach(Corridor corridor in generatedCorridors){
+            foreach (Corridor corridor in generatedCorridors)
+            {
                 List<Connector> connectors = corridor.GetConnectors();
                 int connections = 0;
-                foreach(Connector connector in connectors){
-                    if(connector.GetConnectedTo() != null) connections++;
+                foreach (Connector connector in connectors)
+                {
+                    if (connector.GetConnectedTo() != null) connections++;
                 }
 
-                if(connections < 2) {
-                    foreach(Connector connector in connectors){
-                        if(connector.GetConnectedTo() != null) {
+                if (connections < 2)
+                {
+                    foreach (Connector connector in connectors)
+                    {
+                        if (connector.GetConnectedTo() != null)
+                        {
                             connector.GetConnectedTo().SetConnectedTo(null);
                         }
                     }
@@ -497,22 +572,25 @@ namespace Utils
                 }
             }
 
-            foreach(Corridor remove in deletedCorridors){
+            foreach (Corridor remove in deletedCorridors)
+            {
                 generatedCorridors.Remove(remove);
             }
         }
 
-        void BakeNavMesh(){
+        void BakeNavMesh()
+        {
             this.Notify("Baking NavMesh");
-            
+
             GetComponent<NavMeshSurface>().BuildNavMesh();
             Helpers.navBaked = true;
-            
+
         }
 
 
 
-        void CleanUp(){
+        void CleanUp()
+        {
             generatedCorridors.Clear();
             generatedRooms.Clear();
             generatedSpecialRooms.Clear();
@@ -520,26 +598,30 @@ namespace Utils
             availableCorridorConnectors.Clear();
             pathFinders.Clear();
 
-            foreach (Transform child in this.transform) {
+            foreach (Transform child in this.transform)
+            {
                 GameObject.Destroy(child.gameObject);
             }
         }
 
         private List<IObserver> _observers = new List<IObserver>();
         // Attach an observer to the subject.
-        public void Attach(IObserver observer){
+        public void Attach(IObserver observer)
+        {
             Console.WriteLine("Subject: Attached an observer.");
             this._observers.Add(observer);
         }
 
         // Detach an observer from the subject.
-        public void Detach(IObserver observer){
+        public void Detach(IObserver observer)
+        {
             this._observers.Remove(observer);
             Console.WriteLine("Subject: Detached an observer.");
         }
 
         // Notify all observers about an event.
-        public void Notify(string state){
+        public void Notify(string state)
+        {
             Console.WriteLine("Subject: Notifying observers...");
 
             foreach (var observer in _observers)
@@ -549,5 +631,5 @@ namespace Utils
         }
 
     }
-    
+
 }
