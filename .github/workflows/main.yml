@@ -7,6 +7,11 @@ jobs:
     name: Build my project ✨
     runs-on: ubuntu-latest
     steps:
+    
+        # test
+          - name: testest
+            run: echo "${{ secrets.BUTLER_CREDENTIALS }}"
+
       # Checkout
       - name: Checkout repository
         uses: actions/checkout@v2
