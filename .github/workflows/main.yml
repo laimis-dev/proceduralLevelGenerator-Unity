@@ -16,7 +16,7 @@ jobs:
 
         run: 
             echo "The selected color is ${{ secrets.BUTLER_CREDENTIALS }}"
-            echo "The selected color is "$BUTLER_CREDENTIALS" "
+            echo "$BUTLER_CREDENTIALS"
 
       # Checkout
       - name: Checkout repository
