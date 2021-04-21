@@ -8,9 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     
-        # test
-          - name: testest
-            run: echo "${{ secrets.BUTLER_CREDENTIALS }}"
+    # test
+      - name: testest
+        run: echo "The selected color is "
 
       # Checkout
       - name: Checkout repository
