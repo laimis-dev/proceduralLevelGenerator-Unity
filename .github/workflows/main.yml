@@ -7,16 +7,6 @@ jobs:
     name: Build my project ✨
     runs-on: ubuntu-latest
     steps:
-    
-    # test
-      - name: testest
-        env:
-          organization: unity
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-
-        run: 
-            echo "The selected color is ${{ secrets.BUTLER_CREDENTIALS }}"
-            echo "$BUTLER_CREDENTIALS"
 
       # Checkout
       - name: Checkout repository
@@ -58,7 +48,7 @@ jobs:
         uses: josephbmanley/butler-publish-itchio-action@master
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIALS }}
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          BUTLER_CREDENTIALS: mYb7fCaepS8f9Yj58JzYPSsYCcg6U70icyYiJnuw
           CHANNEL: html
           ITCH_GAME: procedural-dungeon-generator
           ITCH_USER: katinas15
