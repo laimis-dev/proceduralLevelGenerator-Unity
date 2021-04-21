@@ -49,5 +49,5 @@ jobs:
           BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
           CHANNEL: html
           ITCH_GAME: procedural-dungeon-generator
-          ITCH_USER: username
+          ITCH_USER: katinas15
           PACKAGE: Build
