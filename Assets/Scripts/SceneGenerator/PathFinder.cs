@@ -29,7 +29,7 @@ public class PathFinder : MonoBehaviour
     void Start() {
         PathFinderNode pathBlock = Instantiate(cyclicConnectionPrefab);
         cyclicBlockBounds = pathBlock.GetCollider().bounds;
-        minEndDistance = cyclicBlockBounds.size.x + 2f;
+        minEndDistance = cyclicBlockBounds.size.x + 1f;
         Destroy(pathBlock.gameObject);
 
         PathFinderObject wallBlock = Instantiate(wallPrefab);
