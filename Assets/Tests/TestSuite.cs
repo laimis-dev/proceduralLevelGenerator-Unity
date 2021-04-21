@@ -21,6 +21,8 @@ public class TestSuite
         yield return new WaitForSeconds(0.1f);
 
         Assert.True(roomOne.CheckOverlap());
+        Object.Destroy(gameGameObjectOne.gameObject);
+        Object.Destroy(gameGameObjectTwo.gameObject);
     }
 
     [UnityTest]
@@ -39,6 +41,8 @@ public class TestSuite
 
         Assert.False(roomOne.CheckOverlap());
         Assert.True(roomOne.GetConnectors()[0].transform.position == roomTwo.GetConnectors()[0].transform.position);
+        Object.Destroy(gameGameObjectOne.gameObject);
+        Object.Destroy(gameGameObjectTwo.gameObject);
     }
 
     [UnityTest]
@@ -52,5 +56,6 @@ public class TestSuite
         yield return new WaitForSeconds(0.1f);
 
         Assert.True(roomOne.GetSize() == 720);
+        Object.Destroy(gameGameObjectOne.gameObject);
     }
 }
