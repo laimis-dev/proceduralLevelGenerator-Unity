@@ -1,4 +1,4 @@
-name: Actions 😎
+name: Test, Build and Upload
 
 on: [push, pull_request]
 
@@ -41,3 +41,13 @@ jobs:
         with:
           name: Build
           path: build
+          
+       # Upload
+      - name: Upload to Itch
+        uses: josephbmanley/butler-publish-itchio-action@master
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          CHANNEL: html
+          ITCH_GAME: procedural-dungeon-generator
+          ITCH_USER: username
+          PACKAGE: Build
