@@ -45,5 +45,5 @@ jobs:
        # Upload
       - name: Upload to Itch
         uses: dosowisko/butler
-        script:
-          - butler push "./Build" "katinas15/procedural-dungeon-generator:html"
+        run:
+          butler push "./Build" "katinas15/procedural-dungeon-generator:html"
