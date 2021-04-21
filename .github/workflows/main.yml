@@ -52,4 +52,4 @@ jobs:
           CHANNEL: html5
           ITCH_GAME: procedural-dungeon-generator
           ITCH_USER: katinas15
-          PACKAGE: build
+          PACKAGE: build/WebGL/WebGL
