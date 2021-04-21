@@ -44,7 +44,6 @@ jobs:
           
        # Upload
       - name: Upload to Itch
-        steps:
         uses: actions/checkout@v2
         uses: ./
         with:
