@@ -10,7 +10,13 @@ jobs:
     
     # test
       - name: testest
-        run: echo "The selected color is ${{ secrets.BUTLER_CREDENTIALS }}"
+        env:
+          organization: unity
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+
+        run: 
+            echo "The selected color is ${{ secrets.BUTLER_CREDENTIALS }}"
+            echo "The selected color is $BUTLER_CREDENTIALS"
 
       # Checkout
       - name: Checkout repository
