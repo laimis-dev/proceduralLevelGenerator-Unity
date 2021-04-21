@@ -49,7 +49,7 @@ jobs:
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIALS }}
           BUTLER_CREDENTIALS: mYb7fCaepS8f9Yj58JzYPSsYCcg6U70icyYiJnuw
-          CHANNEL: html
+          CHANNEL: html5
           ITCH_GAME: procedural-dungeon-generator
           ITCH_USER: katinas15
           PACKAGE: build
