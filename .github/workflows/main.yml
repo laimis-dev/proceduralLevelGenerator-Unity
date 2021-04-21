@@ -44,10 +44,6 @@ jobs:
           
        # Upload
       - name: Upload to Itch
-        uses: josephbmanley/butler-publish-itchio-action@master
-        env:
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-          CHANNEL: html
-          ITCH_GAME: procedural-dungeon-generator
-          ITCH_USER: katinas15
-          PACKAGE: Build
+        uses: dosowisko/butler
+        run:
+          - butler push "./Build" "katinas15/procedural-dungeon-generator:html"
