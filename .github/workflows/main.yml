@@ -10,7 +10,7 @@ jobs:
     
     # test
       - name: testest
-        run: echo "The selected color is "
+        run: echo "The selected color is ${{ secrets.BUTLER_CREDENTIALS }}"
 
       # Checkout
       - name: Checkout repository
