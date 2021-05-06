@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Utils;
 
 public class OptionsController : MonoBehaviour
 {
@@ -15,9 +17,19 @@ public class OptionsController : MonoBehaviour
     [SerializeField] TMP_InputField corridorSizeMin;
     [SerializeField] TMP_InputField corridorSizeMax;
     [SerializeField] TMP_InputField seed;
+    [SerializeField] TMP_Text saved;
 
     void Start()
     {
+        int hasPlayed = PlayerPrefs.GetInt("HasPlayed");
+
+        if (hasPlayed == 0)
+        {
+            PlayerPrefs.SetInt("HasPlayed", 1);
+            SetDefaults();
+        }
+
+        saved.gameObject.SetActive(false);
         SetText();
     }
 
@@ -33,6 +45,14 @@ public class OptionsController : MonoBehaviour
         PlayerPrefsController.SetMaxCorridorSize(Int32.Parse(corridorSizeMax.text));
         PlayerPrefsController.SetSeed(seed.text);
         SetText();
+        StartCoroutine("ShowSavedMessage");
+    }
+
+    IEnumerator ShowSavedMessage()
+    {
+        saved.gameObject.SetActive(true);
+        yield return Helpers.startup;
+        saved.gameObject.SetActive(false);
     }
 
     public void SetDefaults()
@@ -47,6 +67,7 @@ public class OptionsController : MonoBehaviour
         PlayerPrefsController.SetMaxCorridorSize(800);
         PlayerPrefsController.SetSeed("");
         SetText();
+        StartCoroutine("ShowSavedMessage");
     }
 
     private void SetText()
