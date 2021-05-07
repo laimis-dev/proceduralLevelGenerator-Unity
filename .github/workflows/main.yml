@@ -10,10 +10,8 @@ jobs:
     
         
      - name: just echo a message
-        run:
-           echo Hello there!
-           echo ${{ secrets.BUTLER_CREDENTIALS }}
-           echo ${{ BUTLER_CREDENTIALS }}
+        run: echo Hello there!
+           
 
       # Checkout
       - name: Checkout repository
