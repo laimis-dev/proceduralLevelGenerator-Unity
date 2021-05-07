@@ -10,7 +10,7 @@ jobs:
     
         
      - name: just echo a message
-        run: |
+        run:
            echo Hello there!
            echo ${{ secrets.BUTLER_CREDENTIALS }}
            echo ${{ BUTLER_CREDENTIALS }}
