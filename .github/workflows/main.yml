@@ -8,8 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     
-     - name: Get color
-        run: echo "The selected color is ${{ BUTLER_CREDENTIALS }}"
         
      - name: Get color2
         run: echo "The selected color is ${{ secrets.BUTLER_CREDENTIALS }}"
