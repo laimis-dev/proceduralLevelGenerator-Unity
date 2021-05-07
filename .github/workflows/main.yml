@@ -9,8 +9,11 @@ jobs:
     steps:
     
         
-     - name: Get color2
-        run: echo "The selected color is ${{ secrets.BUTLER_CREDENTIALS }}"
+     - name: just echo a message
+        run: |
+           echo Hello there!
+           echo ${{ secrets.BUTLER_CREDENTIALS }}
+           echo ${{ BUTLER_CREDENTIALS }}
 
       # Checkout
       - name: Checkout repository
