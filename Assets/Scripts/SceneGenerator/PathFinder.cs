@@ -14,7 +14,7 @@ public class PathFinder : MonoBehaviour
     [SerializeField] bool startOnAwake = false;
     [SerializeField] bool addWallsOnFinish = false;
     [SerializeField] float maxGScore = 15f;
-        
+
     List<PathFinderNode> openNodes = new List<PathFinderNode>();
     List<PathFinderNode> allNodes = new List<PathFinderNode>();
     List<PathFinderNode> connectorPath = new List<PathFinderNode>();
@@ -24,9 +24,10 @@ public class PathFinder : MonoBehaviour
     float minEndDistance;
     Bounds cyclicBlockBounds;
     Bounds wallBounds;
-    
-    
-    void Start() {
+
+
+    void Start()
+    {
         PathFinderNode pathBlock = Instantiate(cyclicConnectionPrefab);
         cyclicBlockBounds = pathBlock.GetCollider().bounds;
         minEndDistance = cyclicBlockBounds.size.x + 1f;
@@ -36,78 +37,93 @@ public class PathFinder : MonoBehaviour
         wallBounds = wallBlock.GetCollider().bounds;
         Destroy(wallBlock.gameObject);
 
-        if(startOnAwake){
+        if (startOnAwake)
+        {
             StartCoroutine(StartConnecting());
         }
-        
+
     }
 
-    void Update() {
-        if (Input.GetMouseButtonDown(0) && startOnAwake) {
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0) && startOnAwake)
+        {
 
             StartCoroutine(StartConnecting());
-        }   
+        }
     }
 
-    public void SetConnectionPoints(Connector start, Connector end){
+    public void SetConnectionPoints(Connector start, Connector end)
+    {
         this.start = start;
         this.end = end;
     }
 
-    public void SetMaxGScore(float score){
+    public void SetMaxGScore(float score)
+    {
         maxGScore = score;
     }
 
-    public IEnumerator StartConnecting(){
+    public IEnumerator StartConnecting()
+    {
         isEndFound = false;
         openNodes = new List<PathFinderNode>();
         allNodes = new List<PathFinderNode>();
         connectorPath = new List<PathFinderNode>();
         yield return StartCoroutine("FindPath");
-        if(!isEndFound){
+        if (!isEndFound)
+        {
             DeleteAll();
         }
-        
-       
+
+
     }
 
-    IEnumerator FindPath(){
+    IEnumerator FindPath()
+    {
         Connector corridorConnector = start;
         Connector roomConnector = end;
         PathFinderNode startBlock = Instantiate(cyclicConnectionPrefab);
         startBlock.transform.parent = this.transform;
-        startBlock.transform.position = 
-            corridorConnector.transform.position + 
+        startBlock.transform.position =
+            corridorConnector.transform.position +
             start.transform.rotation * Vector3.forward;
 
         startBlock.transform.position = new Vector3(
                                         startBlock.transform.position.x,
-                                        startBlock.transform.position.y,
+                                        startBlock.transform.position.y + 0.01f,
                                         startBlock.transform.position.z);
 
-        
+
         startBlock.fScore = DistanceToEnd(startBlock.transform);
         openNodes.Add(startBlock);
         allNodes.Add(startBlock);
         // Debug.Break();
-        while(openNodes.Count > 0){
+        while (openNodes.Count > 0)
+        {
             var current = FindLowestFScoreNode();
-            if(current.gScore > maxGScore) break;
+            if (current.gScore > maxGScore) break;
 
-            if(IfEndFound(current.transform)){
+            if (IfEndFound(current.transform))
+            {
                 isEndFound = true;
+                current.transform.position = new Vector3(
+                                        current.transform.position.x,
+                                        current.transform.position.y - 0.01f,
+                                        current.transform.position.z);
                 PlaceEndPath();
                 openNodes.Add(startBlock);
                 openNodes.Add(current);
                 allNodes.Add(current);
                 GetFinalPath(current, startBlock);
-                
+
                 DeleteUnneededPaths();
 
-                if(addWallsOnFinish){
+                if (addWallsOnFinish)
+                {
                     yield return AddWallsToPath();
                 }
-                
+
                 break;
             }
             openNodes.Remove(current);
@@ -117,37 +133,46 @@ public class PathFinder : MonoBehaviour
         StopCoroutine("PathFinder");
     }
 
-    void GetFinalPath(PathFinderNode current, PathFinderNode startBlock){
+    void GetFinalPath(PathFinderNode current, PathFinderNode startBlock)
+    {
         PathFinderNode currentPath = current;
         connectorPath.Add(currentPath);
-        while(currentPath != startBlock){
+        while (currentPath != startBlock)
+        {
             currentPath = currentPath.instantiatedFrom;
             connectorPath.Add(currentPath);
         }
         connectorPath.Add(startBlock);
     }
 
-    void DeleteUnneededPaths(){
-        foreach (Transform child in this.transform) {
+    void DeleteUnneededPaths()
+    {
+        foreach (Transform child in this.transform)
+        {
             bool isPath = false;
-            foreach (PathFinderNode path in connectorPath) {
-                if(child.position == path.transform.position){
+            foreach (PathFinderNode path in connectorPath)
+            {
+                if (child.position == path.transform.position)
+                {
                     isPath = true;
                 }
-                
+
             }
-            if(!isPath) GameObject.Destroy(child.gameObject);
+            if (!isPath) GameObject.Destroy(child.gameObject);
         }
     }
-    
-    bool AreWallsPlacableInDirection(Vector3 current, Vector2 direction){
+
+    bool AreWallsPlacableInDirection(Vector3 current, Vector2 direction)
+    {
         Vector3 checkPos = new Vector3(
                         current.x + direction.x,
                         current.y,
                         current.z + direction.y);
 
-        foreach(PathFinderNode path in connectorPath){
-            if(checkPos == path.transform.position){
+        foreach (PathFinderNode path in connectorPath)
+        {
+            if (checkPos == path.transform.position)
+            {
                 return false;
             }
         }
@@ -155,45 +180,48 @@ public class PathFinder : MonoBehaviour
         return true;
     }
 
-    List<PathFinderObject> PlaceWallsInDirection(Vector3 current, float edgeDist, string direction){
+    List<PathFinderObject> PlaceWallsInDirection(Vector3 current, float edgeDist, string direction)
+    {
         List<PathFinderObject> walls = new List<PathFinderObject>();
-        for(float j = -1 * edgeDist; j <= edgeDist; j += wallBounds.size.x){
+        for (float j = -1 * edgeDist; j <= edgeDist; j += wallBounds.size.x)
+        {
             PathFinderObject wall = Instantiate(wallPrefab);
             wall.transform.parent = this.transform;
             walls.Add(wall);
-            switch(direction){
+            switch (direction)
+            {
                 case "up":
-                    wall.transform.position = 
+                    wall.transform.position =
                     new Vector3(
                         current.x + edgeDist,
-                        current.y + wallBounds.size.y/8,
+                        current.y + wallBounds.size.y / 8,
                         current.z + j);
                     break;
 
                 case "down":
-                    wall.transform.position = 
+                    wall.transform.position =
                     new Vector3(
                         current.x - edgeDist,
-                        current.y + wallBounds.size.y/8,
+                        current.y + wallBounds.size.y / 8,
                         current.z + j);
                     break;
-                    
+
 
                 case "left":
-                    wall.transform.position = 
+                    wall.transform.position =
                     new Vector3(
                         current.x + j,
-                        current.y + wallBounds.size.y/8,
+                        current.y + wallBounds.size.y / 8,
                         current.z - edgeDist);
                     break;
 
                 case "right":
-                    wall.transform.position = 
+                    wall.transform.position =
                     new Vector3(
                         current.x + j,
-                        current.y + wallBounds.size.y/8,
-                        current.z + edgeDist);      
-                    break;            
+                        current.y + wallBounds.size.y / 8,
+                        current.z + edgeDist);
+                    break;
 
                 default:
                     break;
@@ -203,52 +231,63 @@ public class PathFinder : MonoBehaviour
         return walls;
     }
 
-    public IEnumerator AddWallsToPath(){
+    public IEnumerator AddWallsToPath()
+    {
 
         List<PathFinderObject> walls = new List<PathFinderObject>();
-        for(int i = 0; i < connectorPath.Count; i++){
+        for (int i = 0; i < connectorPath.Count; i++)
+        {
             Vector3 current = connectorPath[i].transform.position;
             //optimisation check some placement without colliders
             float numberOfWalls = (cyclicBlockBounds.size.x * 2) / wallBounds.size.x;
-            float edgeDist = numberOfWalls/4 + wallBounds.size.x/2;
+            float edgeDist = numberOfWalls / 4 + wallBounds.size.x / 2;
 
-            
 
-            if(AreWallsPlacableInDirection(current, new Vector2(0f, cyclicBlockBounds.size.x))){
+
+            if (AreWallsPlacableInDirection(current, new Vector2(0f, cyclicBlockBounds.size.x)))
+            {
                 walls.AddRange(PlaceWallsInDirection(current, edgeDist, "right"));
             }
 
-            if(AreWallsPlacableInDirection(current, new Vector2(0f, -cyclicBlockBounds.size.x))){
+            if (AreWallsPlacableInDirection(current, new Vector2(0f, -cyclicBlockBounds.size.x)))
+            {
                 walls.AddRange(PlaceWallsInDirection(current, edgeDist, "left"));
             }
 
-            if(AreWallsPlacableInDirection(current, new Vector2(cyclicBlockBounds.size.x, 0f))){
+            if (AreWallsPlacableInDirection(current, new Vector2(cyclicBlockBounds.size.x, 0f)))
+            {
                 walls.AddRange(PlaceWallsInDirection(current, edgeDist, "up"));
             }
 
-            if(AreWallsPlacableInDirection(current, new Vector2(-cyclicBlockBounds.size.x, 0f))){
+            if (AreWallsPlacableInDirection(current, new Vector2(-cyclicBlockBounds.size.x, 0f)))
+            {
                 walls.AddRange(PlaceWallsInDirection(current, edgeDist, "down"));
             }
         }
-            
-        
-        
-        foreach(PathFinderObject wall in walls){
+
+
+
+        foreach (PathFinderObject wall in walls)
+        {
             yield return Helpers.fixedUpdateInterval;
-            if(wall.CheckOverlap()){
+            if (wall.CheckOverlap())
+            {
                 Destroy(wall.gameObject);
             }
         }
         StopCoroutine("AddWallsToPath");
-        
+
     }
 
-    PathFinderNode FindLowestFScoreNode(){
+    PathFinderNode FindLowestFScoreNode()
+    {
 
         PathFinderNode minPathObject = openNodes[0];
         float minFScore = minPathObject.fScore;
-        foreach(PathFinderNode path in openNodes){
-            if(path.fScore < minFScore){
+        foreach (PathFinderNode path in openNodes)
+        {
+            if (path.fScore < minFScore)
+            {
                 minPathObject = path;
                 minFScore = minPathObject.fScore;
             }
@@ -256,9 +295,11 @@ public class PathFinder : MonoBehaviour
         return minPathObject;
     }
 
-    IEnumerator ExploreNeighbours(PathFinderNode from){
+    IEnumerator ExploreNeighbours(PathFinderNode from)
+    {
         int connectionWeight = 1;
-        foreach(Vector2Int direction in Helpers.directions){        
+        foreach (Vector2Int direction in Helpers.directions)
+        {
             float currentScore = from.gScore + connectionWeight;
             PathFinderNode pathBlock = Instantiate(cyclicConnectionPrefab);
 
@@ -269,32 +310,39 @@ public class PathFinder : MonoBehaviour
                 from.transform.position.x + direction.x * bounds.size.x,
                 from.transform.position.y,
                 from.transform.position.z + direction.y * bounds.size.z);
-            
-            
-            foreach(PathFinderNode node in allNodes){
-                if(pathBlock.transform.position == node.transform.position){
-                    if(currentScore < node.gScore){
+
+
+            foreach (PathFinderNode node in allNodes)
+            {
+                if (pathBlock.transform.position == node.transform.position)
+                {
+                    if (currentScore < node.gScore)
+                    {
                         Destroy(pathBlock.gameObject);
                         pathBlock = null;
 
                         node.instantiatedFrom = from;
                         node.gScore = currentScore;
                         node.fScore = currentScore + DistanceToEnd(node.transform);
-                        if(openNodes.Contains(node)){
+                        if (openNodes.Contains(node))
+                        {
                             openNodes.Add(node);
                         }
                         break;
                     }
-                    
+
                 }
             }
 
-            if(pathBlock == null) continue;
+            if (pathBlock == null) continue;
 
             yield return Helpers.fixedUpdateInterval;
-            if(pathBlock.CheckOverlap()){
+            if (pathBlock.CheckOverlap())
+            {
                 Destroy(pathBlock.gameObject);
-            } else {
+            }
+            else
+            {
                 pathBlock.instantiatedFrom = from;
                 pathBlock.gScore = currentScore;
                 pathBlock.fScore = currentScore + DistanceToEnd(pathBlock.transform);
@@ -305,34 +353,42 @@ public class PathFinder : MonoBehaviour
         StopCoroutine("ExploreNeighbours");
     }
 
-    void PlaceEndPath() {
+    void PlaceEndPath()
+    {
         PathFinderNode pathBlock = Instantiate(cyclicConnectionPrefab);
         pathBlock.transform.parent = this.transform;
         pathBlock.transform.position = end.transform.position + end.transform.rotation * Vector3.forward;
         pathBlock.transform.position = new Vector3(
                                         pathBlock.transform.position.x,
-                                        pathBlock.transform.position.y,
+                                        pathBlock.transform.position.y + 0.01f,
                                         pathBlock.transform.position.z);
 
         connectorPath.Add(pathBlock);
     }
 
-    float DistanceToEnd(Transform from){
-         return Vector3.Distance(
-            from.position, 
-            end.transform.position);
+    float DistanceToEnd(Transform from)
+    {
+        return Vector3.Distance(
+           from.position,
+           end.transform.position);
     }
 
-    bool IfEndFound(Transform current){
-        if(DistanceToEnd(current) <= minEndDistance){
+    bool IfEndFound(Transform current)
+    {
+        if (DistanceToEnd(current) <= minEndDistance)
+        {
             return true;
-            
-        } else {
+
+        }
+        else
+        {
             return false;
         }
     }
-    void DeleteAll(){
-        foreach (Transform child in this.transform) {
+    void DeleteAll()
+    {
+        foreach (Transform child in this.transform)
+        {
             GameObject.Destroy(child.gameObject);
         }
     }
