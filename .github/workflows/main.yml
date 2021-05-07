@@ -9,8 +9,13 @@ jobs:
     steps:
     
         
-     - name: just echo a message
-        run: echo Hello there!
+     - name: Check whether unity activation requests should be done
+        id: checksecret_job
+        env:
+            MY_SECRET: ${{ secrets.BUTLER_CREDENTIALS }}
+        run: |
+            echo "is_MY_SECRET_set: ${{ env.MY_SECRET != '' }}"
+            echo "::set-output name=is_MY_SECRET_set::${{ env.MY_SECRET != '' }}"
            
 
       # Checkout
