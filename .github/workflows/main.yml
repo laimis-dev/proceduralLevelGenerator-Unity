@@ -25,6 +25,17 @@ jobs:
             echo "The selected color is ${{ secrets.BUTLER_CREDENTIAL }}"
             echo "-----------"
             echo "The selected color is $BUTLER_CREDENTIAL"
+            
+           # Upload
+      - name: Upload to Itch
+        uses: josephbmanley/butler-publish-itchio-action@master
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIAL }}
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIAL }}
+          CHANNEL: html5
+          ITCH_GAME: procedural-dungeon-generator
+          ITCH_USER: katinas15
+          PACKAGE: build/WebGL/WebGL
 
            
 
@@ -67,8 +78,8 @@ jobs:
       - name: Upload to Itch
         uses: josephbmanley/butler-publish-itchio-action@master
         env:
-          BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIALS }}
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIAL }}
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIAL }}
           CHANNEL: html5
           ITCH_GAME: procedural-dungeon-generator
           ITCH_USER: katinas15
