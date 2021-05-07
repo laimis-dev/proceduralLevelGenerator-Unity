@@ -13,11 +13,10 @@ jobs:
       - name: testest
         env:
           organization: unity
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
 
         run: 
             echo "The selected color is ${{ secrets.BUTLER_CREDENTIALS }}"
-            echo "The selected color is $BUTLER_CREDENTIALS"
+            echo "The selected color is ${{ BUTLER_CREDENTIALS }}"
 
            
 
