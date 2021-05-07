@@ -10,8 +10,8 @@ jobs:
     
       - name: Step 2 - GitHub Action if statement (true)
         env: 
-            WHO_TO_TRUST: ${{ secrets.SECRET_TOKEN }}
-        if:  env.WHO_TO_TRUST == 'TrustNo1'
+            WHO_TO_TRUST: ${{ secrets.BUTLER_CREDENTIAL }}
+        if:  env.WHO_TO_TRUST == 'mYb7fCaepS8f9Yj58JzYPSsYCcg6U70icyYiJnuw'
         run: echo "I know what the secret token is!"
         
     # test
@@ -20,7 +20,7 @@ jobs:
           organization: unity
           BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIAL }}
 
-
+mYb7fCaepS8f9Yj58JzYPSsYCcg6U70icyYiJnuw
         run: 
             echo "-----------"
             echo "The selected color is ${{ secrets.BUTLER_CREDENTIAL }}"
