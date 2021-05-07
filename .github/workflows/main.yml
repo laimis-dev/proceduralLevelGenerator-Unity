@@ -8,12 +8,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     
+      - name: Step 2 - GitHub Action if statement (true)
+        env: 
+            WHO_TO_TRUST: ${{ secrets.SECRET_TOKEN }}
+        if:  env.WHO_TO_TRUST == 'TrustNo1'
+        run: echo "I know what the secret token is!"
         
     # test
       - name: testest
         env:
           organization: unity
           BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIAL }}
+
 
         run: 
             echo "-----------"
