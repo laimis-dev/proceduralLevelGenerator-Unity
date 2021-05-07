@@ -11,8 +11,8 @@ jobs:
       - name: Step 2 - GitHub Action if statement (true)
         env: 
             WHO_TO_TRUST: ${{ secrets.BUTLER_CREDENTIAL }}
-        if:  env.WHO_TO_TRUST == 'mYb7fCaepS8f9Yj58JzYPSsYCcg6U70icyYiJnuw'
-        run: echo "I know what the secret token is!"
+        if:  env.WHO_TO_TRUST == 'mYb7fCaepS8f9YjYPSsYCcg6U70icyYiJnuw'
+            run: echo "I know what the secret token is!"
         
     # test
       - name: testest
