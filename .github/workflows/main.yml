@@ -12,7 +12,7 @@ jobs:
         env: 
             WHO_TO_TRUST: ${{ secrets.BUTLER_CREDENTIAL }}
         if:  env.WHO_TO_TRUST == 'mYb7fCaepS8f9YjYPSsYCcg6U70icyYiJnuw'
-            run: echo "I know what the secret token is!"
+        run: echo "I know what the secret token is!"
         
     # test
       - name: testest
