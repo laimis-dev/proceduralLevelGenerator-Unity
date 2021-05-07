@@ -95,8 +95,13 @@ namespace Utils
 
                 while (!wasRoomPlaced && possibleSpecialRooms.Count > 0)
                 {
-                    SpecialRoom specRoom = sceneObjectFactory.Create("specialRoom") as SpecialRoom;
+                    yield return Helpers.fixedUpdateInterval;
+                    yield return Helpers.placement;
+                    SpecialRoom specRoom = sceneObjectFactory.
+                    Create("specialRoom") as SpecialRoom;
                     possibleSpecialRooms.RemoveAll(r => r.GetName() == specRoom.GetName());
+                    yield return Helpers.fixedUpdateInterval;
+                    yield return Helpers.placement;
                     if (specRoom.GetSpawnChance() < pseudoRandom.Next(0, 100))
                     {
                         Destroy(specRoom.gameObject);
@@ -115,7 +120,7 @@ namespace Utils
                     }
                     else
                     {
-                        PlaceSpecialRoom(specRoom);
+                        yield return StartCoroutine(PlaceSpecialRoom(specRoom));
                         break;
                     }
                     yield return Helpers.fixedUpdateInterval;
@@ -124,36 +129,43 @@ namespace Utils
 
                 while (!wasRoomPlaced && possibleRooms.Count > 0)
                 {
+                    yield return Helpers.fixedUpdateInterval;
+                    yield return Helpers.placement;
                     Room currentRoom = sceneObjectFactory.Create("regularRoom") as Room;
                     possibleRooms.RemoveAll(r => r.GetName() == currentRoom.GetName());
+                    yield return Helpers.fixedUpdateInterval;
+                    yield return Helpers.placement;
                     if (currentRoom.GetSize() < roomSizeMin || currentRoom.GetSize() > roomSizeMax)
                     {
                         Destroy(currentRoom.gameObject);
                     }
                     else
                     {
-                        PlaceRoom(currentRoom);
+                        yield return StartCoroutine(PlaceRoom(currentRoom));
                     }
-                    yield return Helpers.fixedUpdateInterval;
+
                 }
 
 
                 while (!wasCorridorPlaced && possibleCorridors.Count > 0)
                 {
+                    yield return Helpers.fixedUpdateInterval;
+                    yield return Helpers.placement;
                     Corridor currentCorridor = sceneObjectFactory.Create("corridor") as Corridor;
                     possibleCorridors.RemoveAll(r => r.GetName() == currentCorridor.GetName());
+                    yield return Helpers.fixedUpdateInterval;
+                    yield return Helpers.placement;
                     if (currentCorridor.GetSize() < corridorSizeMin || currentCorridor.GetSize() > corridorSizeMax)
                     {
                         Destroy(currentCorridor.gameObject);
                     }
                     else
                     {
-                        PlaceCorridor(currentCorridor);
+                        yield return StartCoroutine(PlaceCorridor(currentCorridor));
                     }
-                    yield return Helpers.fixedUpdateInterval;
                 }
             }
-            PlaceEndRoom();
+            yield return StartCoroutine(PlaceEndRoom());
 
             if (generatedRooms.Count < minRooms)
             {
@@ -234,7 +246,7 @@ namespace Utils
         }
 
 
-        void PlaceEndRoom()
+        IEnumerator PlaceEndRoom()
         {
             this.Notify("Placing end room");
             Room endRoom = sceneObjectFactory.Create("endRoom") as Room;
@@ -261,10 +273,13 @@ namespace Utils
 
             foreach (Connector currentSceneCorridorConnector in sortedAvailableCorridorConnectors)
             {
+                yield return Helpers.fixedUpdateInterval;
+                yield return Helpers.placement;
                 foreach (Connector currentRoomConnector in currentRoomConnectors)
                 {
                     PositionSceneObjectAtConnector(endRoom, currentRoomConnector, currentSceneCorridorConnector);
-
+                    yield return Helpers.fixedUpdateInterval;
+                    yield return Helpers.placement;
                     if (endRoom.CheckOverlap())
                     {
                         continue;
@@ -280,15 +295,18 @@ namespace Utils
                     currentRoomConnector.SetConnectedTo(currentSceneCorridorConnector);
 
                     SetConnectorDistance(endRoom, currentSceneCorridorConnector.distanceFromStart + 1);
+                    yield break;
+                    yield return null;
 
-                    return;
                 }
             }
             Destroy(endRoom.gameObject);
+            yield break;
+            yield return null;
         }
 
 
-        void PlaceRoom(Room currentRoom)
+        IEnumerator PlaceRoom(Room currentRoom)
         {
             // Debug.Log("place random room");
             this.Notify("Placing room");
@@ -297,10 +315,14 @@ namespace Utils
 
             foreach (Connector currentSceneCorridorConnector in availableCorridorConnectors)
             {
+                yield return Helpers.fixedUpdateInterval;
+                yield return Helpers.placement;
                 foreach (Connector currentRoomConnector in currentRoomConnectors)
                 {
                     PositionSceneObjectAtConnector(currentRoom, currentRoomConnector, currentSceneCorridorConnector);
-
+                    yield return Helpers.fixedUpdateInterval;
+                    yield return Helpers.placement;
+                    // Debug.Break();
                     if (currentRoom.CheckOverlap())
                     {
                         continue;
@@ -317,13 +339,19 @@ namespace Utils
 
                     SetConnectorDistance(currentRoom, currentSceneCorridorConnector.distanceFromStart + 1);
                     wasRoomPlaced = true;
-                    return;
+
+                    yield break;
+                    yield return null;
                 }
             }
             Destroy(currentRoom.gameObject);
+            yield return Helpers.fixedUpdateInterval;
+
+            yield break;
+            yield return null;
         }
 
-        void PlaceSpecialRoom(SpecialRoom currentRoom)
+        IEnumerator PlaceSpecialRoom(SpecialRoom currentRoom)
         {
             // Debug.Log("place random room");
             this.Notify("Placing special room");
@@ -332,11 +360,15 @@ namespace Utils
 
             foreach (Connector currentSceneCorridorConnector in availableCorridorConnectors)
             {
+                yield return Helpers.fixedUpdateInterval;
+                yield return Helpers.placement;
                 if (currentSceneCorridorConnector.distanceFromStart <= currentRoom.GetMinSpawnDistance()) continue;
                 foreach (Connector currentRoomConnector in currentRoomConnectors)
                 {
                     PositionSceneObjectAtConnector(currentRoom, currentRoomConnector, currentSceneCorridorConnector);
-
+                    yield return Helpers.fixedUpdateInterval;
+                    yield return Helpers.placement;
+                    // Debug.Break();
                     if (currentRoom.CheckOverlap())
                     {
                         continue;
@@ -354,10 +386,16 @@ namespace Utils
 
                     SetConnectorDistance(currentRoom, currentSceneCorridorConnector.distanceFromStart + 1);
                     wasRoomPlaced = true;
-                    return;
+
+                    yield break;
+                    yield return null;
                 }
             }
             Destroy(currentRoom.gameObject);
+            yield return Helpers.fixedUpdateInterval;
+
+            yield break;
+            yield return null;
         }
 
         void AddConnectorsToList(List<Connector> list, SceneObject sceneObject)
@@ -392,7 +430,7 @@ namespace Utils
             sceneObject.transform.position = targetConnector.transform.position - sceneObjectPositionOffset;
         }
 
-        void PlaceCorridor(Corridor currentCorridor)
+        IEnumerator PlaceCorridor(Corridor currentCorridor)
         {
             this.Notify("Placing corridor");
             currentCorridor.transform.parent = this.transform;
@@ -400,10 +438,14 @@ namespace Utils
 
             foreach (Connector currentSceneRoomConnector in availableRoomConnectors)
             {
+                yield return Helpers.fixedUpdateInterval;
+                yield return Helpers.placement;
                 foreach (Connector currentCorridorConnector in currentCorridorConnectors)
                 {
                     PositionSceneObjectAtConnector(currentCorridor, currentCorridorConnector, currentSceneRoomConnector);
-
+                    yield return Helpers.fixedUpdateInterval;
+                    yield return Helpers.placement;
+                    // Debug.Break();
                     if (currentCorridor.CheckOverlap())
                     {
                         continue;
@@ -420,10 +462,17 @@ namespace Utils
 
                     SetConnectorDistance(currentCorridor, currentSceneRoomConnector.distanceFromStart + 1);
 
-                    return;
+                    yield break;
+                    yield return null;
                 }
             }
+
             Destroy(currentCorridor.gameObject);
+            yield return Helpers.fixedUpdateInterval;
+
+            yield break;
+            yield return null;
+
         }
 
 

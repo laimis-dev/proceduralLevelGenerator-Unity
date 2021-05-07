@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Utils {
+namespace Utils
+{
     public class Helpers
     {
         public static Vector2Int[] directions = new Vector2Int[] {
@@ -12,16 +13,19 @@ namespace Utils {
             Vector2Int.right
         };
 
-        public static WaitForSeconds startup =  new WaitForSeconds(1);
+        public static WaitForSeconds startup = new WaitForSeconds(1);
         public static WaitForFixedUpdate fixedUpdateInterval = new WaitForFixedUpdate();
+        public static WaitForSeconds placement = new WaitForSeconds(0.001f);
+
 
         public static LayerMask sceneLayerMask = LayerMask.GetMask("SceneColliders");
 
-        public static GameObject GetRootGameObject(Transform transform){
+        public static GameObject GetRootGameObject(Transform transform)
+        {
             return transform.parent.gameObject.transform.parent.gameObject;
         }
-        
+
         public static bool navBaked = false;
-        
+
     }
 }
