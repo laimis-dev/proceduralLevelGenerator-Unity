@@ -8,37 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     
-      - name: Step 2 - GitHub Action if statement (true)
-        env: 
-            WHO_TO_TRUST: ${{ secrets.BUTLER_CREDENTIAL }}
-        if:  env.WHO_TO_TRUST == 'mYb7fCaepS8f9Yj58JzYPSsYCcg6U70icyYiJnuw'
-        run: echo "I know what the secret token is!"
-        
-    # test
-      - name: testest
-        env:
-          organization: unity
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIAL }}
-
-        run: 
-            echo "-----------"
-            echo "The selected color is ${{ secrets.BUTLER_CREDENTIAL }}"
-            echo "-----------"
-            echo "The selected color is $BUTLER_CREDENTIAL"
-            
-           # Upload
-      - name: Upload to Itch
-        uses: josephbmanley/butler-publish-itchio-action@master
-        env:
-          BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIAL }}
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIAL }}
-          CHANNEL: html5
-          ITCH_GAME: procedural-dungeon-generator
-          ITCH_USER: katinas15
-          PACKAGE: build/WebGL/WebGL
-
-           
-
       # Checkout
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -80,6 +49,7 @@ jobs:
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIAL }}
           BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIAL }}
+          BUTLER_CREDENTIAL: ${{ secrets.BUTLER_CREDENTIAL }}
           CHANNEL: html5
           ITCH_GAME: procedural-dungeon-generator
           ITCH_USER: katinas15
