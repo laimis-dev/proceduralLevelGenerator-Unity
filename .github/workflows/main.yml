@@ -20,7 +20,6 @@ jobs:
           organization: unity
           BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIAL }}
 
-mYb7fCaepS8f9Yj58JzYPSsYCcg6U70icyYiJnuw
         run: 
             echo "-----------"
             echo "The selected color is ${{ secrets.BUTLER_CREDENTIAL }}"
